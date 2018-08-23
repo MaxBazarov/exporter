@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Exporter</title>
+        <link>https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml</link>
+        <description>Generates a HTML clickable prototype</description>
+        <language>en</language>
+         <item>
+            <title>Version 1.6.5</title>
+            <date>20 Aug 2018</date>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Fixed issue with multi-group symbol</li>
+                    <li>Fixed issue with overided link to external artboard</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.6.5"/>
+        </item> 
+        <item>
+            <title>Version 1.6.4</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Opens HTML in browser after generation (can be switched of in settings)</li>
+                    <li>Fixed "symbool hotspot inside groups" issue</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.6.4.zip" sparkle:version="1.6.4"/>
+        </item> 
+        <item>
+            <title>Version 1.6.3</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Added icons to menu titles</li>
+                    <li>Fixed browser back/next buttons</li>
+                    <li>Added plugin-wide setting to change align artboards</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.6.3.zip" sparkle:version="1.6.3"/>
+        </item> 
+        <item>
+            <title>Version 1.6.2</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Now pages with * prefix are excluding from exporting</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.6.2.zip" sparkle:version="1.6.2"/>
+        </item> 
+        <item>
+            <title>Version 1.6.1</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Changed browser page background color/li>
+                    <li>Changed overlays aligment and sizes</li>
+                    <li>Now artboards with * prefix are excluding from exporting</li>
+                    <li>Added experimental support for document annotations</li>
+                    <li>Removed external artboards from next/back navigation</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.6.1.zip" sparkle:version="1.6.1"/>
+        </item> 
+        <item>
+            <title>Version 1.5.1</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Totally refactored page navigation and overlay system./li>
+                    <li>Improved support for Previous Artboard links.</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.5.1.zip" sparkle:version="1.5.1"/>
+        </item>          
+        <item>
+            <title>Version 1.4.5</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Fixed a bug with non-shadow overlay positioning</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.4.5.zip" sparkle:version="1.4.5"/>
+        </item>  
+        <item>
+            <title>Version 1.4.4</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Now an overlay shadow cover only a back artboard</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.4.4.zip" sparkle:version="1.4.4"/>
+        </item>  
+        <item>
+            <title>Version 1.4.3</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Fixed wrong a calculation for several overrided hotspots placed in one symbol</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.4.3.zip" sparkle:version="1.4.3"/>
+        </item>  
+        <item>
+            <title>Version 1.4.2</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Fixed an issue with "Previous Artboard" in hotspot override </li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.4.2.zip" sparkle:version="1.4.3"/>
+        </item>  
+        <item>
+            <title>Version 1.4.1</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Support for overlay artboards</li>
+                    <li>Fixed many issues with nested and overloaded symbols</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.4.1.zip" sparkle:version="1.4.1"/>
+        </item>  
+        <item>
+            <title>Version 1.3.2</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Added support for artboards with "External URL" enabled</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.3.2.zip" sparkle:version="1.3.2"/>
+        </item>  
+        <item>
+            <title>Version 1.3.1</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Added support for link with 'Previous Artboard' type</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.3.1.zip" sparkle:version="1.3.1"/>
+        </item>  
+        <item>
+            <title>Version 1.2.2</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Added support for customized links</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.2.2.zip" sparkle:version="1.2.2"/>
+        </item>  
+        <item>
+            <title>Version 1.2.1</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Redesigned prototype navigation tool</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.2.1.zip" sparkle:version="1.2.1"/>
+        </item>        
+        <item>
+            <title>Version 1.2.0</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Uses Sketch Flow Start Point to select a first pages</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.2.0"/>
+        </item>
+        <item>
+            <title>Version 1.1.2</title>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Test plugin updating</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.1.2"/>
+        </item>
+    </channel>
+</rss>

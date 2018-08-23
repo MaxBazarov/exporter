@@ -1,0 +1,214 @@
+html {
+	--shadow: 0 0 40px rgba(0,0,0,0.2);
+	--bg: rgba(255,255,255,0.8);
+	--radius: 5px;
+	--cell: 10px;
+	--font-size: 14px;
+	--font-color: rgba(0,0,0,0.8);
+	--primary-color: #1894FC;
+	--transition: .15s all ease-in;
+}
+
+#content {	
+	background-color: rgba(255,255,255,255);
+}
+
+#content-overlay {
+	z-index: 50;
+	position: fixed;
+	overflow: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	margin-left: auto;
+	margin-right: auto; 
+	margin-top: auto; 
+	margin-bottom: auto;
+	align-items: center;	
+}
+
+#gallery {
+	z-index: 100;
+	position: fixed;
+	overflow: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100vw;
+	height: 100vh;
+	display: grid;
+	margin-left: auto;
+	margin-right: auto; 
+	margin-top: auto; 
+	margin-bottom: auto;
+	align-items: center;	
+	background-color: rgba(0,0,0,0.7);
+}
+
+.gallery-image {
+	float: left
+}
+
+
+#content-shadow.shadow {
+	background-color: rgba(0,0,0,0.7);
+}
+
+#content-shadow.no-shadow {
+	background-color: transparent;
+}
+
+
+#content-overlay>div {
+	margin-top: 50px auto 50px;
+	margin-bottom: 50px auto 50px;
+}
+
+img {
+	border: 0;
+}
+
+body {
+	line-height: 100%;
+	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	font-size: var(--font-size);
+	color: var(--font-color);
+	margin: 0;
+	padding: 0;
+	background-color: rgba(100,100,100,255);
+}
+
+a, a:focus {
+	outline: none;
+}
+
+.hidden {
+	display: none !important;
+}
+
+.hotspots-off {
+	pointer-events: none;
+}
+
+#nav,
+#nav-hide {
+	z-index: 1000;
+	position: fixed;
+	bottom: var(--cell);
+	left: 10px;
+	height: calc(4*var(--cell));
+}
+
+#nav #nav-title  {
+	padding: calc(var(--cell)/2) var(--cell);
+	font-weight: 300;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#nav #nav-title .nav-title-label {
+	font-size: 10px;
+	line-height: var(--cell);
+	color: rgba(0,0,0,0.5);
+}
+#nav #nav-title .title {
+	line-height: calc(2*var(--cell));
+}
+
+#nav ul,
+#nav-hide ul {
+	list-style: none;
+	display: block;
+	float: left;
+	padding: 0;
+	margin: 0;
+	border-radius: var(--radius);
+	background-color:var(--bg);
+	box-shadow: var(--shadow);
+	overflow: hidden;
+
+}
+
+#nav ul:not(last-child),
+#nav-hide ul:not(last-child) {
+	margin-right: var(--cell);
+}
+
+#nav ul li,
+#nav-hide ul li {
+	display: block;
+	float: left;
+}
+
+#nav ul li a,
+#nav-hide a {
+	display: block;
+	text-align: center;
+}
+
+#nav ul li a {
+	padding: 5px;
+}
+
+.screen #nav ul li a:hover, .screen #nav-hide a:hover, #nav ul li a:active, #nav-hide a:active, #nav ul li.active a {
+	background-color: var(--primary-color);
+	color: white;
+}
+
+
+#nav-left {
+	float: left;
+}
+
+.nav-set {
+	text-indent: 0;
+	padding: 0;
+	margin: 0;
+	border-radius: var(--radius);
+}
+
+.nav-set .nav-item-icon a {
+	text-decoration: none;
+	color: var(--font-color);
+	text-indent: 0;
+	line-height: calc(3*var(--cell));
+	width: calc(4*var(--cell));
+	padding: 5px 0 !important;
+	margin: 0;	
+	background-image: none;  /* TO REMOVE */
+
+}
+
+.nav-set .nav-item-icon a:hover {
+	transition: var(--transition);
+}
+
+
+#nav .nav-set li.nav-item-icon.disabled {
+	opacity: .2;
+}
+
+#nav .nav-set li.nav-item-icon.disabled,
+#nav .nav-set li.nav-item-icon.disabled a:hover {
+	transition: none;
+	background-color: transparent;
+	color: var(--font-color);
+	cursor: default;
+}
+
+#nav-right-hide {
+	background-image: none;
+	max-width: calc(4*var(--cell));
+}
+
+.screen #nav-right-hide li a:hover, #nav-right-hide li a:active {
+	background-image: none;
+	background-color: var(--primary-color);
+	color: white;
+}
