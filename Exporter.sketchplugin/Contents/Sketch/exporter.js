@@ -22,18 +22,18 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
 class Exporter {
 
   constructor(selectedPath, doc, page, context) {    
+    this.Settings = require('sketch/settings');
+    this.Sketch = require('sketch/dom');
+    this.Doc = this.Sketch.fromNative(doc);
+
     this.doc = doc;
     this.page = page;
     this.context = context;
     this.prepareOutputFolder(selectedPath);
-    this.retinaImages = true    
+    this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
     this.jsStory = '';
 
     this.externalArtboardsURLs = [];
-
-    this.Settings = require('sketch/settings');
-    this.Sketch = require('sketch/dom');
-    this.Doc = this.Sketch.fromNative(doc);
   }
 
   log(msg){
@@ -513,7 +513,7 @@ class Exporter {
   generateJSStoryEnd(){
     this.jsStory += 
      '   ]\n,'+
-     '"resolutions": [2],\n'+
+     '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
      '"title": "'+this.context.document.cloudName()+'",\n'+
      '"highlightLinks": false\n'+
     '}\n';
@@ -552,8 +552,11 @@ class Exporter {
     let js = index?',':'';
     js +=
       '{\n'+
-      '"image": "'+ Utils.toFilename(mainName+'.png',false)+'",\n'+
-      '"image2x": "'+ Utils.toFilename(mainName+'@2x.png',false)+'",\n'+
+      '"image": "'+ Utils.toFilename(mainName+'.png',false)+'",\n'
+    if(this.retinaImages)
+      js +=
+        '"image2x": "'+ Utils.toFilename(mainName+'@2x.png',false)+'",\n'
+    js +=      
       '"width": '+mainArtboard.frame().width()+',\n'+
       '"height": '+mainArtboard.frame().height()+',\n'+
       '"title": "'+mainName+'",\n';

@@ -124,7 +124,7 @@ function createViewer(story, files) {
 			} else if (page === "") {
 				index = 0;
 			} else {
-				index = this.getPageHashes()[page];
+				index = this.getPageHashes()[page];	
 				if (!index) {
 					var pageNumber = parseInt(page);
 					if (isNaN(pageNumber))
