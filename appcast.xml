@@ -5,6 +5,18 @@
         <link>https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml</link>
         <description>Generates a HTML clickable prototype</description>
         <language>en</language>
+         <item>
+            <title>Version 1.7.1</title>
+            <date>24 Aug 2018</date>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Correced Gallery icon behaviour</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.7.1"/>
+        </item>       
         <item>
             <title>Version 1.7.0</title>
             <date>23 Aug 2018</date>
@@ -18,7 +30,7 @@
                    </ul>
                 ]]>
             </description>
-            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.7.0"/>
+           <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.7.0.zip" sparkle:version="1.7.0"/>
         </item>        
         <item>
             <title>Version 1.6.5</title>

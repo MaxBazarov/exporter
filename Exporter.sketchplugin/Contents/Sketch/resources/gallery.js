@@ -1,7 +1,16 @@
 function createGallery() {
     return {        
         loaded: false,
+        visible: false,
         initialize: function()   {
+        },
+        switch: function(){
+            if(!this.visible){
+                this.show();
+            }else{
+                this.hide();
+            }
+            $('#nav-right-gallery').toggleClass('active', this.visible);
         },
         show: function() {
             $('#gallery').removeClass('hidden');
@@ -9,9 +18,10 @@ function createGallery() {
                 this.loadPages();
                 this.loaded = true;
             }
+            this.visible = true;
         },
         loadPages: function(){
-            var pageIndex=0
+            var pageIndex=0;
             story.pages.forEach(function(page){
                 this.loadOnePage(page,pageIndex++);
             },this);
@@ -46,6 +56,7 @@ function createGallery() {
         },
         hide: function(){
             $('#gallery').addClass('hidden');
+            this.visible = false
         }
     }
 }

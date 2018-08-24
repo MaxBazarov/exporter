@@ -54,8 +54,8 @@ function buildMainHTML(docName, centerContent) {
   s += '         <li id="nav-right-hints" class="nav-item-icon">\n';
   s += '             <a onclick="viewer.showHints(); return false;" href="" title="Show page annotations"><i class="far fa-info"></i></a>\n';
   s += '         </li>\n';
-  s += '         <li id="nav-right-links" class="nav-item-icon">\n';
-  s += '             <a onclick="gallery.show(); return false;" href="" title="Show all pages"><i class="far fa-images"></i></a>\n';
+  s += '         <li id="nav-right-gallery" class="nav-item-icon">\n';
+  s += '             <a onclick="gallery.switch(); return false;" href="" title="Show all pages"><i class="far fa-images"></i></a>\n';
   s += '         </li>\n';  
   s += '     </ul>\n';
   s += '     <ul id="nav-title">\n';
