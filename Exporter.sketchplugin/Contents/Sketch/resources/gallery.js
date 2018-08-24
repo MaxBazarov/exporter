@@ -9,8 +9,12 @@ function createGallery() {
                 this.show();
             }else{
                 this.hide();
-            }
-            $('#nav-right-gallery').toggleClass('active', this.visible);
+            }           
+        },
+        hide: function(){
+            $('#gallery').addClass('hidden');
+            this.visible = false
+            $('#nav-right-gallery').toggleClass('active', false);
         },
         show: function() {
             $('#gallery').removeClass('hidden');
@@ -19,6 +23,7 @@ function createGallery() {
                 this.loaded = true;
             }
             this.visible = true;
+            $('#nav-right-gallery').toggleClass('active', true);
         },
         loadPages: function(){
             var pageIndex=0;
@@ -53,10 +58,6 @@ function createGallery() {
 				src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),
             }).attr('width', width).attr('height', height);
             img.appendTo(div);	
-        },
-        hide: function(){
-            $('#gallery').addClass('hidden');
-            this.visible = false
-        }
+        }        
     }
 }
