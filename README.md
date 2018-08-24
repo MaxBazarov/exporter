@@ -7,8 +7,8 @@ Features:
 - Support for Sketch-native links (including Back links, cross-page links, links inside Symbols and overrided hotspot links)
 - Single HTML file with links highlighting
 - Support for external links
-- Skips pages and artboards with * prefix (NEW)
-- Artboard annotations (NEW) 
+- Skips pages and artboards with * prefix 
+- Gallery [Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png) (NEW)(Experimental!)
 
 Please send your feedback to max@bazarov.ru and subscribe to our Twitter account [@exporter.plugin](https://twitter.com/ExporterPlugin)
 
