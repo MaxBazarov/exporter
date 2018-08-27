@@ -14,20 +14,23 @@ var onRun = function(context) {
   if(position==undefined || position=="") position = Constants.POSITION_DEFAULT
 
   const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
-  //log('old dontOpen:'+dontOpen)
+  const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
+
 
   //
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 140),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 170),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("Specify how artboard will be aligned in browser page")
 
   dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
+  dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   //
 
   if(dialog.run()){
     Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.inputs['position'].indexOfSelectedItem())
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.inputs['retina'].state() != 1)    
     //log('new dontOpen:'+dialog.inputs['dontopen'].state())
   }
   dialog.finish()

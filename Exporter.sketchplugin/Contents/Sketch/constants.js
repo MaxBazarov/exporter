@@ -16,7 +16,7 @@ var Constants = {
 var SettingKeys = {
   PLUGIN_POSITION: "positon",
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
-  DOC_RETINA_IMAGES: "retinaImages",
+  PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   DOC_EXPORTING_URL: "docExportingURL",
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
