@@ -17,6 +17,7 @@ var SettingKeys = {
   PLUGIN_POSITION: "positon",
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
+  PLUGIN_COMMENTS_URL: "commentsURL",
   DOC_EXPORTING_URL: "docExportingURL",
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",

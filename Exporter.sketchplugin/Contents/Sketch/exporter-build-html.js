@@ -1,5 +1,5 @@
 
-function buildMainHTML(docName, centerContent) {
+function buildMainHTML(docName, centerContent,commentsURL) {
   
   let s = "";
   s += '<!DOCTYPE html>\n<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n';
@@ -21,9 +21,19 @@ function buildMainHTML(docName, centerContent) {
   s += '<script type="text/javascript" src="resources/viewer.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="resources/gallery.js" charset="UTF-8"></script>\n';
 
+  if(commentsURL!=''){
+    s += '<link rel="stylesheet" type="text/css" href="'+commentsURL+'/EasyPageComments.css"/>\n';
+    s += '<script type="text/javascript" src="'+commentsURL+'/EasyPageComments.js"></script>\n';
+    s += '<script type="text/javascript" src="'+commentsURL+'/comments.js" charset="UTF-8"></script>\n';
+  }
+
+
   s += '<script type="text/javascript">\n';
   s += '  var viewer = createViewer(story, "images");\n';
   s += '  var gallery = createGallery();\n';
+  if(commentsURL!=''){
+    s += '  var comments = createComments();\n';
+  }
   s += '</script>\n';
   s += '</head>\n';
   s += '<body class="screen">\n';
@@ -32,6 +42,17 @@ function buildMainHTML(docName, centerContent) {
   s += ' <div id="content-shadow" class="hidden"></div>\n';
   s += ' <div id="content-overlay" class="hidden"></div>\n';
   s += ' <div id="gallery" class="hidden"></div>\n';
+  
+  if(commentsURL!=''){
+  s += ' <div id="commenting" class="hidden">\n';
+  s += '  <h1>EasyPageComments example page</h1>\n';
+  s += '  <h2>Comments</h2>\n';
+  s += '  <div id="Comments"></div>\n';
+  s += '    <h2>Leave a comment</h2>\n';
+  s += '  <div id="CommentForm"></div>\n';
+  s += ' </div>\n';
+  }
+
   s += '</div>\n';
 
 
@@ -57,6 +78,14 @@ function buildMainHTML(docName, centerContent) {
   s += '         <li id="nav-right-gallery" class="nav-item-icon">\n';
   s += '             <a onclick="gallery.switch(); return false;" href="" title="Show all pages"><i class="far fa-images"></i></a>\n';
   s += '         </li>\n';  
+
+  if(commentsURL!=''){
+    s += '         <li id="nav-right-comments" class="nav-item-icon">';
+    s += '         <a onclick="comments.switch(); return false;" href="" title="Show comments"><i class="far fa-comments"></i></a>';
+    s += '         </li>';
+
+  }
+
   s += '     </ul>\n';
   s += '     <ul id="nav-title">\n';
   // TODO - show version in some other good and always visible place

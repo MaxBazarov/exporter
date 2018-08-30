@@ -65,7 +65,6 @@ class UIDialog {
     if(label!='') this.addLabel(label,17)    
 
     const textBox = NSTextField.alloc().initWithFrame(this.getNewFrame(height))
-    //const textBox = NSTextField.alloc().initWithFrame( NSMakeRect(0, 0, 300,200))
     textBox.setEditable(true)
     textBox.setBordered(true)
     textBox.setStringValue(textValue)
@@ -78,6 +77,24 @@ class UIDialog {
 
     return textBox  
   }
+
+  addTextInput(id,label,textValue,inlineHint="", width=220){
+    if(label!='') this.addLabel(label,17)    
+
+    const input = NSTextField.alloc().initWithFrame(this.getNewFrame(25,width))
+    input.setEditable(true)
+    input.setBordered(true)
+    input.setStringValue(textValue)
+    if (inlineHint != "") {
+      input.setPlaceholderString(inlineHint)
+    }
+    
+    this.container.addSubview(input)
+    this.inputs[id] = input
+
+    return input  
+  }
+
 
   addComboBox(id,label,selectItem, options, width=100){
     if(label!='') this.addLabel(label,17)
