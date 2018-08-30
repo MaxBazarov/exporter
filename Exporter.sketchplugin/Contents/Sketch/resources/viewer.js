@@ -83,6 +83,12 @@ function createViewer(story, files) {
 			$(document).bind('keydown', 'shift', function() {
 				v.toggleLinks();
 			});
+			$(document).bind('keydown', 'g', function() {
+				gallery.toogle();
+			});
+			$(document).bind('keydown', 's', function() {
+				v.goToPage(0);
+			});
 		},
 		getPageHash: function(index) {
 			var image = story.pages[index].image;
@@ -124,7 +130,7 @@ function createViewer(story, files) {
 			} else if (page === "") {
 				index = 0;
 			} else {
-				index = this.getPageHashes()[page];	
+				index = this.getPageHashes()[page];
 				if (index==undefined) {
 					var pageNumber = parseInt(page);
 					if (isNaN(pageNumber))
@@ -192,7 +198,7 @@ function createViewer(story, files) {
 		refresh_update_navbar: function(pageIndex) {
 			var page = story.pages[pageIndex];
 			
-			$('#nav .title').html(page.title);
+			$('#nav .title').html((pageIndex+1) + '/' + story.pages.length + ' - ' + page.title);
 			$('#nav-left-prev').toggleClass('disabled', !this.hasPrevious(pageIndex));
 			$('#nav-left-next').toggleClass('disabled', !this.hasNext(pageIndex));			
 			
@@ -436,6 +442,32 @@ function createViewer(story, files) {
 		}
 	};
 }
+
+// ADD | REMOVE CLASS
+// mode ID - getELementByID
+// mode CLASS - getELementByClassName
+
+function addRemoveClass(mode, el, cls) {
+	
+	var el;
+
+	switch(mode) {
+		case 'class':
+		el = document.getElementsByClassName(el)[0];
+		break;
+
+		case 'id':
+		el = document.getElementById(el);
+		break;
+	}
+
+	if (el.classList.contains(cls)) {
+		el.classList.remove(cls)
+	} else {
+		el.classList.add(cls);
+	}
+}
+
 
 $(document).ready(function() {
 	viewer.initialize();

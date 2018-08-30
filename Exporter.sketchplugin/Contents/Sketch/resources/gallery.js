@@ -1,20 +1,7 @@
 function createGallery() {
     return {        
         loaded: false,
-        visible: false,
         initialize: function()   {
-        },
-        switch: function(){
-            if(!this.visible){
-                this.show();
-            }else{
-                this.hide();
-            }           
-        },
-        hide: function(){
-            $('#gallery').addClass('hidden');
-            this.visible = false
-            $('#nav-right-gallery').toggleClass('active', false);
         },
         show: function() {
             $('#gallery').removeClass('hidden');
@@ -22,11 +9,19 @@ function createGallery() {
                 this.loadPages();
                 this.loaded = true;
             }
-            this.visible = true;
-            $('#nav-right-gallery').toggleClass('active', true);
+        },
+        hide: function(){
+            $('#gallery').addClass('hidden');
+        },
+        toogle: function(){
+            if ( $('#gallery').hasClass('hidden')) {
+                gallery.show();
+            } else {
+                gallery.hide();
+            };
         },
         loadPages: function(){
-            var pageIndex=0;
+            var pageIndex=0
             story.pages.forEach(function(page){
                 this.loadOnePage(page,pageIndex++);
             },this);
@@ -57,7 +52,14 @@ function createGallery() {
                 alt: page.title,
 				src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),
             }).attr('width', width).attr('height', height);
-            img.appendTo(div);	
-        }        
+            img.appendTo(div);
+
+            var title = $('<span/>', {
+                id: "page-title",
+                alt: page.title,
+                text: page.title,
+            });
+            title.appendTo(div);
+        }
     }
 }
