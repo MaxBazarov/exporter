@@ -501,6 +501,9 @@ class Exporter {
   generateJSStoryBegin(){
     this.jsStory = 
     'var story = {\n'+
+    '"docName": "'+ Utils.toFilename(this.doc.cloudName())+'",\n'+
+    '"docPath": "P_P_P",\n'+
+    '"docVersion": "V_V_V",\n'+
     '"pages": [\n';
   }
 
