@@ -60,11 +60,13 @@ s += "                                    <svg><use xlink:href=\"#icPointer\"><\
 s += "                                    <span>Hot Spots<\/span>";
 s += "                                    <div class=\"tips\">⇧<\/div>";
 s += "                                <\/div>";
+/*
 s += "                                <div class=\"item disabled\" onclick=\"addRemoveClass('class','annotation','active'); addRemoveClass('class','menu','active');\">";
 s += "                                    <svg><use xlink:href=\"#icAnnotation\"><\/use><\/svg>";
 s += "                                    <span>Annotation<\/span>";
 s += "                                    <div class=\"tips\">⌘A<\/div>";
 s += "                                <\/div>";
+*/
 if(commentsURL!=''){
   s += "                                <div class=\"item\" onclick=\"comments.switch(); return false;\">";
   s += "                                    <svg><use xlink:href=\"#icAnnotation\"><\/use><\/svg>";
@@ -85,6 +87,7 @@ s += "                                    <span>Go To The Start<\/span>";
 s += "                                    <div class=\"tips\">S<\/div>";
 s += "                                <\/div>";
 s += "                            <\/div>";
+/*
 s += "                            <hr>";
 s += "                            <div class=\"groupe\">";
 s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active');\">";
@@ -92,6 +95,7 @@ s += "                                    <svg><use xlink:href=\"#icHeart\"><\/u
 s += "                                    <span>About<\/span>";
 s += "                                <\/div>";
 s += "                            <\/div>";
+*/
 s += "                <\/div>";
 s += "                <div id=\"btnMenu\" class=\"btnMenu\" onclick=\"addRemoveClass('class', 'menu', 'active')\">";
 s += "                    <svg><use xlink:href=\"#icMenu\"><\/use><\/svg>";

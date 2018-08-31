@@ -8,7 +8,7 @@ Features:
 - Single HTML file with links highlighting
 - Support for external links
 - Skips pages and artboards with * prefix 
-- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png) (NEW)(Experimental!)
+- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png) (NEW)
 
 Please send your feedback to max@bazarov.ru and subscribe to our Twitter account [@exporter.plugin](https://twitter.com/ExporterPlugin)
 
@@ -25,11 +25,11 @@ You can use Sketch-native links or add links to external sites. When you're fini
 By default it will show 2x images for high pixel density screens. To turn this off uncheck `Export retina images` in Settings and re-export the page.
 
 ## Future 
-* Support for annotations (IN PROGRESS)
+* Annotations (IN PROGRESS)
+* Commenting (IN PROGRESS)
 * Overlays
   * Show overlay near a mouse click position
   * Close overlays on a click outside overlay
-* Integration with some commmenting system
 * Links
   * Ability to open external links in new window
   * Tool to remove external links from selected objects
