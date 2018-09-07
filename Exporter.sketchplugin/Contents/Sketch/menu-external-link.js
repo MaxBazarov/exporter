@@ -11,7 +11,7 @@ var onRun = function(context) {
   // We need at least one symbol
   //--------------------------------------------------------------------
   if(selection.length!=1){
-    UI.alert("alert","Select a one layer.")
+    UI.alert("alert","Select only one layer.")
     return
   }
   var layer = selection.layers[0];
