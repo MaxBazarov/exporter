@@ -14,7 +14,7 @@ var onRun = function(context) {
   // We need the only one artboard
   if(selection.length!=1 || selection.layers[0].type!='Artboard'){
     const UI = require('sketch/ui')
-    UI.alert("Alert","Select some single artboard.")
+    UI.alert("Alert","Select a single artboard.")
     return
   }
   const artboard = selection.layers[0]
