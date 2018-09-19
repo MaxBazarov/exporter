@@ -10,22 +10,28 @@ var onRun = function(context) {
 
   // We need at least one symbol
   //--------------------------------------------------------------------
-  if(selection.length!=1){
-    UI.alert("alert","Select only one layer.")
+  if(selection.length==0){
+    UI.alert("alert","Select at least one layer.")
     return
   }
-  var layer = selection.layers[0];
+  var layers = selection.layers;
 
   // Get current settings for this layer (and reset to default if undefined)
   //--------------------------------------------------------------------
-  var link  = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK)
-  if(link == undefined || link == null || link==''){
-    link = "http://"
-  }
-  var openNewWindow = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)
-  // currently we
-  if(openNewWindow == undefined){
-    openNewWindow = true
+  var link = "http://"
+  var openNewWindow = true
+
+  if(layers.length==1){
+    var layer = layers[0]
+    // restore settings for a single layer selected
+    var savedLink  = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK)
+    if(savedLink != undefined && savedLink != null && savedLink!=''){
+      link = savedLink
+    }
+    var savedOpenNewWindow = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)
+    if(savedOpenNewWindow != undefined){
+      openNewWindow = savedOpenNewWindow
+    }
   }
 
   // Ask user for external URL
@@ -38,7 +44,9 @@ var onRun = function(context) {
 
   //Save new external URL
   //--------------------------------------------------------------------
-  Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK,link)
-  Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN,openNewWindow)
+  layers.forEach(function(layer){
+    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK,link)
+    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN,openNewWindow)
+  })
   
 }
