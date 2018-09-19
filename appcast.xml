@@ -5,6 +5,18 @@
         <link>https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml</link>
         <description>Generates a HTML clickable prototype</description>
         <language>en</language>
+         <item>
+            <title>Version 1.8.4</title>
+            <date>19 Sep 2018</date>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Fixed wrong handling of artboard name with double quote inside</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.8.4"/>
+        </item> 
         <item>
             <title>Version 1.8.3</title>
             <date>19 Sep 2018</date>
@@ -15,7 +27,7 @@
                    </ul>
                 ]]>
             </description>
-            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.8.3"/>
+           <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.8.3.zip" sparkle:version="1.8.3"/>
         </item> 
          <item>
             <title>Version 1.8.2</title>
@@ -27,7 +39,7 @@
                    </ul>
                 ]]>
             </description>
-             <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.8.2.zip" sparkle:version="1.8.2"/>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.8.2.zip" sparkle:version="1.8.2"/>
         </item> 
         <item>
             <title>Version 1.8.1</title>

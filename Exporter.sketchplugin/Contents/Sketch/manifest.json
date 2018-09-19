@@ -7,7 +7,7 @@
   "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "1.8.3",
+  "version" : "1.8.4",
   "icon": "icon.png",
   "commands" : [   
     {

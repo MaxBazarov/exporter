@@ -34,13 +34,16 @@ class Utils {
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
   }
 
+  static quoteString(str){
+    return str.split('"').join('\\"')
+  }
 
   static toFilename(name, dasherize = true) {
     if (dasherize == null) {
       dasherize = true;
     }
-    const dividerCharacter = dasherize ? "-" : "_";
-    return name.replace(/[/]/g, "").replace(/[\s_-]+/g, dividerCharacter).toLowerCase();
+    const dividerCharacter = dasherize ? "-" : "_"    
+    return name.replace(/[/]/g, "").replace(/[\s_-]+/g, dividerCharacter).toLowerCase()
   }
 
 

@@ -558,14 +558,14 @@ class Exporter {
     let js = index?',':'';
     js +=
       '{\n'+
-      '"image": "'+ Utils.toFilename(mainName+'.png',false)+'",\n'
+      '"image": "'+ Utils.quoteString(Utils.toFilename(mainName+'.png',false))+'",\n'
     if(this.retinaImages)
       js +=
-        '"image2x": "'+ Utils.toFilename(mainName+'@2x.png',false)+'",\n'
+        '"image2x": "'+ Utils.quoteString(Utils.toFilename(mainName+'@2x.png',false))+'",\n'
     js +=      
       '"width": '+mainArtboard.frame().width()+',\n'+
       '"height": '+mainArtboard.frame().height()+',\n'+
-      '"title": "'+mainName+'",\n';
+      '"title": "'+Utils.quoteString(mainName)+'",\n';
 
     if(annotations && annotations!=''){
       js += '"annotations": `'+annotations+'`,\n'
