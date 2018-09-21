@@ -7,7 +7,7 @@
   "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "1.8.4",
+  "version" : "1.9.1",
   "icon": "icon.png",
   "commands" : [   
     {
@@ -35,6 +35,12 @@
       "identifier" : "editAnnotations"      
     },
     {
+      "script" : "menu-export-html-adv.js",
+      "handler" : "onRun",
+      "name" : "✈️ Export selected to HTML",
+      "identifier" : "exportToHTMLAdv"
+    },
+    {
       "script" : "menu-export-html.js",
       "handler" : "onRun",
       "name" : "✈️ Export to HTML",
@@ -45,6 +51,7 @@
     "title": "✈️ Exporter",
     "items": [
       "exportToHTML",      
+      "exportToHTMLAdv",      
       "-",
       "externalLink",
       "confArtboard",

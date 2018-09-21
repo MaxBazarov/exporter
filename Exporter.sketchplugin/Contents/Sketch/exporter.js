@@ -2,7 +2,7 @@
 @import("lib/utils.js")
 @import("lib/resizing-constraint.js")
 @import("lib/resizing-type.js")
-@import("exporter-build-html.js")
+@import "exporter-build-html.js"
 
 
 
@@ -21,7 +21,7 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
 
 class Exporter {
 
-  constructor(selectedPath, doc, page, context) {    
+  constructor(selectedPath, doc, page, exportOptions,context) {    
     this.Settings = require('sketch/settings');
     this.Sketch = require('sketch/dom');
     this.Doc = this.Sketch.fromNative(doc);
@@ -32,6 +32,8 @@ class Exporter {
     this.prepareOutputFolder(selectedPath);
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
     this.jsStory = '';
+
+    this.exportOptions = exportOptions
 
     this.externalArtboardsURLs = [];
   }
@@ -679,17 +681,27 @@ class Exporter {
   getArtboardGroups(context) {
 
     const artboardGroups = [];
-    this.doc.pages().forEach(function(page){
-       // skip marked by '*'
-       log('name='+page.name())
-       if(page.name().indexOf("*")==0){
-        return
-      }
-      if (1==1 || !Utils.isSymbolsPage(page)) {
-        artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(page, context, false));
-      }
-    })
 
+    if(this.exportOptions==null){
+      this.doc.pages().forEach(function(page){
+        // skip marked by '*'
+        log('name='+page.name())
+        if(page.name().indexOf("*")==0){
+          return
+        }
+        artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(page, context, false));
+      })
+    }else if (this.exportOptions.mode==Constants.EXPORT_MODE_CURRENT_PAGE){      
+      artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(this.exportOptions.currentPage, context, false));
+    }else if (this.exportOptions.mode==Constants.EXPORT_MODE_SELECTED_ARTBOARDS){
+      const list = []
+      for (var i = 0; i < this.exportOptions.selectedArtboards.length; i++) {
+        list.push(this.exportOptions.selectedArtboards[i].sketchObject)        
+      }
+      artboardGroups.push.apply(artboardGroups,Utils.getArtboardGroups(list, context))  
+    }else{
+      log('ERROR: unknown export mode: '.this.exportOptions.mode)
+    }
 
     // try to find flowStartPoint and move it on top  
     for (var i = 0; i < artboardGroups.length; i++) {

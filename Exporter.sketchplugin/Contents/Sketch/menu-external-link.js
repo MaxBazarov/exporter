@@ -1,4 +1,4 @@
-@import("constants.js")
+@import "constants.js"
 
 var onRun = function(context) {
   const sketch = require('sketch')

@@ -10,6 +10,8 @@ var Constants = {
   POSITION_DEFAULT:0,
   POSITION_TOP:1,
   POSITION_CENTER:2,
+  EXPORT_MODE_SELECTED_ARTBOARDS:0,
+  EXPORT_MODE_CURRENT_PAGE:1,
 };
 
 
@@ -18,6 +20,7 @@ var SettingKeys = {
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   PLUGIN_COMMENTS_URL: "commentsURL",
+  PLUGIN_EXPORT_MODE: "exportMode",
   DOC_EXPORTING_URL: "docExportingURL",
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
