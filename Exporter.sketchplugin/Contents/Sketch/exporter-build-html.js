@@ -1,5 +1,5 @@
 
-function buildMainHTML(docName, centerContent,commentsURL) {
+function buildMainHTML(docName, centerContent,commentsURL,hideNav) {
   
   let s = "";
   s += '<!DOCTYPE html>\n<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n';
@@ -51,7 +51,7 @@ function buildMainHTML(docName, centerContent,commentsURL) {
     }
   s += '<div id="gallery" class="hidden" onclick="gallery.hide(); return false;"></div>\n';
 
-s += "        <div id=\"nav\" class=\"nav\">";
+s += "        <div id=\"nav\" class=\""+(hideNav?"hidden":"nav")+"\">";
 s += "            <div class=\"navLeft\">";
 s += "                <div id=\"menu\" class=\"menu\">";
 s += "                            <div class=\"groupe\">";

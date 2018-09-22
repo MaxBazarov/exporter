@@ -21,6 +21,7 @@ var SettingKeys = {
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   PLUGIN_COMMENTS_URL: "commentsURL",
   PLUGIN_EXPORT_MODE: "exportMode",
+  PLUGIN_HIDE_NAV: "hideNavigation",
   DOC_EXPORTING_URL: "docExportingURL",
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",

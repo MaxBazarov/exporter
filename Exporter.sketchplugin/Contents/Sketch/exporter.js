@@ -532,11 +532,12 @@ class Exporter {
 
     let position = this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION)
     const isPositionCenter = position === Constants.POSITION_CENTER
+    let hideNav = this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
     let commentsURL = this.Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
     if(commentsURL==undefined) commentsURL = ''
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL);
+    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     Utils.writeToFile(s, filePath);

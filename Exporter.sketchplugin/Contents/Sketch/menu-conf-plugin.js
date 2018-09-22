@@ -15,17 +15,19 @@ var onRun = function(context) {
 
   const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
+  const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
   if(commentsURL==undefined) commentsURL = ''
 
   //
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 220),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 270),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("Specify how artboard will be aligned in browser page")
 
   dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
+  dialog.addCheckbox("hidenav","Show navigation", !hideNav)
 
 
   dialog.addTextInput("comments","Comments URL (Experimental)", commentsURL)
@@ -36,7 +38,7 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.inputs['retina'].state() != 1) 
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.inputs['comments'].stringValue()+"")    
-    //log('new dontOpen:'+dialog.inputs['dontopen'].state())
+    Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.inputs['hidenav'].state() != 1) 
   }
   dialog.finish()
 
