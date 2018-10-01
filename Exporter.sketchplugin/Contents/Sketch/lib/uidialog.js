@@ -81,7 +81,7 @@ class UIDialog {
   addTextInput(id,label,textValue,inlineHint="", width=220){
     if(label!='') this.addLabel(label,17)    
 
-    const input = NSTextField.alloc().initWithFrame(this.getNewFrame(25,width))
+    const input = NSTextField.alloc().initWithFrame(this.getNewFrame(20,width))
     input.setEditable(true)
     input.setBordered(true)
     input.setStringValue(textValue)
@@ -97,9 +97,9 @@ class UIDialog {
 
 
   addComboBox(id,label,selectItem, options, width=100){
-    if(label!='') this.addLabel(label,17)
+    if(label!='') this.addLabel(label,15)
 
-    const v = NSPopUpButton.alloc().initWithFrame(this.getNewFrame(25,width));    
+    const v = NSPopUpButton.alloc().initWithFrame(this.getNewFrame(20,width));    
     v.addItemsWithTitles(options)
     v.selectItemAtIndex(selectItem)
 

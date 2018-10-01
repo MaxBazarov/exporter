@@ -535,9 +535,11 @@ class Exporter {
     let hideNav = this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
     let commentsURL = this.Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
     if(commentsURL==undefined) commentsURL = ''
+    let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
+    if(googleCode==undefined) googleCode = ''
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav);
+    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     Utils.writeToFile(s, filePath);

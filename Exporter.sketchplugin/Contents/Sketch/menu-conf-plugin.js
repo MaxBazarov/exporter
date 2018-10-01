@@ -18,9 +18,12 @@ var onRun = function(context) {
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
   if(commentsURL==undefined) commentsURL = ''
+  let googleCode = Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
+  if(googleCode==undefined) googleCode = ''
+  
 
   //
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 270),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 320),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("Specify how artboard will be aligned in browser page")
@@ -29,6 +32,7 @@ var onRun = function(context) {
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
 
+  dialog.addTextInput("googleCode","Google Code", googleCode,'e.g. UA-XXXXXXXX-X')  
 
   dialog.addTextInput("comments","Comments URL (Experimental)", commentsURL)
   //
@@ -38,6 +42,7 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.inputs['retina'].state() != 1) 
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.inputs['comments'].stringValue()+"")    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.inputs['googleCode'].stringValue()+"")    
     Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.inputs['hidenav'].state() != 1) 
   }
   dialog.finish()

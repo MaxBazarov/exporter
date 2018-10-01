@@ -20,6 +20,7 @@ var SettingKeys = {
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   PLUGIN_COMMENTS_URL: "commentsURL",
+  PLUGIN_GOOGLE_CODE: "googleCode",
   PLUGIN_EXPORT_MODE: "exportMode",
   PLUGIN_HIDE_NAV: "hideNavigation",
   DOC_EXPORTING_URL: "docExportingURL",
@@ -27,6 +28,5 @@ var SettingKeys = {
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
   LAYER_ANNOTATIONS: "layerAnnotations",   
   LAYER_EXTERNAL_LINK: "externalLink",  
-  LAYER_EXTERNAL_LINK_BLANKWIN: "openLinkInNewWindow",
-  DOCUMENT_EXPORTING_URL: "docExportingURL",
+  LAYER_EXTERNAL_LINK_BLANKWIN: "openLinkInNewWindow"
 };
