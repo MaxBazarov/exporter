@@ -197,8 +197,9 @@ function createViewer(story, files) {
 
 		refresh_update_navbar: function(pageIndex) {
 			var page = story.pages[pageIndex];
+			var VERSION_INJECT="";
 			
-			$('#nav .title').html((pageIndex+1) + '/' + story.pages.length + ' - ' + page.title);
+			$('#nav .title').html((pageIndex+1) + '/' + story.pages.length + ' - ' + page.title + VERSION_INJECT);
 			$('#nav-left-prev').toggleClass('disabled', !this.hasPrevious(pageIndex));
 			$('#nav-left-next').toggleClass('disabled', !this.hasNext(pageIndex));			
 			

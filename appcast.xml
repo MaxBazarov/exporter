@@ -4,8 +4,20 @@
         <title>Exporter</title>
         <link>https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml</link>
         <description>Generates a HTML clickable prototype</description>
-         <language>en</language>
-         <item>
+        <language>en</language>
+        <item>
+            <title>Version 1.9.3</title>
+            <date>1 Oct 2018</date>
+            <description>
+                <![CDATA[
+                   <ul>
+                    <li>Corrected placeholder for version injection</li>
+                   </ul>
+                ]]>
+            </description>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.9.3"/>
+        </item> 
+        <item>
             <title>Version 1.9.2</title>
             <date>23 Sep 2018</date>
             <description>
@@ -15,7 +27,7 @@
                    </ul>
                 ]]>
             </description>
-            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="1.9.2"/>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/achives/Exporter.sketchplugin.1.9.2.zip" sparkle:version="1.9.2"/>
         </item> 
          <item>
             <title>Version 1.9.1</title>
