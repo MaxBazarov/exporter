@@ -12,7 +12,7 @@ Features:
 - Ability to hide navigation controls
 - Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
 
-Please send your feedback to max@bazarov.ru and subscribe to our Twitter account [@exporter.plugin](https://twitter.com/ExporterPlugin)
+Please send your feedback and requests to max@bazarov.ru
 
 ## Installation
 
