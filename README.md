@@ -7,7 +7,7 @@ Features:
 - Show artboard as an overlay over a previous artboard  /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Link-ModalArtboard.png), [Example](https://github.com/MaxBazarov/exporter/raw/master/tests/Link-ModalArtboard.sketch)
 - Support for Sketch-native links (including Back links, cross-page links, links inside Symbols and overrided hotspot links)
 - Single HTML file with links highlighting
-- Support for external links
+- Support for external links / [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint2)
 - Ability to insert Google counter
 - Ability to hide navigation controls
 - Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
