@@ -18,7 +18,7 @@ The following command uses "sed" tool.
 
 Sometimes you need to set an external URL for hotspot target. You can't use "Set External Link for layer" command in this case because it's not possible to select some of symbol childs. 
 
-But you can follow another way. 
+But you can follow the another way. 
 - Create small empty artboard
 - Use "Set External Link for layer" command for this artboard
 - Select this artobard as a overrided target for your hotsport 
