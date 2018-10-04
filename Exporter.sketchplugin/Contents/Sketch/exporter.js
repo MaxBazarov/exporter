@@ -31,7 +31,7 @@ class Exporter {
 
 
     // workaround for Sketch 52
-    this.docName = selectedPath + "/" + this.context.document.cloudName();  
+    this.docName = this._clearCloudName(this.context.document.cloudName())
     let posSketch =  this.docName.indexOf(".sketch")
     if(posSketch>0){
       this.docName = this.docName.slice(0,posSketch)
@@ -49,6 +49,16 @@ class Exporter {
   log(msg){
     if(!Constants.LOGGING) return
     log(msg)
+  }
+
+  _clearCloudName(cloudName)
+  {
+    let name = cloudName
+    let posSketch =  name.indexOf(".sketch")
+    if(posSketch>0){
+      name = name.slice(0,posSketch)
+    }
+    return name
   }
 
 
