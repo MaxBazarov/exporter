@@ -25,10 +25,18 @@ class Exporter {
     this.Settings = require('sketch/settings');
     this.Sketch = require('sketch/dom');
     this.Doc = this.Sketch.fromNative(doc);
-
     this.doc = doc;
     this.page = page;
     this.context = context;
+
+
+    // workaround for Sketch 52
+    this.docName = selectedPath + "/" + this.context.document.cloudName();  
+    let posSketch =  this.docName.indexOf(".sketch")
+    if(posSketch>0){
+      this.docName = this.docName.slice(0,posSketch)
+    }
+
     this.prepareOutputFolder(selectedPath);
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
     this.jsStory = '';
@@ -503,7 +511,7 @@ class Exporter {
   generateJSStoryBegin(){
     this.jsStory = 
     'var story = {\n'+
-    '"docName": "'+ Utils.toFilename(this.doc.cloudName())+'",\n'+
+    '"docName": "'+ Utils.toFilename(this.docName)+'",\n'+
     '"docPath": "P_P_P",\n'+
     '"docVersion": "V_V_V",\n'+
     '"pages": [\n';
@@ -519,7 +527,7 @@ class Exporter {
     this.jsStory += 
      '   ]\n,'+
      '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
-     '"title": "'+this.context.document.cloudName()+'",\n'+
+     '"title": "'+this.docName+'",\n'+
      '"highlightLinks": false\n'+
     '}\n';
 
@@ -528,7 +536,7 @@ class Exporter {
   }
 
   createMainHTML(){
-    const docName = this.context.document.cloudName()
+    const docName = this.docName
 
     let position = this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION)
     const isPositionCenter = position === Constants.POSITION_CENTER
@@ -763,7 +771,9 @@ class Exporter {
     let error;
     const fileManager = NSFileManager.defaultManager();
 
-    this._outputPath = selectedPath + "/" + this.context.document.cloudName();    
+    this._outputPath = selectedPath + "/" + this.docName
+  
+
     if (fileManager.fileExistsAtPath(this._outputPath)) {
       error = MOPointer.alloc().init();
       if(!fileManager.removeItemAtPath_error(this._outputPath,error)){

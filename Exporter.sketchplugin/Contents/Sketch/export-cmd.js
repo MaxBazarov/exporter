@@ -33,7 +33,7 @@ function exportCmd(context,exportOptions=null) {
   // open HTML in browser
   const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
   if(!dontOpenBrowser){
-    const openPath = newPath+"/"+doc.cloudName()+"/"  
+    const openPath = newPath+"/"+exporter.docName+"/"  
     const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
     
     if(openResult.result){
