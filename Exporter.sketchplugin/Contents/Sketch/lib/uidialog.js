@@ -44,6 +44,7 @@ class UIDialog {
     label.setSelectable(false);
     
     this.container.addSubview(label)
+    this.y+=5
     return label
   }
 
@@ -109,7 +110,7 @@ class UIDialog {
   } 
 
   addHint(label,height = 30){
-    this.y += 7
+    this.y += 3
 
     const hint = NSTextField.alloc().initWithFrame(this.getNewFrame(height));
     hint.setStringValue(label);

@@ -47,7 +47,7 @@
       "identifier" : "exportToHTML"
     },
     {
-      "script" : "menu_cmd_publish.js",
+      "script" : "menu-cmd-publish.js",
       "handler" : "onRun",
       "name" : "📡 Publish HTML",
       "identifier" : "publish"

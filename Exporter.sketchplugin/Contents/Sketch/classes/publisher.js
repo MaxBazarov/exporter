@@ -1,6 +1,6 @@
-@import("../constants.js")
-@import("../lib/utils.js")
-@import("../lib/uidialog.js")
+@import("constants.js")
+@import("lib/utils.js")
+@import("lib/uidialog.js")
 
 class Publisher {
 	constructor(context,doc) {    
