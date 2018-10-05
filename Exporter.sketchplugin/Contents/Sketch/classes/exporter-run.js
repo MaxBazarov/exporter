@@ -1,9 +1,9 @@
 @import "constants.js"
-@import "exporter.js"
+@import "classes/exporter.js"
 @import "lib/utils.js"
 
 
-function exportCmd(context,exportOptions=null) {  
+function runExporter(context,exportOptions=null) {  
 
   const Dom = require('sketch/dom')
   const doc = context.document

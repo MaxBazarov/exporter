@@ -1,7 +1,7 @@
-@import "export-cmd.js"
-
+@import "classes/exporter-run.js"
 
 var onRun = function(context) {  
-  return exportCmd(context)  
+  return runExporter(context)  
 };
+
 

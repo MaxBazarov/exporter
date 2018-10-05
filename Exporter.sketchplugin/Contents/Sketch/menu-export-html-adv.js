@@ -1,6 +1,6 @@
 @import "lib/utils.js"
 @import "lib/uidialog.js"
-@import "export-cmd.js"
+@import "classes/exporter-run.js"
 @import "constants.js"
 
 
@@ -69,6 +69,6 @@ var onRun = function(context) {
   }else{
     return
   }  
-  exportCmd(context,modeOptions) 
+  runExporter(context,modeOptions) 
 };
 
