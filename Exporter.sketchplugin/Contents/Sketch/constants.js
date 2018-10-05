@@ -14,6 +14,12 @@ var Constants = {
   EXPORT_MODE_CURRENT_PAGE:1,
 };
 
+var PublishKeys = {
+  SHOW_OUTPUT: false,
+  TMP_FILE: "publish.sh",
+  RESOURCES_FOLDER: "scripts",
+
+}
 
 var SettingKeys = {
   PLUGIN_POSITION: "positon",
@@ -22,10 +28,17 @@ var SettingKeys = {
   PLUGIN_COMMENTS_URL: "commentsURL",
   PLUGIN_GOOGLE_CODE: "googleCode",
   PLUGIN_EXPORT_MODE: "exportMode",
-  PLUGIN_HIDE_NAV: "hideNavigation",
-  DOC_EXPORTING_URL: "docExportingURL",
+  PLUGIN_HIDE_NAV: "hideNavigation",     
+  PLUGIN_PUBLISH_LOGIN: "publishLogin",
+  PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
+
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
+  
+  DOC_EXPORTING_URL: "docExportingURL",
+  DOC_PUBLISH_VERSION: "mockupsVersion",
+  DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
+
   LAYER_ANNOTATIONS: "layerAnnotations",   
   LAYER_EXTERNAL_LINK: "externalLink",  
   LAYER_EXTERNAL_LINK_BLANKWIN: "openLinkInNewWindow"
