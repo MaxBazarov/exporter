@@ -11,7 +11,7 @@ Features:
 - Ability to insert Google counter
 - Ability to hide navigation controls
 - Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
-- Publishing on external site by SFTP
+- Publishing on external site by SFTP **New in 2.0.0**
 
 Please send your feedback and requests to max@bazarov.ru
 
