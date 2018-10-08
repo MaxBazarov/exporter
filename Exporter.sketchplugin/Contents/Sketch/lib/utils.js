@@ -30,6 +30,18 @@ class Utils {
     return objcStr.writeToFile_atomically_encoding_error(filePath, true, NSUTF8StringEncoding, null);
   }
 
+  static deleteFile(filePath){
+    const fileManager = NSFileManager.defaultManager();
+
+    let error = MOPointer.alloc().init();
+    if (fileManager.fileExistsAtPath(filePath)) {
+      if (!fileManager.removeItemAtPath_error(filePath, error)) {
+        log(error.value().localizedDescription());
+      }
+    }
+  }
+ 
+
   static copyRect(rect){
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
   }
