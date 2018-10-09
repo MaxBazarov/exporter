@@ -46,18 +46,19 @@ class Publisher {
 		let commentsID = destFolder
 		commentsID = Utils.toFilename(commentsID)
 		const runResult = this.runScript(version,this.allMockupsdDir,docFolder,destFolder,commentsID)
-
-		// open browser
-		if(this.siteRoot!=''){
-			const openURL = this.siteRoot + destFolder + "/"+version+"/index.html"
-			const openResult = Utils.runCommand('/usr/bin/open', [openURL])
-			
-			if(openResult.result){
-			}else{
-			  UI.alert('Can not open HTML in browser', openResult.output)
+		
+		if(runResult.result){
+			// open browser
+			if(this.siteRoot!=''){
+				const openURL = this.siteRoot + destFolder + "/"+version+"/index.html"
+				const openResult = Utils.runCommand('/usr/bin/open', [openURL])
+				
+				if(openResult.result){
+				}else{
+				UI.alert('Can not open HTML in browser', openResult.output)
+				}
 			}
-		  }
-
+		}
 
 		// success
 		this.showMessage(runResult)		

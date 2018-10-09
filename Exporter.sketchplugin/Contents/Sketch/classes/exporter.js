@@ -126,11 +126,12 @@ class Exporter {
         
         let nextParent = parentLayer
         while(nextParent.parentForInsertingLayers().class()=='MSLayerGroup'){
-          nextParent = parentLayer.parentForInsertingLayers()        
+          nextParent = parentLayer.parentForInsertingLayers()
+          if(nextParent.id== parentLayer.id) break; // stop infinity cycle
           if(nextParent.class()!='MSLayerGroup') break;
 
           let nextParentFrame = nextParent.frame()                  
-          //this.log(cident+"getAbsoluteRect() B parentFrame.y()="+parentFrame.y()+" parentLayer.name="+parentLayer.name())
+          this.log(cident+"getAbsoluteRect() B parentFrame.y()="+parentFrame.y()+" parentLayer.name="+parentLayer.name())
           parentAbsoluteRect.origin.y += nextParentFrame.y()
           parentAbsoluteRect.origin.x += nextParentFrame.x()
         }
