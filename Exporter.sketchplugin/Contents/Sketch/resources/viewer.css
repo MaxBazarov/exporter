@@ -110,7 +110,7 @@ a, a:focus {
 /*NAVIGATION*/
 
 body {
-	background: #F6F6F6;
+	background: rgba(100,100,100,255);
 	font-size: 14px;
 	line-height: 20px;
 	color: #404B58;
