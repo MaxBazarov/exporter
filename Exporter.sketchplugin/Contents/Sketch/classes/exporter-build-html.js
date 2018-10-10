@@ -5,8 +5,8 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode) {
   s += '<!DOCTYPE html>\n<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n';
   s += '<meta name="generator" content="Generated using Exporter Skerch Plugin - https://github.com/MaxBazarov/exporter">\n';
   s += '<title>'+docName+'</title>\n';
-  s += '<link rel="shortcut icon" href="https://sketch.cloud/favicon@2x.png?v=4">\n';
-  s += '<link rel="mask-icon" href="https://sketch.cloud/favicon.svg?v=4" color="rgb(252, 177, 0)">\n';
+  s += '<link rel="shortcut icon"  type="image/png" href="resources/icon.png">\n';
+  // s += '<link rel="mask-icon" href="https://sketch.cloud/favicon.svg?v=4" color="rgb(252, 177, 0)">\n';
   s += '<link rel="stylesheet" type="text/css" href="resources/viewer.css">\n';
   if(centerContent){
     s += '<link rel="stylesheet" type="text/css" href="resources/viewer-center.css">\n';
