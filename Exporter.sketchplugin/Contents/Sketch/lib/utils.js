@@ -1,6 +1,8 @@
 @import "constants.js";
+const Rectangle = require('sketch/dom').Rectangle
 
 class Utils {
+ 
 
   static askSavePath(currentPath=null) {
     let panel = NSOpenPanel.openPanel()
@@ -42,8 +44,22 @@ class Utils {
   }
  
 
+  
   static copyRect(rect){
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
+  }
+
+  // rect: GRect instnct
+  static copyRectangle(rect){
+    return new Rectangle(rect.x(),rect.y(),rect.width(),rect.height())
+  }
+
+  // rect: Rectangle instance
+  static transformRect(rect,cw,ch){
+    rect.x = rect.x * cw
+    rect.y = rect.y * ch
+    rect.width = rect.width * cw
+    rect.width = rect.height * ch
   }
 
   static quoteString(str){
