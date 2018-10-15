@@ -3,6 +3,7 @@
 @import("lib/resizing-constraint.js")
 @import("lib/resizing-type.js")
 @import("classes/exporter-build-html.js")
+@import("classes/mylayer.js")
 
 Sketch = require('sketch/dom')
 
@@ -17,60 +18,6 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
   });
 
   return Utils.getArtboardGroups(artboards, context);  
-}
-
-class MyLayer {
-  constructor(layer,myParent) {
-    this.layer = layer
-    this.name = layer.name() + ""
-    this.parent = myParent
-   
-    this.frame = Utils.copyRectangle(layer.frame())
-    this.cw = myParent?myParent.cw:1.0
-    this.ch = myParent?myParent.cw:1.0    
-
-    this.absoluteFrame  = Utils.copyRectangle(layer.frame())
-    if(myParent == undefined){
-      this.absoluteFrame.x = 0
-      this.absoluteFrame.y = 0
-    }
-    //log( this.name + " /x="+ this.absoluteFrame.x + " /y="+this.absoluteFrame.y +" /cw="+ this.cw + " /ch="+this.ch)
-    if(this.cw!=1.0 || this.ch!=1.0){
-      this.absoluteFrame.x = myParent.absoluteFrame.x + (this.absoluteFrame.x * this.cw)
-      this.absoluteFrame.y = myParent.absoluteFrame.y + (this.absoluteFrame.y * this.ch)
-      this.absoluteFrame.width =  this.absoluteFrame.width * this.cw
-      this.absoluteFrame.height =  this.absoluteFrame.height * this.ch
-    }else if (myParent){          
-      this.absoluteFrame.x = myParent.absoluteFrame.x + this.absoluteFrame.x
-      this.absoluteFrame.y = myParent.absoluteFrame.y + this.absoluteFrame.y
-    }
-  
-    // define type    
-    this.isArtboard = false
-    this.isGroup = false
-    this.isSymbolInstance = false
-
-    if(layer.isKindOfClass(MSLayerGroup)) this.isGroup = true
-    if(layer.isKindOfClass(MSSymbolInstance)) this.isSymbolInstance = true
-    if(layer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
-
-    this.childs = []
-
-    if(this.isSymbolInstance){      
-      this.calcSymbolInstanceConstrains(layer.symbolMaster())   
-    }
-
-    //log( this.name + " /x="+ this.absoluteFrame.x + " /y="+this.absoluteFrame.y +" /cw="+ this.cw + " /ch="+this.ch)
-  }
-
-
-  calcSymbolInstanceConstrains(masterLayer){
-    this.cframe = Utils.copyRectangle(masterLayer.frame()) 
-    this.cw = this.frame.width / this.cframe.width * this.cw
-    this.ch = this.frame.width / this.cframe.width * this.ch
-    
-  }
-
 }
 
 class Exporter {
@@ -667,7 +614,15 @@ class Exporter {
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
     this.artboardsDictName = this.getArtboardsDictName();
-    this.collectArtboardGroups()
+    
+    {
+      const layerCollector  = new MyLayerCollector()
+      this.myLayers = layerCollector.collectArtboardsLayers(this)
+    }    
+    {
+      const layerResizer  = new MyLayerResizer()
+      layerResizer.resizeLayers(this)
+    }    
 
     //var UI = require('sketch/ui')
     //UI.alert('Output', JSON.stringify(this.myLayers))
