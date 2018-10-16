@@ -50,8 +50,13 @@ class Utils {
   }
 
   // rect: GRect instnct
-  static copyRectangle(rect){
+  static copyRectToRectangle(rect){
     return new Rectangle(rect.x(),rect.y(),rect.width(),rect.height())
+  }
+
+  // rect: GRect instnct
+  static copyRectangle(rectangle){
+    return new Rectangle(rectangle.x,rectangle.y,rectangle.width,rectangle.height)
   }
 
   // rect: Rectangle instance

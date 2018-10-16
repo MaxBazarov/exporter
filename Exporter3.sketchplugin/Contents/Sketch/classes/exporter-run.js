@@ -9,7 +9,7 @@ function runExporter(context,exportOptions=null) {
   const doc = context.document
   const Doc = Dom.fromNative(doc)
   const Settings = require('sketch/settings') 
-  var UI = require('sketch/ui')
+  let UI = require('sketch/ui')
     
   // check is something to export
   /*if (exportOptions==null && doc.currentPage().artboards().count() === 0) {

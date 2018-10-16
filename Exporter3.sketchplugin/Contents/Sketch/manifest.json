@@ -3,11 +3,10 @@
   "description": "Generates a HTML clickable prototype",
   "author" : "Maxim Bazarov and Alexey Kalenyuk",
   "homepage": "https://github.com/MaxBazarov/exporter",  
-  "identifier" : "com.cloudblue.sketch.exporter",
-  "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
+  "identifier" : "com.cloudblue.sketch.exporter3",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "2.0.1-refactoring",
+  "version" : "3.0.0-alpha",
   "icon": "icon.png",
   "commands" : [   
     {
@@ -54,7 +53,7 @@
     }
   ],
   "menu": {
-    "title": "✈️ Exporter",
+    "title": "✈️ Exporter 3(Alpha)",
     "items": [
       "exportToHTML",      
       "exportToHTMLAdv",      
