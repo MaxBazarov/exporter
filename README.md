@@ -15,6 +15,12 @@ Features:
 
 Please send your feedback and requests to max@bazarov.ru
 
+<p>
+  <img width="423" height="398" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true">
+</p>
+
+
+
 ## Installation
 
 To install, [download the zip file](https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip) and double-click on `Exporter.sketchplugin`. The commands will show up under `Plugins > Exporter`. 
@@ -38,3 +44,4 @@ By default it will show 2x images for high pixel density screens. To turn this o
   * Tool to remove external links from selected objects
   * Higlight external links inside Sketch
 * Show plugin toolbar inside Sketch (crazy thing)
+
