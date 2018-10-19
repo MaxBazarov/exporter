@@ -43,6 +43,9 @@ class Utils {
     }
   }
  
+  static cloneDict(dict){
+    return Object.assign({}, dict);
+  }
 
   
   static copyRect(rect){

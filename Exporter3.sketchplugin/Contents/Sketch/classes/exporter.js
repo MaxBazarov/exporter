@@ -49,6 +49,11 @@ class Exporter {
     this.exportOptions = exportOptions
 
     this.externalArtboardsURLs = [];
+
+    this.externalLinks = this.Settings.documentSettingForKey(this.Doc,SettingKeys.DOC_EXTERNAL_LINKS)
+    if(this.externalLinks==undefined || this.externalLinks==null){
+      this.externalLinks = {}
+    }
   }
 
   
@@ -88,6 +93,10 @@ class Exporter {
   log(msg){
     if(!Constants.LOGGING) return
     log(msg)
+  }
+
+  logError(error){
+    log("[ ERROR ] "+error)
   }
 
   _clearCloudName(cloudName)
@@ -360,15 +369,43 @@ class Exporter {
 
 
 
+  buildArtboardDict() {
+    var dict = []
+    
+    for(var ab of this.myLayers){
+      dict[ab.objectID] = ab
+    }  
+
+    this.artboadDict = dict
+      
+  }
+
+  buildSymbolDict() {
+    var symDict = []
+
+    for(var symbol of this.Doc.getSymbols()){
+      const sid = symbol.symbolId
+      const skSymbol = symbol.sketchObject      
+      if( sid in symDict) continue
+      symDict[ sid ] = skSymbol      
+    }
+
+    this.symDict = symDict
+      
+  }
+
+
   exportArtboards() {        
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
     this.artboardsDictName = this.getArtboardsDictName();
     
+    this.buildSymbolDict()
     {
       const layerCollector  = new MyLayerCollector()
       layerCollector.collectArtboardsLayers(this)
     }    
+    this.buildArtboardDict()
     {
       const layerResizer  = new MyLayerResizer()
       layerResizer.resizeLayers(this)
