@@ -1,6 +1,6 @@
 @import("constants.js")
 @import("lib/utils.js")
-@import("mylayer.js")
+
 
 var ResizingConstraint = {
     NONE: 0,
@@ -10,18 +10,14 @@ var ResizingConstraint = {
     BOTTOM: 1 << 3,
     HEIGHT: 1 << 4,
     TOP: 1 << 5
-  };
-  
+}
 
 var ResizingType = {
     STRETCH: 0,
     PIN_TO_CORNER: 1,
     RESIZE_OBJECT: 2,
     FLOAT_IN_PLACE: 3
-};
-
-
-Sketch = require('sketch/dom')
+}
 
 
 class MyLayerResizer {

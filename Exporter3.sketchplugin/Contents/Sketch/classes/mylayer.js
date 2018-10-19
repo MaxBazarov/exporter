@@ -1,7 +1,6 @@
 @import("constants.js")
 @import("lib/utils.js")
-@import("lib/resizing-constraint.js")
-@import("lib/resizing-type.js")
+
 
 Sketch = require('sketch/dom')
 

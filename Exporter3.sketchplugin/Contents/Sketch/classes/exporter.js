@@ -1,12 +1,9 @@
 @import("constants.js")
 @import("lib/utils.js")
-@import("lib/resizing-constraint.js")
-@import("lib/resizing-type.js")
 @import("classes/exporter-build-html.js")
 @import("classes/mylayer.js")
 @import("classes/mylayer-resizer.js")
 
-Sketch = require('sketch/dom')
 
 var getArtboardGroupsInPage = function(page, context, includeNone = true) {
   const artboardsSrc = page.artboards();
@@ -23,8 +20,7 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
 
 class Exporter {
 
-  constructor(selectedPath, doc, page, exportOptions,context) {    
-   
+  constructor(selectedPath, doc, page, exportOptions,context) {       
     this.Settings = require('sketch/settings');
     this.Sketch = require('sketch/dom');
     this.Doc = this.Sketch.fromNative(doc);
@@ -396,6 +392,7 @@ class Exporter {
 
 
   exportArtboards() {        
+    
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
     this.artboardsDictName = this.getArtboardsDictName();
