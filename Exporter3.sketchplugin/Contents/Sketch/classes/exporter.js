@@ -95,6 +95,12 @@ class Exporter {
     log("[ ERROR ] "+error)
   }
 
+  stopWithError(error){
+    const UI = require('sketch/ui')
+    UI.alert('Error', error)
+    exit = true
+  }
+
   _clearCloudName(cloudName)
   {
     let name = cloudName
@@ -320,7 +326,9 @@ class Exporter {
         if(page.name().indexOf("*")==0){
           return
         }
-        artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(page, context, false));
+        const artBoards = getArtboardGroupsInPage(page, context, false)
+        if(!artBoards.length) return
+        artboardGroups.push.apply(artboardGroups,artBoards);
       })
     }else if (this.exportOptions.mode==Constants.EXPORT_MODE_CURRENT_PAGE){      
       artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(this.exportOptions.currentPage, context, false));
@@ -395,7 +403,7 @@ class Exporter {
     
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
-    this.artboardsDictName = this.getArtboardsDictName();
+    this.artboardsDictName = this.getArtboardsDictName();    
     
     this.buildSymbolDict()
     {

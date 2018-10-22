@@ -71,17 +71,17 @@ class MyLayerResizer {
     }
 
 
-    _resizeLayers(layers,topOffset=undefined,prefix=""){
+    _resizeLayers(layers,topOffset=undefined,prefix="",lostOverrides=[]){
         layers.forEach(function (layer) {
             if(layer.parent == undefined){
                 // process top layer (artboard)            
                 this.currentArtboard = layer
             }
-            this._resizeLayer(layer,topOffset,prefix+" ")
+            this._resizeLayer(layer,topOffset,prefix+" ",lostOverrides)
         }, this);
     }
 
-    _resizeLayer(l,topOffset,prefix){        
+    _resizeLayer(l,topOffset,prefix,lostOverrides){        
         const layer = l.nlayer
         const master = l.symbolMaster
         const parent = l.parent
@@ -111,7 +111,6 @@ class MyLayerResizer {
            
             this.e.log(prefix+" _resizeLayer() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name)      
         }          
-  
         
         // --------------- CONSTRAINT --------------
         if (layer.resizingConstraint != undefined) {   
@@ -130,24 +129,24 @@ class MyLayerResizer {
         //e.log(prefix+"- frame="+l.frame+ " topOffset: "+topOffset + " absoluteRect="+layer.absoluteRect() )
   
         ///
-        this._resizeLayers(l.childs,topOffset,prefix)
+        this._resizeLayers(l.childs,topOffset,prefix,lostOverrides)
 
         this.overrides=[]
     }
 
-    _processLayerLinks(l,prefix){
+    _processLayerLinks(l,prefix,lostOverrides){
         
         const layer = l.nlayer
         const hotspots = []
 
         let finalHotspot = {
-            r: Utils.copyRectangle(l.frame),
+            r: l.frame.copy(),
             l: l,
             linkType: 'undefined'
         }
 
         if(l.isSymbolInstance){
-            this._processLayeryOverrides(l,prefix + " ")
+            this._processLayerOverrides(l,prefix + " ")
         }
 
         while(true){               
@@ -244,7 +243,7 @@ class MyLayerResizer {
 
 
     // Process all Symbol Instance overrides to find overrided links
-    _processLayeryOverrides(l,prefix){
+    _processLayerOverrides(l,prefix,lostOverrides){
         const slayer = this.e.Sketch.fromNative(l.nlayer)
         if( !slayer.overrides ) return
 
@@ -260,6 +259,7 @@ class MyLayerResizer {
                 // found nested symbols
                 const splitedPath = sourceID.split("/")
                  // find override owner
+                 this.e.log(prefix+"find override owner path="+sourceID)            
                 srcLayer = this._findChildInPath(prefix+" ",l,splitedPath,0)                
             }else{       
                 srcLayer = this._findChildByID(l,sourceID)
@@ -311,12 +311,12 @@ class MyLayerResizer {
         const lastIndex = path.length-1        
 
         for(var layer of l.childs){
-            //this.e.log(prefix+"scan layer.id="+layer.objectID+"  seekID="+seekId)            
+            this.e.log(prefix+"scan layer.id="+layer.objectID+"  seekID="+seekId)            
             if(layer.objectID==seekId || layer.originalID==seekId){
-                //this.e.log(prefix+"found!")            
+                this.e.log(prefix+"found!")            
                 if(index==lastIndex){
                     foundLayer = layer
-                    //this.e.log(prefix+"found last")
+                    this.e.log(prefix+"found last")
                     return foundLayer
                 }
                 foundLayer = this._findChildInPath(prefix+" ",layer,path,index+1)
@@ -350,6 +350,7 @@ class MyLayerResizer {
         const parent = l.parent
         let parentAbsoluteFrame = parent.frame
         let parentOrgFrame = parent.orgFrame
+        const orgFrame = l.orgFrame
 
         /*
         if(parent.isSymbolInstance){
@@ -360,7 +361,7 @@ class MyLayerResizer {
         
         // CHECK DO WE NEED TO CALCULATE CONSTRAINS
         if (parentAbsoluteFrame.width==parentOrgFrame.width && parentAbsoluteFrame.height==parentOrgFrame.height) return
-        let newFrame = Utils.copyRectangle(l.frame)
+        let newFrame = l.frame.copy()
     
         this.e.log(prefix+" getAbsoluteRect() 0 parent name:"+parent.name+" parentOrgFrame= "+parentOrgFrame+" parentAbsoluteFrame="+parentAbsoluteFrame )
         this.e.log(prefix+" getAbsoluteRect() 0 frame:"+l.frame + " orgFrame:"+l.orgFrame )
@@ -374,30 +375,30 @@ class MyLayerResizer {
         if ((resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT) {
             if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
                 this.e.log(prefix+" getAbsoluteRect() 2 "+newFrame.y);
-                const rightDistance = parentOrgFrame.width - frame.x - frame.width
-                const width = parentAbsoluteFrame.width - frame.x - rightDistance
+                const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width
+                const width = parentAbsoluteFrame.width - orgFrame.x - rightDistance
                 newFrame.width = width < 1 ? 1 : width;
             } else if ((resizingConstraint & ResizingConstraint.WIDTH) !== ResizingConstraint.WIDTH) {
                 this.e.log(prefix+" getAbsoluteRect() 3");
-                newFrame.width = (frame.width / (parentOrgFrame.width - frame.x)) * (parentAbsoluteFrame.width - frame.x);
+                newFrame.width = (frame.width / (parentOrgFrame.width - orgFrame.x)) * (parentAbsoluteFrame.width - orgFrame.x);
             }
         } else if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
             if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
                 this.e.log(prefix+" getAbsoluteRect() 4");
                 newFrame.x = (parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - frame.width);
             } else {
-                const rightDistance = parentOrgFrame.width - frame.x - frame.width;
+                const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width;
                 newFrame.width = (frame.width / (parentOrgFrame.width - rightDistance)) * (parentAbsoluteFrame.width - rightDistance);
-                newFrame.x = (parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - newFrame.width);
-                this.e.log(prefix+" getAbsoluteRect() 5");
+                newFrame.x = parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - newFrame.width
+                this.e.log(prefix+" getAbsoluteRect() 5 rightDistance="+rightDistance);
             }
         } else {
             if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
-                newFrame.x = ((((frame.x + frame.width / 2.0) / parentOrgFrame.width) * parentAbsoluteFrame.width) - (frame.width / 2.0));
+                newFrame.x = parentAbsoluteFrame.x + ((((orgFrame.x + frame.width / 2.0) / parentOrgFrame.width) * parentAbsoluteFrame.width) - (orgFrame.width / 2.0));
                 this.e.log(prefix+" getAbsoluteRect() 6");
             } else {
                 const inc = parentOrgFrame.width / parentAbsoluteFrame.width
-                newFrame.x = frame.x + (l.orgFrame.x / inc) - l.orgFrame.x
+                newFrame.x = frame.x + (orgFrame.x / inc) - orgFrame.x
                 newFrame.width = frame.width / inc
                 this.e.log(prefix+" getAbsoluteRect() 7 inc="+inc);
             }
@@ -405,12 +406,12 @@ class MyLayerResizer {
 
         if ((resizingConstraint & ResizingConstraint.TOP) === ResizingConstraint.TOP) { 
             if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
-                const bottomDistance = parentAbsoluteFrame.height - frame.y - frame.height;
-                const height = parentAbsoluteFrame.height - frame.y - bottomDistance;
+                const bottomDistance = parentOrgFrame.height - orgFrame.y - orgFrame.height;
+                const height = parentAbsoluteFrame.height - orgFrame.y - bottomDistance;
                 newFrame.height = height < 1 ? 1 : height;
                 this.e.log(prefix+" getAbsoluteRect() 8 ret.y="+newFrame.y+  "parent.y="+parentAbsoluteFrame.y+" frame.y="+frame.y);
             } else if ((resizingConstraint & ResizingConstraint.HEIGHT) !== ResizingConstraint.HEIGHT) {
-                newFrame.height = (frame.height / (parentOrgFrame.height - frame.y)) * (parentAbsoluteFrame.height - frame.y);
+                newFrame.height = (frame.height / (parentOrgFrame.height - orgFrame.y)) * (parentAbsoluteFrame.height - orgFrame.y);
                 this.e.log(prefix+" getAbsoluteRect() 9");
             }
         } else if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
@@ -418,10 +419,10 @@ class MyLayerResizer {
                 newFrame.y = (parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - frame.height);
                 this.e.log(prefix+" getAbsoluteRect() 10");
             } else {
-                const bottomDistance = parentAbsoluteFrame.height - frame.y - frame.height;
-                newFrame.height = (frame.height / (parentOrgFrame.height - bottomDistance)) * (parentAbsoluteFrame.height - bottomDistance);
-                newFrame.y =  + (parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - newFrame.height);
-                this.e.log(prefix+" getAbsoluteRect() 11");
+                const bottomDistance = parentOrgFrame.height - orgFrame.y - orgFrame.height
+                newFrame.height = (frame.height / (parentOrgFrame.height - bottomDistance)) * (parentAbsoluteFrame.height - bottomDistance)
+                newFrame.y =  parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - newFrame.height
+                this.e.log(prefix+" getAbsoluteRect() 11 bottomDistance="+bottomDistance);
             }
         } else {
             if ((resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT) {
@@ -429,13 +430,14 @@ class MyLayerResizer {
                 this.e.log(prefix+" getAbsoluteRect() 12");
             } else {
                 const inc = parentOrgFrame.height / parentAbsoluteFrame.height
-                newFrame.y = frame.y + (l.orgFrame.y / inc) - l.orgFrame.y
+                newFrame.y = frame.y + (orgFrame.y / inc) - orgFrame.y
                 newFrame.height = frame.height / inc
                 this.e.log(prefix+" getAbsoluteRect() 13 inc="+inc);
             }
         }
+        newFrame.round()
 
-        this.e.log(prefix+" getAbsoluteRect() 99 old "+l.frame)
+        this.e.log(prefix+" getAbsoluteRect() 99 old "+l.frame + " const="+resizingConstraint)
         l.frame = newFrame        
         this.e.log(prefix+" getAbsoluteRect() 99 new "+newFrame)
             

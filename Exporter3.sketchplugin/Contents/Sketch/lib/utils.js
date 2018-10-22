@@ -1,8 +1,18 @@
 @import "constants.js";
 const Rectangle = require('sketch/dom').Rectangle
 
+Rectangle.prototype.round = function(){
+  this.x = Math.round(this.x)
+  this.y = Math.round(this.y)
+  this.height = Math.round(this.height)
+  this.width = Math.round(this.width)
+}
+
+Rectangle.prototype.copy = function(){  
+  return new Rectangle(this.x,this.y,this.width,this.height)
+}
+
 class Utils {
- 
 
   static askSavePath(currentPath=null) {
     let panel = NSOpenPanel.openPanel()
@@ -55,11 +65,6 @@ class Utils {
   // rect: GRect instnct
   static copyRectToRectangle(rect){
     return new Rectangle(rect.x(),rect.y(),rect.width(),rect.height())
-  }
-
-  // rect: GRect instnct
-  static copyRectangle(rectangle){
-    return new Rectangle(rectangle.x,rectangle.y,rectangle.width,rectangle.height)
   }
 
   // rect: Rectangle instance
