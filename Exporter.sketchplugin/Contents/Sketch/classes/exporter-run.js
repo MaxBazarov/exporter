@@ -9,8 +9,8 @@ function runExporter(context,exportOptions=null) {
   const doc = context.document
   const Doc = Dom.fromNative(doc)
   const Settings = require('sketch/settings') 
-  var UI = require('sketch/ui')
-    
+  let UI = require('sketch/ui')
+  
   // check is something to export
   /*if (exportOptions==null && doc.currentPage().artboards().count() === 0) {
     UI.alert("There are no artboards to export.");
@@ -19,6 +19,9 @@ function runExporter(context,exportOptions=null) {
   
   // ask for output path
   let currentPath = Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
+  if(currentPath==null){
+    currentPath = ""
+  }
   const newPath = Utils.askSavePath(currentPath)
   if (newPath == null) {
     return

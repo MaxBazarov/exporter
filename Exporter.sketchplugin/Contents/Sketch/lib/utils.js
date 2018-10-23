@@ -1,4 +1,16 @@
 @import "constants.js";
+const Rectangle = require('sketch/dom').Rectangle
+
+Rectangle.prototype.round = function(){
+  this.x = Math.round(this.x)
+  this.y = Math.round(this.y)
+  this.height = Math.round(this.height)
+  this.width = Math.round(this.width)
+}
+
+Rectangle.prototype.copy = function(){  
+  return new Rectangle(this.x,this.y,this.width,this.height)
+}
 
 class Utils {
 
@@ -41,9 +53,26 @@ class Utils {
     }
   }
  
+  static cloneDict(dict){
+    return Object.assign({}, dict);
+  }
 
+  
   static copyRect(rect){
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
+  }
+
+  // rect: GRect instnct
+  static copyRectToRectangle(rect){
+    return new Rectangle(rect.x(),rect.y(),rect.width(),rect.height())
+  }
+
+  // rect: Rectangle instance
+  static transformRect(rect,cw,ch){
+    rect.x = rect.x * cw
+    rect.y = rect.y * ch
+    rect.width = rect.width * cw
+    rect.width = rect.height * ch
   }
 
   static quoteString(str){

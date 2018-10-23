@@ -1,9 +1,8 @@
 @import("constants.js")
 @import("lib/utils.js")
-@import("lib/resizing-constraint.js")
-@import("lib/resizing-type.js")
 @import("classes/exporter-build-html.js")
-
+@import("classes/mylayer.js")
+@import("classes/mylayer-resizer.js")
 
 
 var getArtboardGroupsInPage = function(page, context, includeNone = true) {
@@ -21,7 +20,7 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
 
 class Exporter {
 
-  constructor(selectedPath, doc, page, exportOptions,context) {    
+  constructor(selectedPath, doc, page, exportOptions,context) {       
     this.Settings = require('sketch/settings');
     this.Sketch = require('sketch/dom');
     this.Doc = this.Sketch.fromNative(doc);
@@ -29,6 +28,7 @@ class Exporter {
     this.page = page;
     this.context = context;
 
+    this.myLayers = []
 
     // workaround for Sketch 52
     this.docName = this._clearCloudName(this.context.document.cloudName())
@@ -36,6 +36,7 @@ class Exporter {
     if(posSketch>0){
       this.docName = this.docName.slice(0,posSketch)
     }
+    // @workaround for Sketch 52
 
     this.prepareOutputFolder(selectedPath);
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
@@ -44,11 +45,60 @@ class Exporter {
     this.exportOptions = exportOptions
 
     this.externalArtboardsURLs = [];
+
+    this.externalLinks = this.Settings.documentSettingForKey(this.Doc,SettingKeys.DOC_EXTERNAL_LINKS)
+    if(this.externalLinks==undefined || this.externalLinks==null){
+      this.externalLinks = {}
+    }
+  }
+
+  
+  collectArtboardGroups(){
+    this.myLayers = []
+    this.artboardGroups.forEach(function (artboardGroup) {
+      const artboard = artboardGroup[0].artboard;
+      this.myLayers.push(this.getCollectLayer(artboard,undefined))
+    }, this);
+  }
+
+  getCollectLayer(layer,myParent){
+    const myLayer = new MyLayer(layer,myParent)    
+
+    if(myLayer.isSymbolInstance){      
+      //myLayer.childs.push( this.getCollectLayer(layer.symbolMaster(),myLayer)  )
+      myLayer.childs =  this.getCollectLayerChilds(layer.symbolMaster().layers(),myLayer)
+    }else if(myLayer.isGroup){
+      myLayer.childs =  this.getCollectLayerChilds(layer.layers(),myLayer)
+    }else{
+
+    }
+    return myLayer
+  }
+
+
+  getCollectLayerChilds(layers,myParent){
+    const myLayers = []
+   
+    layers.forEach(function (childLayer) {
+      myLayers.push( this.getCollectLayer(childLayer,myParent) )
+    }, this);
+   
+    return myLayers
   }
 
   log(msg){
     if(!Constants.LOGGING) return
     log(msg)
+  }
+
+  logError(error){
+    log("[ ERROR ] "+error)
+  }
+
+  stopWithError(error){
+    const UI = require('sketch/ui')
+    UI.alert('Error', error)
+    exit = true
   }
 
   _clearCloudName(cloudName)
@@ -96,426 +146,10 @@ class Exporter {
     }
   }
 
-
-  getAbsoluteRect(layer, parentAbsoluteRect, cident, custom=false) {
-    //this.log(cident+"getAbsoluteRect() A layer.frame().y()="+layer.frame().y() + " name:"+layer.name()  + " custom:"+custom);
-    let x, y, returnRect, parentLayer=null;
-
-
-    if (layer.isKindOfClass(MSArtboardGroup)) {
-      if (parentAbsoluteRect != null) {
-        // symbol artboard
-        returnRect = parentAbsoluteRect;
-      } else {
-        // root artboard
-        returnRect = NSMakeRect(0, 0, layer.absoluteRect().width(), layer.absoluteRect().height());
-      }
-    } else if (parentAbsoluteRect != null) {
-      let parentLayer = layer.parentForInsertingLayers();
-      let parentFrame = parentLayer.frame();
-
-      //this.log(cident+"getAbsoluteRect() B parentFrame.y()="+parentFrame.y()+" parentLayer.name="+parentLayer.name())
-
-      if(custom){
-        if(parentLayer.class()=='MSLayerGroup'){
-          parentAbsoluteRect.origin.y += parentFrame.y()
-          parentAbsoluteRect.origin.x += parentFrame.x()
-          parentAbsoluteRect.size.height = parentFrame.height()
-          parentAbsoluteRect.size.width = parentFrame.width()
-        }
-        
-        let nextParent = parentLayer
-        while(nextParent.parentForInsertingLayers().class()=='MSLayerGroup'){
-          nextParent = parentLayer.parentForInsertingLayers()
-          if(nextParent.id== parentLayer.id) break; // stop infinity cycle
-          if(nextParent.class()!='MSLayerGroup') break;
-
-          let nextParentFrame = nextParent.frame()                  
-          this.log(cident+"getAbsoluteRect() B parentFrame.y()="+parentFrame.y()+" parentLayer.name="+parentLayer.name())
-          parentAbsoluteRect.origin.y += nextParentFrame.y()
-          parentAbsoluteRect.origin.x += nextParentFrame.x()
-        }
-      }
-      
-      if (layer.resizingConstraint !== undefined) {
-        // Sketch >= 44
-        returnRect = NSMakeRect(parentAbsoluteRect.origin.x + layer.frame().x(), parentAbsoluteRect.origin.y + layer.frame().y(), layer.frame().width(), layer.frame().height());        
-        if (parentLayer.frame().width() !== parentAbsoluteRect.size.width && parentLayer.frame().height() !== parentAbsoluteRect.size.height) {          
-          this.log(cident+" getAbsoluteRect() 0 parentLayer.frame().width()="+parentLayer.frame().width()+"  parentAbsoluteRect.size.width="+parentAbsoluteRect.size.width);
-          const resizingConstraint = 63 ^ layer.resizingConstraint();
-          const frame = layer.frame();          
-
-          if ((resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT) {
-            if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
-              this.log(cident+" getAbsoluteRect() 2 "+returnRect.origin.y);
-              const rightDistance = parentFrame.width() - frame.x() - frame.width();
-              const width = parentAbsoluteRect.size.width - frame.x() - rightDistance;
-              returnRect.size.width = width < 1 ? 1 : width;
-            } else if ((resizingConstraint & ResizingConstraint.WIDTH) !== ResizingConstraint.WIDTH) {
-              this.log(cident+" getAbsoluteRect() 3");
-              returnRect.size.width = (frame.width() / (parentFrame.width() - frame.x())) * (parentAbsoluteRect.size.width - frame.x());
-            }
-          } else if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
-            if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
-              this.log(cident+" getAbsoluteRect() 4");
-              returnRect.origin.x = parentAbsoluteRect.origin.x + (parentAbsoluteRect.size.width - (parentFrame.width() - (frame.x() + frame.width())) - frame.width());
-            } else {
-              const rightDistance = parentFrame.width() - frame.x() - frame.width();
-              returnRect.size.width = (frame.width() / (parentFrame.width() - rightDistance)) * (parentAbsoluteRect.size.width - rightDistance);
-              returnRect.origin.x = parentAbsoluteRect.origin.x + (parentAbsoluteRect.size.width - (parentFrame.width() - (frame.x() + frame.width())) - returnRect.size.width);
-              this.log(cident+" getAbsoluteRect() 5");
-            }
-          } else {
-            if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
-              returnRect.origin.x = parentAbsoluteRect.origin.x + ((((frame.x() + frame.width() / 2.0) / parentFrame.width()) * parentAbsoluteRect.size.width) - (frame.width() / 2.0));
-              this.log(cident+" getAbsoluteRect() 6");
-            } else {
-              returnRect.origin.x = parentAbsoluteRect.origin.x + ((frame.x() / parentFrame.width()) * parentAbsoluteRect.size.width);
-              returnRect.size.width = (frame.width() / parentFrame.width()) * parentAbsoluteRect.size.width;
-              this.log(cident+" getAbsoluteRect() 7");
-            }
-          }
-
-          if ((resizingConstraint & ResizingConstraint.TOP) === ResizingConstraint.TOP) {
-            if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
-              const bottomDistance = parentAbsoluteRect.size.height - frame.y() - frame.height();
-              const height = parentAbsoluteRect.size.height - frame.y() - bottomDistance;
-              returnRect.size.height = height < 1 ? 1 : height;
-              this.log(cident+" getAbsoluteRect() 8 ret.y="+returnRect.origin.y+  "parent.y="+parentAbsoluteRect.origin.y+" frame.y="+frame.y());
-            } else if ((resizingConstraint & ResizingConstraint.HEIGHT) !== ResizingConstraint.HEIGHT) {
-              returnRect.size.height = (frame.height() / (parentFrame.height() - frame.y())) * (parentAbsoluteRect.size.height - frame.y());
-              this.log(cident+" getAbsoluteRect() 9");
-            }
-          } else if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
-            if ((resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT) {
-              returnRect.origin.y = parentAbsoluteRect.origin.y + (parentAbsoluteRect.size.height - (parentFrame.height() - (frame.y() + frame.height())) - frame.height());
-              this.log(cident+" getAbsoluteRect() 10");
-            } else {
-              const bottomDistance = parentAbsoluteRect.size.height - frame.y() - frame.height();
-              returnRect.size.height = (frame.height() / (parentFrame.height() - bottomDistance)) * (parentAbsoluteRect.size.height - bottomDistance);
-              returnRect.origin.y = parentAbsoluteRect.origin.y + (parentAbsoluteRect.size.height - (parentFrame.height() - (frame.y() + frame.height())) - returnRect.size.height);
-              this.log(cident+" getAbsoluteRect() 11");
-            }
-          } else {
-            if ((resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT) {
-              returnRect.origin.y = parentAbsoluteRect.origin.y + ((((frame.y() + frame.height() / 2.0) / parentFrame.height()) * parentAbsoluteRect.size.height) - (frame.height() / 2.0));
-              this.log(cident+" getAbsoluteRect() 12");
-            } else {
-              returnRect.origin.y = parentAbsoluteRect.origin.y + ((frame.y() / parentFrame.height()) * parentAbsoluteRect.size.height);
-              returnRect.origin.y = parentAbsoluteRect.origin.y + ((frame.y() / parentFrame.height()) * parentAbsoluteRect.size.height);
-              returnRect.size.height = (frame.height() / parentFrame.height()) * parentAbsoluteRect.size.height;
-              this.log(cident+" getAbsoluteRect() 13 ret.y="+returnRect.origin.y+"parent.y="+parentAbsoluteRect.origin.y+" frame.y="+frame.y());
-            }
-          }
-        }
-      } 
-    }
-    if (Constants.LAYER_LOGGING) {
-      this.log(cident + layer.name() + ", (" + Math.round(returnRect.origin.x) + "," + Math.round(returnRect.origin.y) + "," + Math.round(returnRect.size.width) + "," + Math.round(returnRect.size.height) + ")");
-    }
-    return returnRect;
-  }
-
-  buildLayersDict() {
-    this.layersDict = [];
-
-    this.artboardGroups.forEach(function (artboardGroup) {
-      this.layersDict[ artboardGroup.id ] = artboardGroup; 
-      this.buildLayersDictForArtgroup(artboardGroup);
-    }, this);
-
-    this.Doc.getSymbols().forEach(function(symbol){
-      const skSymbol = symbol.sketchObject      
-      if( this.layersDict[skSymbol.objectID()] == undefined ){
-        this.log('buildLayersDict check Symbol id='+skSymbol.objectID()+' name: '+skSymbol.name())
-        this.buildLayersDictForLayer(skSymbol)
-      }
-    },this)
-      
-  }
-
-  buildLayersDictForArtgroup(artboardGroup){
-    artboardGroup.forEach(function (artboardData) {   
-      const artboard = artboardData.artboard;
-
-      // check special artoboard with has its own external URL
-      let externalLink = this.Settings.layerSettingForKey(artboard,SettingKeys.LAYER_EXTERNAL_LINK); 
-      if (externalLink != null && externalLink != "") {
-        this.layersDict[ artboard.objectID() ] = artboard;
-        this.externalArtboardsURLs[artboard.name()] = externalLink;
-        return;
-      } 
-
-      this.buildLayersDictForLayer(artboard);      
-    },this);
-    
-  }
-
-  buildLayersDictForLayer(layer,cident=' '){
-    this.log(cident+'buildLayersDictForLayer layer id='+layer.objectID()+' name: '+layer.name())
-    this.layersDict[ layer.objectID() ] = layer;
-
-    if (layer.isKindOfClass(MSSymbolInstance)) {
-      // symbol instance
-      this.buildLayersDictForLayer(layer.symbolMaster());    
-    } else if (layer.isKindOfClass(MSLayerGroup)) {
-      // layer group
-      layer.layers().forEach(function (childLayer) {
-        this.buildLayersDictForLayer(childLayer,cident+' ');
-      }, this);
-    }else{
-      this.log(cident+' uknown class:'+layer.class())
-    }
-    //
-  }
-
-  getHotspots(layer, artboardData, parentAbsoluteRect, cident='', customTargetName='') {
-    if (!layer.isVisible()) return null;
-
-    //  PROCESS CHILD LAYOUTS FOR PARENT
-    const command = this.context.command;
-    
-    const hotspots = [];
-
-    let absoluteRect = this.getAbsoluteRect(layer, parentAbsoluteRect, cident,customTargetName!='' );
-    
-    this.log(cident+"["+layer.name()+']--------------------------------------start, customTarget: '+customTargetName)
-    if (layer.isKindOfClass(MSSymbolInstance)) {
-      this.log(cident+"["+layer.name()+"] class:MSSymbolInstance!")
-      // symbol instance
-      const childHotspots = this.getHotspots(layer.symbolMaster(), artboardData, absoluteRect, cident+' ');
-      if (childHotspots != null) {
-        Array.prototype.push.apply(hotspots, childHotspots);
-      }
-    } else if (layer.isKindOfClass(MSLayerGroup)) {
-      this.log(cident+"["+layer.name()+"] class:MSLayerGroup! layers: "+layer.layers().length)
-      // layer group
-      layer.layers().forEach(function (childLayer) {
-        this.log(cident+"["+layer.name()+"] childLayer: "+childLayer.name())
-        const childHotspots = this.getHotspots(childLayer, artboardData, absoluteRect, cident+' ');
-        if (childHotspots != null) {
-          Array.prototype.push.apply(hotspots, childHotspots);
-        }
-      }, this);
-    }else{
-      this.log(cident+"["+layer.name()+"] class:other!")
-    }
-
-    // PROCESS LAYOUT OWN HOTSPOTS
-    let x = Math.round(absoluteRect.origin.x - Constants.HOTSPOT_PADDING);
-    let y = Math.round(absoluteRect.origin.y - Constants.HOTSPOT_PADDING);
-    const width = Math.round(absoluteRect.size.width);
-    const height = Math.round(absoluteRect.size.height);
-
-
-    let finalHotspot = {
-      x: x, y: y, width: width, height: height,
-      linkType: 'undefined'
-    }
-
-    // check custom link
-    if(customTargetName==='__back'){
-      finalHotspot.linkType = "back"
-      hotspots.push(finalHotspot)
-      return hotspots
-    }
-    if(!(customTargetName=='')){
-      finalHotspot.linkType = "artboard"
-      finalHotspot.artboardName = customTargetName
-      finalHotspot.href = Utils.toFilename(customTargetName) + ".html"
-      hotspots.push(finalHotspot)
-      this.log(cident+"||||||| ADD HOTSPOT 1: added hostpot for custom target")
-      return hotspots
-    }
-    
-    // check regular link
-    let externalLink = this.Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK);
-    if (externalLink != null && externalLink != "") {
-        // found external link
-        const openLinkInNewWindow = command.valueForKey_onLayer_forPluginIdentifier(SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN, layer, this.context.plugin.identifier());
-        const regExp = new RegExp("^http(s?)://");
-        if (!regExp.test(externalLink.toLowerCase())) {
-          externalLink = "http://" + externalLink;
-        }
-        const target = openLinkInNewWindow && 1==2 ? "_blank" : null;
-
-        finalHotspot.linkType = "href"
-        finalHotspot.href = externalLink
-        finalHotspot.target = target
-        hotspots.push(finalHotspot)
-        return hotspots
-    }
-
-    // check other links
-    let targetArtboadName = '';
-
-    
-    // check link to artboard
-    if(layer.flow()!=null){
-      const flow = this.Sketch.fromNative(layer.flow());
-      const target = flow.target;
-
-      if(flow.isBackAction()){
-        finalHotspot.linkType = "back";
-        hotspots.push(finalHotspot);
-        return hotspots;
-
-      }else if(target!=null){
-        targetArtboadName = target.name;
-      }    
-    }     
-
-    this.log(cident+"["+layer.name()+'] targetArtboadName: '+targetArtboadName)
-  
-
-    if (targetArtboadName != "") {
-      this.log(cident+"||||||| ADD HOTSPOT 10 for "+ targetArtboadName +"["+layer.name()+']')      
-      // found artboard link
-      finalHotspot.linkType = "artboard";
-      finalHotspot.artboardName = targetArtboadName;
-      finalHotspot.href = Utils.toFilename(targetArtboadName) + ".html";
-
-      hotspots.push(finalHotspot);
-    }else{
-      while(true){
-        // check child customizations of non-linked layer
-        // try to find customized link in layer custom properties
-        let slayer = this.Sketch.fromNative(layer);
-        if( !slayer.overrides ) break;
-
-        this.log(cident+"["+layer.name()+'] check customization')
-
-        let replacedSymbols = []
-        // check if symbol was replaced by another
-        slayer.overrides.forEach(function (customProperty){       
-          if( !(customProperty.property==='symbolID' && !customProperty.isDefault) ) return;   
-          replacedSymbols[customProperty.path] = customProperty.value
-          this.log(cident+"["+layer.name()+'] check symbol replacing: found custom property: '+customProperty.value)    
-          this.log(customProperty)          
-        },this)
-
-        // check if target was customized
-        slayer.overrides.forEach(function (customProperty){       
-          if( !(customProperty.property==='flowDestination' && !customProperty.isDefault && customProperty.value!='') ) return;        
-
-          this.log(cident+"["+layer.name()+'] check customization: found custom property: '+customProperty.value)        
-          this.log(customProperty)       
-
-          let overAbsoluteRect = Utils.copyRect(absoluteRect)
-                
-
-          // get source layer
-          let isReplacedSymbols = false
-          let removedLayer = false
-          let sourceID =  customProperty.path
-          replacedSymbols.forEach(function(id1,id2){
-            if(sourceID.path.indexOf(id1)<0) return
-            if(id2==''){
-              // removed layer
-              removedLayer = true
-              return
-            }
-            sourceID = sourceID.replace(id1,id2)
-            isReplacedSymbols = true    
-          },this)           
-          if(removedLayer){
-            this.log(cident+"found removed layer")
-            return
-          }
-          if(!replacedSymbols) sourceID = customProperty.path           
-          this.log(cident+"customProperty.path: '"+sourceID+"'")
-
-          if(sourceID.indexOf("/")>0){
-            // found nested symbols
-            const splitedPath = sourceID.split("/")
-            sourceID = splitedPath[splitedPath.length-1]
-        
-            // ask source layer about his hotspots (forcing it follow totargetArtboard )    
-            if(splitedPath.length>1){
-              for(let i=0;i<splitedPath.length-1;i++){
-                let itemId = splitedPath[i]            
-                let item = this.layersDict[itemId]
-                if(item==undefined){
-                  this.log(cident+" ERROR!!! Can't find path item '"+itemId+"'")
-                  break;
-                }
-                this.log(cident+" before overAbsoluteRect.y="+overAbsoluteRect.origin.y + "for item :"+item.name() )       
-                overAbsoluteRect = this.getAbsoluteRect(item, overAbsoluteRect, cident,true);   
-                this.log(cident+" after overAbsoluteRect.y="+overAbsoluteRect.origin.y + "for item :"+item.name() )       
-              }
-            }
-          }        
-
-
-          let srcLayer = this.layersDict[sourceID];          
-          if(!srcLayer){
-            log('failed to find object srcLayer: '+sourceID);
-            //log(slayer)
-            //log(this.layersDict)
-            return
-          }
-
-          if(customProperty.value=='back'){
-            const childHotspots = this.getHotspots(srcLayer, artboardData, overAbsoluteRect, cident+' ',"__back")
-            if (childHotspots == null) return
-            Array.prototype.push.apply(hotspots, childHotspots)
-            return
-          }
-
-          if(customProperty.value==''){
-            return
-          }
-          // get custom target from the property                        
-          //let targetArtboard = this.Doc.getLayerWithID( customProperty.value );
-          let targetArtboard = this.layersDict[ customProperty.value ];
-          //
-          if(!targetArtboard){
-            log('failed to find object targetArtboard: '+customProperty.value);
-            return
-          }
-
-          this.log(cident+"layer: "+layer.name());
-          this.log(cident+"src: "+srcLayer.name());
-          this.log(cident+'target: '+targetArtboard.name());
-
-
-          const childHotspots = this.getHotspots(srcLayer, artboardData, overAbsoluteRect, cident+' ',targetArtboard.name());
-          if (childHotspots == null) return;
-        
-          this.log(cident+'completed childHotspots:'+childHotspots.length);
-          
-          Array.prototype.push.apply(hotspots, childHotspots);          
-          // prevent current layer from clicking
-          targetArtboadName = '';  
-
-        },this);         
-        break
-      }   
-
-    }
-    // @check customizations      
-    
-
-    if (targetArtboadName != "") {
-      this.log(cident+"||||||| ADD HOTSPOT 10 for "+ targetArtboadName +"["+layer.name()+']')      
-      // found artboard link
-      finalHotspot.linkType = "artboard";
-      finalHotspot.artboardName = targetArtboadName;
-      finalHotspot.href = Utils.toFilename(targetArtboadName) + ".html";
-
-      hotspots.push(finalHotspot);
-    }
-
-    // @check link to artboard   
-
-    return hotspots;
-  }
-
-
   getArtboardImageName(artboard, scale) {
     this.log("getArtboardImageName()");
     const suffix = scale == 2 ? "@2x" : "";
-    return Utils.toFilename(artboard.name(), false) + suffix + ".png";
+    return Utils.toFilename(artboard.name, false) + suffix + ".png";
   }
 
 
@@ -565,19 +199,14 @@ class Exporter {
   }
 
 
-  pushArtboardSetIntoJSStory(artboardSet,index) {
-    const mainArtboard = artboardSet[0].artboard;
-    const mainName = mainArtboard.name();
+  pushArtboardIntoJSStory(artboard,index) {
+    const mainName = artboard.name;
 
-    const isOverlay = this.Settings.layerSettingForKey(mainArtboard,SettingKeys.ARTBOARD_OVERLAY)==1;
-    const annotations = this.Settings.layerSettingForKey(mainArtboard,SettingKeys.LAYER_ANNOTATIONS)
-    const externalArtboardURL = this.Settings.layerSettingForKey(mainArtboard,SettingKeys.LAYER_EXTERNAL_LINK);
-
+    const isOverlay = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.ARTBOARD_OVERLAY)==1;
+    const annotations = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.LAYER_ANNOTATIONS)
+    const externalArtboardURL = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.LAYER_EXTERNAL_LINK);
 
     this.log("process main artboard "+mainName);
-
-    //if(externalArtboardURL!=undefined && externalArtboardURL!='') return
-
 
     let js = index?',':'';
     js +=
@@ -587,8 +216,8 @@ class Exporter {
       js +=
         '"image2x": "'+ Utils.quoteString(Utils.toFilename(mainName+'@2x.png',false))+'",\n'
     js +=      
-      '"width": '+mainArtboard.frame().width()+',\n'+
-      '"height": '+mainArtboard.frame().height()+',\n'+
+      '"width": '+artboard.frame.width+',\n'+
+      '"height": '+artboard.frame.height+',\n'+
       '"title": "'+Utils.quoteString(mainName)+'",\n';
 
     if(annotations && annotations!=''){
@@ -597,27 +226,18 @@ class Exporter {
 
     if(isOverlay){
       js += "'type': 'overlay',\n";
-      const isOverlayShadow = this.Settings.layerSettingForKey(mainArtboard,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1;
+      const isOverlayShadow = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1;
       js += "'overlayShadow': "+(isOverlayShadow?1:0)+",\n";
 
     }else{
       js += "'type': 'regular',\n";
     }
 
-
     // build flat link array
-    js +='"links": [\n';      
-    const hotspots = [];
-    artboardSet.forEach(function (artboardData) {   
-      const artboard = artboardData.artboard;
-      const artboardHotspots = this.getHotspots(artboard, artboardData);
-      if (artboardHotspots != null) {   
-        hotspots.push.apply(hotspots, artboardHotspots);
-      }
-    },this);
+    js +='"links": [\n';       
 
     let hotspotIndex = 0;  
-    hotspots.forEach(function (hotspot) {
+    artboard.hotspots.forEach(function (hotspot) {
       const spotJs = this.pushHotspotIntoJSStory(hotspot);
       if(spotJs!=''){
         js += hotspotIndex++?',':'';
@@ -634,10 +254,10 @@ class Exporter {
     let js = 
       '{\n'+
       '  "rect": [\n'+
-      '    '+hotspot.x+',\n'+
-      '    '+hotspot.y+',\n'+
-      '    '+(hotspot.x+hotspot.width)+',\n'+
-      '    '+(hotspot.y+hotspot.height)+'\n'+
+      '    '+hotspot.r.x+',\n'+
+      '    '+hotspot.r.y+',\n'+
+      '    '+(hotspot.r.x+hotspot.r.width)+',\n'+
+      '    '+(hotspot.r.y+hotspot.r.height)+'\n'+
       '   ],\n';
 
     this.log()
@@ -672,10 +292,10 @@ class Exporter {
   exportImage(layer, scale, imagePath) {
     this.log("exportImage()");
     let slice;
-    if (layer.isKindOfClass(MSArtboardGroup)) {
-      slice = MSExportRequest.exportRequestsFromExportableLayer(layer).firstObject();
+    if (layer.nlayer.isKindOfClass(MSArtboardGroup)) {
+      slice = MSExportRequest.exportRequestsFromExportableLayer(layer.nlayer).firstObject();
     } else {
-      slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(layer, layer.absoluteInfluenceRect(), false).firstObject();
+      slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(layer.nlayer, layer.nlayer.absoluteInfluenceRect(), false).firstObject();
     }
     slice.scale = scale;
     slice.saveForWeb = false;
@@ -683,19 +303,14 @@ class Exporter {
     this.context.document.saveArtboardOrSlice_toFile(slice, imagePath);
   }
 
-  exportImages(artboardGroup) {
+  exportImages(artboard) {
     this.log("exportImages()");
-    artboardGroup.forEach(function (artboardData) {
-      
-      // skip empty artboard with External URL
-      //if( this.externalArtboardsURLs[artboardData.artboard.name()] ) return;
 
-      this.exportImage(artboardData.artboard, 1, this._imagesPath + this.getArtboardImageName(artboardData.artboard, 1));
-      if (this.retinaImages) {
-        this.exportImage(artboardData.artboard, 2, this._imagesPath + this.getArtboardImageName(artboardData.artboard, 2));
-      }
-    
-    }, this);
+    this.exportImage(artboard, 1, this._imagesPath + this.getArtboardImageName(artboard, 1));
+    if (this.retinaImages) {
+      this.exportImage(artboard, 2, this._imagesPath + this.getArtboardImageName(artboard, 2));
+    }
+  
   }
 
 
@@ -711,7 +326,9 @@ class Exporter {
         if(page.name().indexOf("*")==0){
           return
         }
-        artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(page, context, false));
+        const artBoards = getArtboardGroupsInPage(page, context, false)
+        if(!artBoards.length) return
+        artboardGroups.push.apply(artboardGroups,artBoards);
       })
     }else if (this.exportOptions.mode==Constants.EXPORT_MODE_CURRENT_PAGE){      
       artboardGroups.push.apply(artboardGroups, getArtboardGroupsInPage(this.exportOptions.currentPage, context, false));
@@ -750,16 +367,54 @@ class Exporter {
       const mainName = mainArtboard.name();
       dict[mainName] = index++;
     }, this);
-    return dict;
+    
+    return dict
   }
 
 
 
+  buildArtboardDict() {
+    var dict = []
+    
+    for(var ab of this.myLayers){
+      dict[ab.objectID] = ab
+    }  
+
+    this.artboadDict = dict
+      
+  }
+
+  buildSymbolDict() {
+    var symDict = []
+
+    for(var symbol of this.Doc.getSymbols()){
+      const sid = symbol.symbolId
+      const skSymbol = symbol.sketchObject      
+      if( sid in symDict) continue
+      symDict[ sid ] = skSymbol      
+    }
+
+    this.symDict = symDict
+      
+  }
+
+
   exportArtboards() {        
+    
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
-    this.artboardsDictName = this.getArtboardsDictName();
-    this.buildLayersDict();
+    this.artboardsDictName = this.getArtboardsDictName();    
+    
+    this.buildSymbolDict()
+    {
+      const layerCollector  = new MyLayerCollector()
+      layerCollector.collectArtboardsLayers(this)
+    }    
+    this.buildArtboardDict()
+    {
+      const layerResizer  = new MyLayerResizer()
+      layerResizer.resizeLayers(this)
+    }    
 
     this.copyResources();
     this.createMainHTML();
@@ -768,9 +423,9 @@ class Exporter {
     this.generateJSStoryBegin();
     let index = 0;
 
-    this.artboardGroups.forEach(function (artboardGroup) {
-      this.exportImages(artboardGroup);
-      this.pushArtboardSetIntoJSStory(artboardGroup,index++);
+    this.myLayers.forEach(function (artboard) {
+      this.exportImages(artboard);
+      this.pushArtboardIntoJSStory(artboard,index++);
     }, this);
 
 
