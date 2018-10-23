@@ -1,5 +1,6 @@
 @import("constants.js")
 @import("lib/utils.js")
+@import("classes/child-finder.js")
 
 
 Sketch = require('sketch/dom')
@@ -36,7 +37,7 @@ class MyLayer {
         this.frame = undefined
         this.orgFrame = undefined
         
-        this.tempOverrides = undefined
+        this.tempOverrides = undefined        
     }
 
 }
@@ -47,6 +48,7 @@ class MyLayerCollector {
     
     collectArtboardsLayers(exporter){        
         this.e = exporter
+        this.childFinder = new ChildFinder(exporter)
         this.e.log( "--- COLLECT LAYERS ---")
         const myLayers = []
         exporter.artboardGroups.forEach(function (artboardGroup) {
@@ -65,16 +67,33 @@ class MyLayerCollector {
 
         let newMaster = undefined
 
+        this.e.log(prefix + nlayer.name()+ " "+nlayer.objectID())
+
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             const objectID = nlayer.objectID()
-            if(objectID in symbolOverrides){
-                newMaster = symbolOverrides[objectID]            
-                if(newMaster != null ){
-                    myLayer.originalID = objectID
-                    myLayer.symbolMaster = newMaster
-                }else{
+            while(objectID in symbolOverrides){
+                const over = symbolOverrides[objectID] 
+                this.e.log("getCollectLayer found override for "+objectID + "  newMaster = "+over['newMaster']   )
+
+                if(over['path']!=undefined){
+                    if(over['path'].length>1){
+                        this.e.log("getCollectLayer shifted override path")
+                        over['path'].shift()
+                        const newID =  over['path'][0]
+                        // replace ID in symbolOverrides dictionary
+                        symbolOverrides[newID] = over
+                        delete symbolOverrides[objectID]                        
+                        break
+                    }
+                }
+                newMaster = over['newMaster']               
+                if(newMaster==null){
                     return null
-                }          
+                }
+                myLayer.originalID = objectID
+                myLayer.symbolMaster = newMaster        
+                delete symbolOverrides[objectID] 
+                break                                              
             }                     
         }
         
@@ -108,8 +127,8 @@ class MyLayerCollector {
         // check if symbol was replaced by another
         for(var customProperty of layer.slayer.overrides){
             if( !(customProperty.property==='symbolID' && !customProperty.isDefault && customProperty.value!=undefined) ) continue
-            const oldID = customProperty.path
-            const newID = customProperty.value            
+            let oldID = customProperty.path
+            let newID = customProperty.value            
 
             // check if it was overrided by parents
             if( oldID in symbolOverrides) continue
@@ -119,17 +138,31 @@ class MyLayerCollector {
                 cloned = true
             }
 
+            const overStruct = {
+                'newMaster': null,
+                'path': undefined
+            }
+
+            if(oldID.indexOf("/")>0){
+                this.e.log("_extendSymbolOverrides() found complex override: "+oldID)    
+                overStruct['path'] = oldID.split("/")
+                oldID = overStruct['path'][0]
+            }
+
             if(newID==""){
-                symbolOverrides[oldID] = null
+                overStruct['newMaster'] = null            
             }else{
                 const newNLayer = this.e.symDict[newID]
                 if(newNLayer==undefined || newNLayer==null){
                     this.e.stopWithError("_extendSymbolOverrides() Can't find symbol with ID:"+newID+" for object:"+layer.name)
                 }
 
-                symbolOverrides[oldID] = newNLayer
+                overStruct['newMaster'] = newNLayer
             }
-            this.e.log("overrided old="+oldID+" new="+newID)    
+
+            symbolOverrides[oldID] = overStruct
+
+            this.e.log("_extendSymbolOverrides() overrided old="+oldID+" overStruct="+overStruct)    
         }        
         return symbolOverrides
     }

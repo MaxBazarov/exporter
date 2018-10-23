@@ -1,5 +1,6 @@
 @import("constants.js")
 @import("lib/utils.js")
+@import("classes/child-finder.js")
 
 
 var ResizingConstraint = {
@@ -21,13 +22,16 @@ var ResizingType = {
 
 
 class MyLayerResizer {
-    constructor() {
+    constructor() {        
     }
     
     resizeLayers(exporter){
         log( "--- RESIZE LAYERS ---")
 
         this.e = exporter
+        this.childFinder = new ChildFinder(exporter)
+
+
         this._resizeLayers(exporter.myLayers)        
 
         log( "--- /RESIZE LAYERS ---")
@@ -243,7 +247,7 @@ class MyLayerResizer {
                 const splitedPath = sourceID.split("/")
                 // find override owner
                 this.e.log(prefix+"override owner path="+sourceID)            
-                srcLayer = this._findChildInPath(prefix+" ",l,splitedPath,0)                
+                srcLayer = this.childFinder.findChildInPath(prefix+" ",l,splitedPath,0)                
                 if(srcLayer==undefined && !(l.objectID in lostOverrides) )
                 {          
                     this.e.log(prefix+"pushed to newLostOverrides")         
@@ -258,7 +262,7 @@ class MyLayerResizer {
                     this.e.log(prefix+" pushed newOverrides="+(newLostOverrides?newLostOverrides[firstID].length:" undefined"))
                 }
             }else{       
-                srcLayer = this._findChildByID(l,sourceID)
+                srcLayer = this.childFinder.findChildByID(l,sourceID)
             }
                        
             if(srcLayer) this.e.log(prefix+"found srcLayer: "+srcLayer.name)
@@ -299,58 +303,6 @@ class MyLayerResizer {
         
         this.e.log(prefix+" _processLayerOverrides, newLostOverrides="+newLostOverrides) 
         l.tempOverrides = newLostOverrides
-    }
-
-
-    // find overrided layer by customPropery path
-    _findChildInPath(prefix,l,path,index){        
-        let foundLayer = undefined        
-        let seekId  = path[index]
-        const lastIndex = path.length-1        
-
-        // if start from current layer itself?
-        if(seekId==l.objectID){
-            seekId  = path[++index]
-        }
-
-        for(var layer of l.childs){
-            this.e.log(prefix+"scan layer.id="+layer.objectID+"  seekID="+seekId)            
-            if(layer.objectID==seekId || layer.originalID==seekId){
-                this.e.log(prefix+"found!")            
-                if(index==lastIndex){
-                    foundLayer = layer
-                    this.e.log(prefix+"found last")
-                    return foundLayer
-                }
-                foundLayer = this._findChildInPath(prefix+" ",layer,path,index+1)
-                return foundLayer
-            }
-        }
-
-        // failed to found. time to use deep nested search
-        for(var layer of l.childs){
-            foundLayer = this._findChildInPath(prefix+" ",layer,path,index)
-            if(foundLayer) return foundLayer
-        }
-
-        return undefined
-    }
-
-    // find child layer by ID
-    _findChildByID(l,id){
-        let foundLayer = undefined
-        for(var layer of l.childs){
-            if(layer.objectID==id){
-                foundLayer = layer
-                return foundLayer
-            }
-            if(layer.childs.length>0){
-                foundLayer = this._findChildByID(layer,id)
-                if(foundLayer!=undefined) return foundLayer
-            }            
-        }
-
-        return undefined
     }
 
     _applyLayerConstrains(prefix,l){
