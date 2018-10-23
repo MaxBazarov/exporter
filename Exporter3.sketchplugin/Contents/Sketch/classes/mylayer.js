@@ -35,6 +35,8 @@ class MyLayer {
         
         this.frame = undefined
         this.orgFrame = undefined
+        
+        this.tempOverrides = undefined
     }
 
 }
@@ -99,9 +101,14 @@ class MyLayerCollector {
         
         // check if symbol was replaced by another
         for(var customProperty of layer.slayer.overrides){
-            if( !(customProperty.property==='symbolID' && !customProperty.isDefault) ) continue
+            if( !(customProperty.property==='symbolID' && !customProperty.isDefault && customProperty.value!=undefined) ) continue
             const oldID = customProperty.path
             const newID = customProperty.value
+
+            if(newID==""){
+                log(customProperty)
+                continue
+            }
 
             // check if it was overrided by parents
             if( oldID in symbolOverrides) continue
@@ -113,8 +120,7 @@ class MyLayerCollector {
 
             const newNLayer = this.e.symDict[newID]
             if(newNLayer==undefined || newNLayer==null){
-                this.e.logError("_extendSymbolOverrides() Can't find symbol with ID:"+newID)    
-                exit
+                this.e.stopWithError("_extendSymbolOverrides() Can't find symbol with ID:"+newID+" for object:"+layer.name)
             }
 
             symbolOverrides[oldID] = newNLayer
