@@ -46,10 +46,6 @@ class Exporter {
 
     this.externalArtboardsURLs = [];
 
-    this.externalLinks = this.Settings.documentSettingForKey(this.Doc,SettingKeys.DOC_EXTERNAL_LINKS)
-    if(this.externalLinks==undefined || this.externalLinks==null){
-      this.externalLinks = {}
-    }
   }
 
   

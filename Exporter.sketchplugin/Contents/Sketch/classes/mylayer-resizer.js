@@ -127,11 +127,15 @@ class MyLayerResizer {
             }
 
             // check link to external URL
-            const externalLink = this.e.externalLinks[ l.objectID ]
-            this.e.log(prefix+" externalLink: " + externalLink + " key="+l.slayer)  
-            if (externalLink != null && externalLink.href != "") {
+            const externalLinkHref = this.e.Settings.layerSettingForKey(l.slayer,SettingKeys.LAYER_EXTERNAL_LINK)
+            if(externalLinkHref!=null && externalLinkHref!=""){
+                const externalLink = {
+                    'href' : externalLinkHref,
+                    'openNewWindow': true
+
+                }
                 if( !this._specifyExternalURLHotspot(prefix+" ",l,finalHotspot,externalLink)) return
-                break
+                break            
             }
 
             // check native link
