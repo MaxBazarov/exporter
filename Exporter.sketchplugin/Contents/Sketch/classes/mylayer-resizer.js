@@ -135,7 +135,7 @@ class MyLayerResizer {
             if(externalLinkHref!=null && externalLinkHref!=""){
                 const externalLink = {
                     'href' : externalLinkHref,
-                    'openNewWindow': true
+                    'openNewWindow': false
 
                 }
                 if( !this._specifyExternalURLHotspot(prefix+" ",l,finalHotspot,externalLink)) return
