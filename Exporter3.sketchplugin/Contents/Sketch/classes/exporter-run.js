@@ -20,7 +20,7 @@ function runExporter(context,exportOptions=null) {
   // ask for output path
   let currentPath = Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
   if(currentPath==null){
-    currentPath = "/"
+    currentPath = ""
   }
   const newPath = Utils.askSavePath(currentPath)
   if (newPath == null) {

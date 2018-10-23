@@ -67,11 +67,15 @@ class MyLayerCollector {
 
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             const objectID = nlayer.objectID()
-            newMaster = symbolOverrides[objectID]
-            if(newMaster != null ){
-                myLayer.originalID = objectID
-                myLayer.symbolMaster = newMaster
-            }                                
+            if(objectID in symbolOverrides){
+                newMaster = symbolOverrides[objectID]            
+                if(newMaster != null ){
+                    myLayer.originalID = objectID
+                    myLayer.symbolMaster = newMaster
+                }else{
+                    return null
+                }          
+            }                     
         }
         
         this.e.log(prefix + nlayer.name()+ " "+nlayer.objectID())
@@ -91,6 +95,8 @@ class MyLayerCollector {
 
         layers.forEach(function (childLayer) {                      
             const newLayer = this.getCollectLayer(prefix+" ",childLayer,myParent,symbolOverrides)
+            if(newLayer==null) return
+
             myLayers.push( newLayer )
         }, this);
         return myLayers
@@ -103,12 +109,7 @@ class MyLayerCollector {
         for(var customProperty of layer.slayer.overrides){
             if( !(customProperty.property==='symbolID' && !customProperty.isDefault && customProperty.value!=undefined) ) continue
             const oldID = customProperty.path
-            const newID = customProperty.value
-
-            if(newID==""){
-                log(customProperty)
-                continue
-            }
+            const newID = customProperty.value            
 
             // check if it was overrided by parents
             if( oldID in symbolOverrides) continue
@@ -118,12 +119,16 @@ class MyLayerCollector {
                 cloned = true
             }
 
-            const newNLayer = this.e.symDict[newID]
-            if(newNLayer==undefined || newNLayer==null){
-                this.e.stopWithError("_extendSymbolOverrides() Can't find symbol with ID:"+newID+" for object:"+layer.name)
-            }
+            if(newID==""){
+                symbolOverrides[oldID] = null
+            }else{
+                const newNLayer = this.e.symDict[newID]
+                if(newNLayer==undefined || newNLayer==null){
+                    this.e.stopWithError("_extendSymbolOverrides() Can't find symbol with ID:"+newID+" for object:"+layer.name)
+                }
 
-            symbolOverrides[oldID] = newNLayer
+                symbolOverrides[oldID] = newNLayer
+            }
             this.e.log("overrided old="+oldID+" new="+newID)    
         }        
         return symbolOverrides
