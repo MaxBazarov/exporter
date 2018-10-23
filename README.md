@@ -13,8 +13,9 @@ Features:
 - Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
 - Publishing to external site by SFTP / **New in 2.0.0**
 
-Please send your feedback and requests to max@bazarov.ru
+[Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
 
+Please send your feedback and requests to max@bazarov.ru
 
 <img width="262" height="204" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Menu.png"/><img width="423" height="398" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true"/>
 
