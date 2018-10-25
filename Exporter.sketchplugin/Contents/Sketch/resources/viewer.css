@@ -55,8 +55,8 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: calc(100%/4 - 52px);
-	height: calc(100vh/3);
+	width:324px;
+	height: 324px;
 	overflow: hidden;
 	margin: 24px;
 	border-radius: 5px;
@@ -72,11 +72,10 @@
 	justify-content: center;
 	align-items: center;
 	align-self: flex-end;
+	font-size: 12px;
 }
 
 .gallery-div img{
-	width: auto;
-	height: calc(100% - 40px);
 }
 
 

@@ -14,8 +14,13 @@ class Publisher {
 		this.ver = ''
 		this.remoteFolder = ''
 		
-	    this.allMockupsdDir = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
-	    this.scriptPath = this.allMockupsdDir + "/publish.sh"
+		this.allMockupsdDir = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
+		this.setScriptName("publish.sh")
+	}
+
+	setScriptName(scriptName){
+		this.scriptPath = this.allMockupsdDir + "/" + scriptName
+		this.scriptName = scriptName
 	}
 
 	log(msg){
@@ -55,7 +60,7 @@ class Publisher {
 				
 				if(openResult.result){
 				}else{
-				UI.alert('Can not open HTML in browser', openResult.output)
+					UI.alert('Can not open HTML in browser', openResult.output)
 				}
 			}
 		}
@@ -69,8 +74,13 @@ class Publisher {
 		if(result.result){
 			this.UI.alert('Success',PublishKeys.SHOW_OUTPUT?result.output:'Mockups published!')
 		}else{
-			this.UI.alert('Error', result.output)
+			this.showOutput(result)
 		}
+	}
+
+	showOutput(result){		
+		if(result.result) return true
+		this.UI.alert('Error', result.output)		
 	}
 
 	checkOptions(){
@@ -143,10 +153,20 @@ class Publisher {
 	}
 
 	runScript(version, allMockupsdDir, docFolder, remoteFolder,commentsID){
-		let args = [this.scriptPath,version,allMockupsdDir, docFolder, remoteFolder,commentsID]
+		let args = [version,allMockupsdDir, docFolder, remoteFolder,commentsID]
 		args.push(this.login)
 		//args.push(Constants.MIRROR2)
-		return Utils.runCommand('/bin/bash', args)		
+		return this.runScriptWithArgs(args)		
+	}
+
+	runScriptWithArgs(args){				
+		args.unshift(this.scriptPath) // add script itself as a first argument
+		const res =  Utils.runCommand('/bin/bash', args)		
+
+		// delete script
+		Utils.deleteFile(this.scriptPath)
+
+		return res
 	}
 
 
@@ -157,9 +177,9 @@ class Publisher {
 	    const targetPath = this.scriptPath
 
 	    // delete old copy
-	    Utils.deleteFile(targetPath)
+		Utils.deleteFile(targetPath)
 	    
-	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/publish.sh"
+	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/"+this.scriptName
 		let error = MOPointer.alloc().init();
 		
 		this.log('sourcePath:'+sourcePath)

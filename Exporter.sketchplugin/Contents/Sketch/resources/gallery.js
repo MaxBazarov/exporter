@@ -31,11 +31,10 @@ function createGallery() {
             viewer.goToPage(index);
         },
         loadOnePage: function(page,pageIndex){
-            var hasRetinaImages = $.inArray(2, story.resolutions) != -1; 
-            var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? page.image2x : page.image;	
+            var imageURI = story.hasRetina && viewer.isHighDensityDisplay() ? page.image2x : page.image;	
             
-            var width = 200;
-            var height = page.height / (page.width / width);
+            var width = 300;
+            var height = Math.round(page.height / (page.width / width));
 
             var div = $('<div/>', {
                 id : pageIndex,
@@ -50,7 +49,7 @@ function createGallery() {
                 id : "img_gallery_"+pageIndex,
                 class: "gallery-image",
                 alt: page.title,
-				src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),
+				src : encodeURIComponent(viewer.files) + '/previews/' + encodeURIComponent(imageURI),
             }).attr('width', width).attr('height', height);
             img.appendTo(div);
 

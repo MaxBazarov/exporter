@@ -3,6 +3,7 @@
 @import("classes/exporter-build-html.js")
 @import("classes/mylayer.js")
 @import("classes/mylayer-resizer.js")
+@import("classes/publisher.js") // we need it to run resize.sh script
 
 
 var getArtboardGroupsInPage = function(page, context, includeNone = true) {
@@ -155,6 +156,7 @@ class Exporter {
     '"docName": "'+ Utils.toFilename(this.docName)+'",\n'+
     '"docPath": "P_P_P",\n'+
     '"docVersion": "V_V_V",\n'+
+    '"hasRetina": '+(this.retinaImages?'true':'false') + ',\n'+
     '"pages": [\n';
   }
 
@@ -394,9 +396,17 @@ class Exporter {
       
   }
 
+  buildPreviews(){
+    const pub = new Publisher(this.context,this.context.document);
+    pub.setScriptName("resize.sh")
+    pub.copyScript()
+    const res = pub.runScriptWithArgs([this._imagesPath])
+    if(!res.result) pub.showOutput(res)
+  }
 
   exportArtboards() {        
     
+    // Collect artboards and prepare caches
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
     this.artboardsDictName = this.getArtboardsDictName();    
@@ -412,10 +422,13 @@ class Exporter {
       layerResizer.resizeLayers(this)
     }    
 
+    // Copy static resources
     this.copyResources();
+
+    // Build main HTML file
     this.createMainHTML();
 
-    // try to collect all hotspots into single dictionay
+    // Build Story.js with hotspots  
     this.generateJSStoryBegin();
     let index = 0;
 
@@ -426,7 +439,10 @@ class Exporter {
 
 
     this.generateJSStoryEnd();
-  }
+
+    // Build image small previews for Gallery
+    this.buildPreviews()
+  }  
 
   prepareOutputFolder(selectedPath) {
     this.log("prepareOutputFolder()");

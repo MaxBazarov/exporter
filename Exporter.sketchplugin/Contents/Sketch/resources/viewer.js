@@ -371,7 +371,7 @@ function createViewer(story, files) {
 			}
 
 			// create new img			
-			var hasRetinaImages = $.inArray(2, story.resolutions) != -1; 
+			var hasRetinaImages = story.hasRetina
 			var imageURI = hasRetinaImages && this.isHighDensityDisplay() ? page.image2x : page.image;	
 
 			var isOverlay = page.type==="overlay";
