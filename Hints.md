@@ -12,6 +12,8 @@ You can replace it with some your own information, for example — you can show 
 The following command uses "sed" tool.
 
 	sed -i '' "s/<!--VERSION-->/(v123)/g" "index.html"
+	
+In the same way you can add inject your own CSS file by locating to <!--HEAD_INJECT--> code.
 
 
 ## [Hint 2](#hint2): How to set external link for overrided symbol hotspot 
