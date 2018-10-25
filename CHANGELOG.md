@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 3.1.0 (25 Oct 2018)
+- Optimized Gallery (pre-generate preview images)
+
 ##  Version 3.0.0 (23 Oct 2018)
 - Totally refactored hotspot calculation engine to support any Symbol properties overrides
 
