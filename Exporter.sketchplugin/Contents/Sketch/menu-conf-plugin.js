@@ -17,6 +17,8 @@ var onRun = function(context) {
   const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
+  const saveJSON = Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
   if(commentsURL==undefined) commentsURL = ''
   let googleCode = Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
@@ -32,6 +34,7 @@ var onRun = function(context) {
   dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
+  dialog.addCheckbox("savejson","Dump layers into JSON file", saveJSON)
 
   dialog.addTextInput("googleCode","Google Code", googleCode,'e.g. UA-XXXXXXXX-X')  
 
@@ -45,6 +48,7 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.inputs['comments'].stringValue()+"")    
     Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.inputs['googleCode'].stringValue()+"")    
     Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.inputs['hidenav'].state() != 1)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_SAVE_JSON, dialog.inputs['savejson'].state() == 1)     
   }
   dialog.finish()
 

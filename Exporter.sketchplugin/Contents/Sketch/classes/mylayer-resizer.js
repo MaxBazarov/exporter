@@ -26,7 +26,7 @@ class MyLayerResizer {
     }
     
     resizeLayers(exporter){
-        log( "--- RESIZE LAYERS ---")
+        log( " resizeLayers: running...")
 
         this.e = exporter
         this.childFinder = new ChildFinder(exporter)
@@ -34,7 +34,7 @@ class MyLayerResizer {
 
         this._resizeLayers(exporter.myLayers)        
 
-        log( "--- /RESIZE LAYERS ---")
+        log( " resizeLayers: done!")
     }
 
 
@@ -108,6 +108,13 @@ class MyLayerResizer {
         ///
         this._resizeLayers(l.childs,topOffset,prefix,lostOverrides)
 
+        // need to cleanup temp object to allow dump it into JSON
+        // but keep nlayer because Exporter.exportImage() needs it
+        l.symbolMaster = undefined
+        l.tempOverrides = undefined
+        l.slayer = undefined
+        //l.nlayer = undefined
+        l.customLink = undefined
     }
 
     _processLayerLinks(l,prefix,lostOverrides){

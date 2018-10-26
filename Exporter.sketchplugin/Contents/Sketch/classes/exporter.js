@@ -19,6 +19,27 @@ var getArtboardGroupsInPage = function(page, context, includeNone = true) {
   return Utils.getArtboardGroups(artboards, context);  
 }
 
+/*
+Object.prototype.getConstructorName = function () {
+  var str = (this.prototype ? this.prototype.constructor : this.constructor).toString();
+  var cname = str.match(/function\s(\w*)/)[1];
+  var aliases = ["", "anonymous", "Anonymous"];
+  return aliases.indexOf(cname) > -1 ? "Function" : cname;
+}*/
+
+
+const replaceValidKeys = ["name","frame","x","y","width","height","childs"]
+function replacer(key, value) {
+  // Pass known keys and array indexes
+  if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
+    //log("VALID "+key)
+    return value
+  }    
+  //log("INVALID "+key)
+  return undefined
+}
+
+
 class Exporter {
 
   constructor(selectedPath, doc, page, exportOptions,context) {       
@@ -200,10 +221,6 @@ class Exporter {
   pushArtboardIntoJSStory(artboard,index) {
     const mainName = artboard.name;
 
-    const isOverlay = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.ARTBOARD_OVERLAY)==1;
-    const annotations = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.LAYER_ANNOTATIONS)
-    const externalArtboardURL = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.LAYER_EXTERNAL_LINK);
-
     this.log("process main artboard "+mainName);
 
     let js = index?',':'';
@@ -218,14 +235,9 @@ class Exporter {
       '"height": '+artboard.frame.height+',\n'+
       '"title": "'+Utils.quoteString(mainName)+'",\n';
 
-    if(annotations && annotations!=''){
-      js += '"annotations": `'+annotations+'`,\n'
-    }
-
-    if(isOverlay){
+    if(artboard.isOverlay){
       js += "'type': 'overlay',\n";
-      const isOverlayShadow = this.Settings.layerSettingForKey(artboard.slayer,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1;
-      js += "'overlayShadow': "+(isOverlayShadow?1:0)+",\n";
+      js += "'overlayShadow': "+(artboard.isOverlayShadow?1:0)+",\n";
 
     }else{
       js += "'type': 'regular',\n";
@@ -301,16 +313,17 @@ class Exporter {
     this.context.document.saveArtboardOrSlice_toFile(slice, imagePath);
   }
 
-  exportImages(artboard) {
-    this.log("exportImages()");
+  exportArtboardImages(artboard) {
+    log("  exportArtboardImages: running... "+artboard.name)
 
     this.exportImage(artboard, 1, this._imagesPath + this.getArtboardImageName(artboard, 1));
     if (this.retinaImages) {
       this.exportImage(artboard, 2, this._imagesPath + this.getArtboardImageName(artboard, 2));
     }
+
+    log("  exportArtboardImages: done!")
   
   }
-
 
 
   getArtboardGroups(context) {
@@ -396,16 +409,58 @@ class Exporter {
       
   }
 
+  exportImages(){
+    log(" exportImages: running...")
+    let index = 0;
+
+    this.myLayers.forEach(function (artboard) {
+      this.exportArtboardImages(artboard);
+      this.pushArtboardIntoJSStory(artboard,index++);
+    }, this);
+    log(" exportImages: done!")
+  }
+
   buildPreviews(){
+    log(" buildPreviews: running...")
     const pub = new Publisher(this.context,this.context.document);
     pub.setScriptName("resize.sh")
     pub.copyScript()
     const res = pub.runScriptWithArgs([this._imagesPath])
-    if(!res.result) pub.showOutput(res)
+    log(" buildPreviews: done!")
+    if(!res.result) pub.showOutput(res)    
+  }
+
+  createResourceFile(fileName){
+    return this.prepareFilePath(this._outputPath + "/" + Constants.RESOURCES_DIRECTORY,fileName);
+  }
+
+  generateJSStoryEnd(){
+    this.jsStory += 
+     '   ]\n,'+
+     '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
+     '"title": "'+this.docName+'",\n'+
+     '"highlightLinks": false\n'+
+    '}\n';
+
+    const pathStoryJS = this.createResourceFile('story.js')
+    Utils.writeToFile(this.jsStory, pathStoryJS)
+  }
+
+  saveToJSON(){
+    if( this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)!=1) return true
+
+    log(" SaveToJSON: running...")
+    const layersJSON = JSON.stringify(this.myLayers,replacer)
+    const pathJSFile = this.createResourceFile('layers.json')
+    Utils.writeToFile(layersJSON, pathJSFile)
+    log(" SaveToJSON: done!")
+
+    return true
   }
 
   exportArtboards() {        
-    
+    log("exportArtboards: running...")
+
     // Collect artboards and prepare caches
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
@@ -432,16 +487,19 @@ class Exporter {
     this.generateJSStoryBegin();
     let index = 0;
 
-    this.myLayers.forEach(function (artboard) {
-      this.exportImages(artboard);
-      this.pushArtboardIntoJSStory(artboard,index++);
-    }, this);
-
+    // Export every artboard into PNG image
+    this.exportImages()
 
     this.generateJSStoryEnd();
 
     // Build image small previews for Gallery
     this.buildPreviews()
+
+    // Dump document layers to JSON file
+    this.saveToJSON()
+
+    log("exportArtboards: done!")
+
   }  
 
   prepareOutputFolder(selectedPath) {

@@ -28,7 +28,8 @@ var SettingKeys = {
   PLUGIN_COMMENTS_URL: "commentsURL",
   PLUGIN_GOOGLE_CODE: "googleCode",
   PLUGIN_EXPORT_MODE: "exportMode",
-  PLUGIN_HIDE_NAV: "hideNavigation",     
+  PLUGIN_HIDE_NAV: "hideNavigation",    
+  PLUGIN_SAVE_JSON: "plugninSaveJSON",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
 

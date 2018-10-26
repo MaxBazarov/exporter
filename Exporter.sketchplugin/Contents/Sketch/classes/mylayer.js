@@ -8,7 +8,7 @@ Sketch = require('sketch/dom')
 class MyLayer {
     // nlayer: ref to native MSLayer Layer
     // myParent: ref to parent MyLayer
-    constructor(nlayer,myParent,) {
+    constructor(nlayer,myParent) {
         this.nlayer = nlayer
         this.name = nlayer.name() + ""
         this.parent = myParent
@@ -40,6 +40,12 @@ class MyLayer {
         this.tempOverrides = undefined        
     }
 
+    initArtboard(exporter){
+        this.isOverlay = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY)==1
+        this.externalArtboardURL = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.LAYER_EXTERNAL_LINK)
+        this.isOverlayShadow = this.isOverlay  && exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1        
+    }
+
 }
 
 class MyLayerCollector {
@@ -47,9 +53,9 @@ class MyLayerCollector {
     }
     
     collectArtboardsLayers(exporter){        
+        log( " collectArtboardsLayers: running...")
         this.e = exporter
-        this.childFinder = new ChildFinder(exporter)
-        this.e.log( "--- COLLECT LAYERS ---")
+        this.childFinder = new ChildFinder(exporter)        
         const myLayers = []
         exporter.artboardGroups.forEach(function (artboardGroup) {
             const artboard = artboardGroup[0].artboard;
@@ -57,13 +63,14 @@ class MyLayerCollector {
         }, this);
 
         exporter.myLayers = myLayers
-        this.e.log( "--- /COLLECT LAYERS ---")
+        log( " collectArtboardsLayers: done!")
     }
 
     getCollectLayer(prefix,nlayerOrg,myParent,symbolOverrides){
         let nlayer = nlayerOrg
         
         const myLayer = new MyLayer(nlayer,myParent) 
+        if(myLayer.isArtboard) myLayer.initArtboard(this.e)
 
         let newMaster = undefined
 
