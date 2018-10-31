@@ -235,12 +235,19 @@ class Exporter {
       '"height": '+artboard.frame.height+',\n'+
       '"title": "'+Utils.quoteString(mainName)+'",\n';
 
+    if(artboard.disableAutoScroll){
+      js += "'disableAutoScroll': "+(artboard.disableAutoScroll?'true':'false')+",\n";
+    }
+
     if(artboard.isOverlay){
       js += "'type': 'overlay',\n";
       js += "'overlayShadow': "+(artboard.isOverlayShadow?1:0)+",\n";
-
     }else{
       js += "'type': 'regular',\n";
+    }
+
+    if(false && artboard.fixedLayers!=undefined){s
+      js += this.pushFixedLayersIntoJSStory(artboard)      
     }
 
     // build flat link array
@@ -258,6 +265,18 @@ class Exporter {
     js += ']}\n';
 
     this.jsStory += js;
+  }
+
+
+  pushFixedLayersIntoJSStory(artboard) {
+    let js = ""
+    for(var l of artboard.fixedLayers){
+      // we can handle only top-pinnded layers for now
+      if(l.frame.y==0){
+        js += "'fixedTopHeight': "+l.frame.height+",\n";
+      }
+    }
+    return js
   }
 
   pushHotspotIntoJSStory(hotspot) {

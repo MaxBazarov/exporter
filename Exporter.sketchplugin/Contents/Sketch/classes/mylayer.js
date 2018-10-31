@@ -16,6 +16,7 @@ class MyLayer {
         this.originalID = undefined
         this.symbolMaster = undefined
         this.slayer = Sketch.fromNative(nlayer)
+        this.artboard = myParent ? myParent.artboard : this
     
         // define type    
         this.isArtboard = false
@@ -31,6 +32,7 @@ class MyLayer {
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
 
+        this.fixedLayers = undefined // list of layers which are configured as fixed
         this.childs = []  
         this.hotspots = [] 
         
@@ -38,12 +40,23 @@ class MyLayer {
         this.orgFrame = undefined
         
         this.tempOverrides = undefined        
+        
+        if(nlayer.isFixedToViewport())
+            this.addSelfAsFixedLayerToArtboad()        
     }
 
     initArtboard(exporter){
         this.isOverlay = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY)==1
         this.externalArtboardURL = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.LAYER_EXTERNAL_LINK)
-        this.isOverlayShadow = this.isOverlay  && exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1        
+        this.isOverlayShadow = this.isOverlay  && exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1     
+        this.disableAutoScroll = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
+    }
+
+    addSelfAsFixedLayerToArtboad(){
+        // init fixed layers array for parent
+        if(this.artboard.fixedLayers==undefined)
+            this.artboard.fixedLayers = []
+        this.artboard.fixedLayers.push(this)
     }
 
 }

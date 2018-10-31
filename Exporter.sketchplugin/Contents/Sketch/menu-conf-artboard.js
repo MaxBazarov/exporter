@@ -22,9 +22,10 @@ var onRun = function(context) {
 
   const enabledOverlay = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY)==1
   const enabledOverlayShadow = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1
+  const enableAutoScroll = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)!=1
 
   //
-  const dialog = new UIDialog("Artboard Settings",NSMakeRect(0, 0, 300, 200),"Save","Configure exporting options for the selected artboard. ")
+  const dialog = new UIDialog("Artboard Settings",NSMakeRect(0, 0, 300, 240),"Save","Configure exporting options for the selected artboard. ")
 
   dialog.addCheckbox("enable_overlay","Enable overlay", enabledOverlay)
   dialog.addHint("Determines whether artboard will be shown as an overlay over a previous artboard.")
@@ -32,11 +33,16 @@ var onRun = function(context) {
   dialog.addCheckbox("enable_shadow","Show overlay shadow", enabledOverlayShadow)
   dialog.addHint("Dim a previous artboard to set visual focus on an overlay.")
 
+  dialog.addCheckbox("enableAutoScroll","Scroll browser page to top", enableAutoScroll)
+  dialog.addHint("The artboard will be scrolled on top after showing")
+
+
   //
 
   if(dialog.run()){
     Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY, dialog.inputs['enable_overlay'].state() == 1)    
     Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_SHADOW, dialog.inputs['enable_shadow'].state() == 1)    
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, dialog.inputs['enableAutoScroll'].state() != 1)    
   }
   dialog.finish()
 

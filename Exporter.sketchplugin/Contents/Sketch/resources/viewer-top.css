@@ -1,4 +1,4 @@
-#container, #content {
+#container, #content, #header {
 	text-align: center;
 	margin: 0 auto;		
 }
@@ -19,4 +19,11 @@
 	margin-top: 0 auto; 
 	margin-bottom: auto;
 	align-items: center;	
+}
+
+#header{
+	position: fixed;
+	z-index: 10;
+	background: #555;
+  	color: #f1f1f1;
 }
