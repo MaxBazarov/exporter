@@ -1,3 +1,15 @@
+async function createCache(viewer){
+	var pages = story.pages;
+	var cache = []
+	for(var i = 0; i < pages.length; i ++) {
+		var img = viewer.createImage(i)
+		img.trigger('load');
+		cache.push(img);
+	}
+	viewer.cache = cache;
+	viewer.cacheReady = true;	
+}
+
 function createViewer(story, files) {
 	return {
 		highlightLinks: story.highlightLinks,
@@ -16,7 +28,7 @@ function createViewer(story, files) {
 			this.createImageMaps();
 			this.addHotkeys();
 			this.initializeHighDensitySupport();
-			this.createCache();
+			createCache(this);
 		},
 		createCache: async function(){
 			var pages = story.pages;
@@ -420,20 +432,15 @@ function createViewer(story, files) {
 			}).attr('width', page.width).attr('height', page.height);
 			*/
 			
-			
-			img.one('load', function() {	
-				if(hideLast) viewer.refresh_hide_last_image(pageIndex);				
-				img.appendTo(isOverlay?contentOverlay:content);				
-				img.maphilight({
-					alwaysOn: highlight,
-					stroke: false,
-					fillColor: 'FFC400',
-					fillOpacity: 100.0/255
-				});				
-			}).each(function() {
-				$(this).trigger('load');
-			});					
-
+			if(hideLast) viewer.refresh_hide_last_image(pageIndex);				
+			img.appendTo(isOverlay?contentOverlay:content);				
+			img.maphilight({
+				alwaysOn: highlight,
+				stroke: false,
+				fillColor: 'FFC400',
+				fillOpacity: 100.0/255
+			});				
+		
 			var top = $('#header');
 			if(page.fixedTopHeight!=undefined){				
 				top.removeClass('hidden');	
