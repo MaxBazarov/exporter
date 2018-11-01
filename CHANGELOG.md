@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 3.3.0 (1 Nov 2018)
+- Added page images preloading
+- Hide navigation global plugin setting can be overwritten for specific document
+
 ##  Version 3.2.0 (21 Oct 2018)
 - Added artboard autoscroll to top (can be disable for some artboard in Configure Artboard)
 - Experimental export into JSON (enable in Configure Plugin)
