@@ -204,7 +204,10 @@ class Exporter {
 
     let position = this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION)
     const isPositionCenter = position === Constants.POSITION_CENTER
-    let hideNav = this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
+    
+    const docHideNav = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_CUSTOM_HIDE_NAV)
+    let hideNav = docHideNav==undefined||docHideNav==0?this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1 : docHideNav==2
+
     let commentsURL = this.Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
     if(commentsURL==undefined) commentsURL = ''
     let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)

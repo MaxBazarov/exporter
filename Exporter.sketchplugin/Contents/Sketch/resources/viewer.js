@@ -8,6 +8,7 @@ function createViewer(story, files) {
 		prevPageOverlayIndex : -1,
 		backStack: [],
 		cache: [],
+		cacheReady: false,
 		urlLastIndex: -1,
 		files: files,
 
@@ -15,6 +16,15 @@ function createViewer(story, files) {
 			this.createImageMaps();
 			this.addHotkeys();
 			this.initializeHighDensitySupport();
+			this.createCache();
+		},
+		createCache: async function(){
+			var pages = story.pages;
+			for(var i = 0; i < pages.length; i ++) {
+				var img = this.createImage(i)
+				this.cache.push(img);
+			}
+			this.cacheReady = true;
 		},
 		initializeHighDensitySupport: function() {
 			if (window.matchMedia) {
@@ -363,6 +373,22 @@ function createViewer(story, files) {
 			this.refresh_recreate_img(this.currentPage);			
 		},
 
+		createImage: function(pageIndex){
+			var page = story.pages[pageIndex];
+
+			var hasRetinaImages = story.hasRetina
+			var imageURI = hasRetinaImages && this.isHighDensityDisplay() ? page.image2x : page.image;	
+
+			var img = $('<img/>', {
+				id : "img_"+pageIndex,
+				src : encodeURIComponent(files) + '/' + encodeURIComponent(imageURI),
+				usemap: '#map' + pageIndex,
+			}).attr('width', page.width).attr('height', page.height);
+
+			return img;
+
+		},
+
 		refresh_recreate_img: function(pageIndex,hideLast=false){
 			var page = story.pages[pageIndex];
 				
@@ -384,12 +410,15 @@ function createViewer(story, files) {
 			var highlight = this.highlightLinks;	
 			var viewer = this;	
 
+			img = this.cacheReady?this.cache[pageIndex]:this.createImage(pageIndex)
 
+			/*
 			img = $('<img/>', {
 				id : "img_"+pageIndex,
 				src : encodeURIComponent(files) + '/' + encodeURIComponent(imageURI),
 				usemap: '#map' + pageIndex,
 			}).attr('width', page.width).attr('height', page.height);
+			*/
 			
 			
 			img.one('load', function() {	
