@@ -40,7 +40,6 @@ var SettingKeys = {
   DOC_EXPORTING_URL: "docExportingURL",
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
-  DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
 
   LAYER_ANNOTATIONS: "layerAnnotations",   
   LAYER_EXTERNAL_LINK: "externalLink",  
