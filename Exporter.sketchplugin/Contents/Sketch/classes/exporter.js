@@ -229,6 +229,7 @@ class Exporter {
     let js = index?',':'';
     js +=
       '{\n'+
+      '"index": '+index+',\n'+
       '"image": "'+ Utils.quoteString(Utils.toFilename(mainName+'.png',false))+'",\n'
     if(this.retinaImages)
       js +=
@@ -249,7 +250,7 @@ class Exporter {
       js += "'type': 'regular',\n";
     }
 
-    if(false && artboard.fixedLayers!=undefined){s
+    if(artboard.fixedLayers!=undefined){
       js += this.pushFixedLayersIntoJSStory(artboard)      
     }
 
@@ -271,14 +272,28 @@ class Exporter {
   }
 
 
-  pushFixedLayersIntoJSStory(artboard) {
-    let js = ""
+  pushFixedLayersIntoJSStory(artboard) {    
+    let js = "'fixedPanels': {\n";
+    let type = "";
+
     for(var l of artboard.fixedLayers){
-      // we can handle only top-pinnded layers for now
-      if(l.frame.y==0){
-        js += "'fixedTopHeight': "+l.frame.height+",\n";
+      if(l.frame.y==0 && l.frame.height==artboard.frame.height){   
+        type = "left";
       }
+      // handle the only one top-pinnded layers for now
+      if(l.frame.y==0 && l.frame.width==artboard.frame.width){
+        type = "top";
+      }
+        
+      js += "'"+type + "':"+ "{\n";
+      js += " 'width':"+l.frame.width+",\n";
+      js += " 'height':"+l.frame.height+",\n";
+      js += " 'type':'"+type+"'";
+      js += "},";
     }
+
+    js += "},\n";
+    
     return js
   }
 

@@ -1,14 +1,4 @@
-async function createCache(viewer){
-	var pages = story.pages;
-	var cache = []
-	for(var i = 0; i < pages.length; i ++) {
-		var img = viewer.createImage(i)
-		img.trigger('load');
-		cache.push(img);
-	}
-	viewer.cache = cache;
-	viewer.cacheReady = true;	
-}
+
 
 function createViewer(story, files) {
 	return {
@@ -19,24 +9,14 @@ function createViewer(story, files) {
 		currentPageOverlay : false,
 		prevPageOverlayIndex : -1,
 		backStack: [],
-		cache: [],
-		cacheReady: false,
 		urlLastIndex: -1,
 		files: files,
+		fixedPanelTypes:['left','top'],
 
 		initialize: function() {
 			this.createImageMaps();
 			this.addHotkeys();
-			this.initializeHighDensitySupport();
-			createCache(this);
-		},
-		createCache: async function(){
-			var pages = story.pages;
-			for(var i = 0; i < pages.length; i ++) {
-				var img = this.createImage(i)
-				this.cache.push(img);
-			}
-			this.cacheReady = true;
+			this.initializeHighDensitySupport();			
 		},
 		initializeHighDensitySupport: function() {
 			if (window.matchMedia) {
@@ -214,6 +194,9 @@ function createViewer(story, files) {
 				this.lastRegularPage = index;				
 			}
 
+			// handle panel with fixed top and left posititons
+			this.switch_fixed_panels(newPage)
+
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
 			
@@ -328,8 +311,8 @@ function createViewer(story, files) {
 		},
 
 		refresh_show_or_create_img: function(pageIndex,hideLast=false){
-			var img = $('#img_'+pageIndex);
 			var page = story.pages[pageIndex];
+			var img = page.imageObj;
 			var isOverlay = page.type==="overlay";
 			
 			if(isOverlay){
@@ -337,11 +320,11 @@ function createViewer(story, files) {
 				contentOverlay.width(page.width);
 			}
 				
-			if(img.length){			
+			if(img){			
 				if(hideLast) this.refresh_hide_last_image(pageIndex);			
 				img.parent().removeClass('hidden');
 			}else{
-				this.refresh_recreate_img(pageIndex,hideLast);
+				this.create_img(pageIndex,hideLast);
 			}			
 		},
 
@@ -381,88 +364,48 @@ function createViewer(story, files) {
 		},
 
 		refresh: function(){
-
-			this.refresh_recreate_img(this.currentPage);			
+			reloadAllPageImages()
+			this.create_img(this.currentPage);			
 		},
 
-		createImage: function(pageIndex){
+		create_img: function(pageIndex,hideLast=false){
+			if(hideLast) viewer.refresh_hide_last_image(pageIndex);		
 			var page = story.pages[pageIndex];
-
-			var hasRetinaImages = story.hasRetina
-			var imageURI = hasRetinaImages && this.isHighDensityDisplay() ? page.image2x : page.image;	
-
-			var img = $('<img/>', {
-				id : "img_"+pageIndex,
-				src : encodeURIComponent(files) + '/' + encodeURIComponent(imageURI),
-				usemap: '#map' + pageIndex,
-			}).attr('width', page.width).attr('height', page.height);
-
-			return img;
-
+			loadPageImages(page,force=false,visible=true)									
 		},
 
-		refresh_recreate_img: function(pageIndex,hideLast=false){
-			var page = story.pages[pageIndex];
-				
-			// remove old
-			var img = $('#img_' + pageIndex);	
-			if(img.length){
-				img.parent().remove();
-				img = null;
+		switch_fixed_panels(page){		
+			return //temporary disables
+			for(var panelType of viewer.fixedPanelTypes){
+				var panel =  page.fixedPanels[panelType];
+				if(panel==undefined){
+					$("fixed_"+panelType).empty();
+				}else{
+					loadPageImages(page)
+					this._switch_fixed_panel(page,panel);
+				}
 			}
-
-			// create new img			
-			var hasRetinaImages = story.hasRetina
-			var imageURI = hasRetinaImages && this.isHighDensityDisplay() ? page.image2x : page.image;	
-
-			var isOverlay = page.type==="overlay";
-			
-			var content = $('#content');
-			var contentOverlay = $('#content-overlay');		
-			var highlight = this.highlightLinks;	
-			var viewer = this;	
-
-			img = this.cacheReady?this.cache[pageIndex]:this.createImage(pageIndex)
-
-			/*
-			img = $('<img/>', {
-				id : "img_"+pageIndex,
-				src : encodeURIComponent(files) + '/' + encodeURIComponent(imageURI),
-				usemap: '#map' + pageIndex,
-			}).attr('width', page.width).attr('height', page.height);
-			*/
-			
-			if(hideLast) viewer.refresh_hide_last_image(pageIndex);				
-			img.appendTo(isOverlay?contentOverlay:content);				
-			img.maphilight({
-				alwaysOn: highlight,
-				stroke: false,
-				fillColor: 'FFC400',
-				fillOpacity: 100.0/255
-			});				
-		
-			var top = $('#header');
-			if(page.fixedTopHeight!=undefined){				
-				top.removeClass('hidden');	
-				top.height(page.fixedTopHeight);
-				top.width(page.width);				
-
-				var topImg = $('<img/>', {
-					id : "img_top_"+pageIndex,
-					src : encodeURIComponent(files) + '/' + encodeURIComponent(imageURI),
-				}).attr('width', page.width).attr('height', page.fixedTopHeight);
-								
-				topImg.one('load', function() {	
-					topImg.appendTo(top);							
-				}).each(function() {
-					$(this).trigger('load');
-				});					
-			}else{
-				top.addClass('hidden');	
-				top.innerHTML = ""
-			}
-
 		},
+
+		_switch_fixed_panel: function(page,panel){
+
+			var panelDiv = $("fixed_"+panel.id);
+			var panelBackDiv =$("fixed_"+panel.id+"_back");
+			
+			panelDiv.removeClass('hidden');	
+			panelDiv.height(panel.height);
+			panelDiv.width(panel.width);				
+
+			var panelImg = panel.imageObj;
+			panelImg.appendTo(panelDiv);		
+
+			panelBackDiv.removeClass('hidden');	
+			panelBackDiv.height(panel.height);
+			panelBackDiv.width(panel.width);			
+		},
+
+
+
 		next : function() {
 			if (this.hasNext(this.currentPage)){
 				const index = this.currentPage + 1;				
@@ -531,6 +474,14 @@ function addRemoveClass(mode, el, cls) {
 
 
 $(document).ready(function() {
+	var hash = location.hash;
+	if(hash == null || hash.length == 0)
+		hash = '#';
+	hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
+	
+	
+	var pageName = decodeURIComponent(hash.substring(1));
+
 	viewer.initialize();
 	gallery.initialize();
 	
@@ -538,13 +489,8 @@ $(document).ready(function() {
 		$('body').removeClass('screen');
 	}
 	
-	var hash = location.hash;
-	if(hash == null || hash.length == 0)
-		hash = '#';
-	hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
-	
-	var page = decodeURIComponent(hash.substring(1));
-	viewer.goTo(page);
+	viewer.goTo(pageName);
+	preloadAllPageImages();
 	
 	$(window).hashchange(function(e) {
 		var hash = location.hash;
