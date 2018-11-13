@@ -7,6 +7,7 @@
 - Fixed external URL artbords
 - Totally improved image preloading
 - Added image preloading process indicator
+- Added limited support for "fixed position while scrolling" (https://github.com/MaxBazarov/exporter/tree/master/tests/FixeLayers)
 
 ##  Version 3.3.1 (2 Nov 2018)
 - Rollbacked code to 3.2.0 (3.3.0 was too buggy)
