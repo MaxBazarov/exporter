@@ -2,16 +2,20 @@
 
 A Sketch plugin that exports Sketch artboards into clickable HTML file. 
 
-Features:
+Exporter Features:
 - Single HTML file with links highlighting
 - Show artboard as an overlay over a previous artboard  /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Link-ModalArtboard.png), [Example](https://github.com/MaxBazarov/exporter/raw/master/tests/Link-ModalArtboard.sketch)
 - Support for Sketch-native links (including Back links, cross-page links, links inside Symbols and overrided hotspot links)
 - Support for external links / [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint2)
+- Limited support for layers with fixed position (only left and top panels)
 - Skips pages and artboards with * prefix 
 - Ability to insert Google counter
-- Ability to hide navigation controls
-- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
-- Publishing to external site by SFTP / **New in 2.0.0**
+- Ability to hide navigation controls and hotspot highlighting
+- Publishing to external site by SFTP
+
+Viewer features:
+- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png
+- Async pre-loading of document pages
 
 [Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
 
