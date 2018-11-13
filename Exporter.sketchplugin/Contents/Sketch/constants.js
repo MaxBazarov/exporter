@@ -5,6 +5,7 @@ var Constants = {
   LAYER_LOGGING: false,
   LOGGING: false,
   IMAGES_DIRECTORY: "images/",
+  VIEWER_DIRECTORY: "viewer/",
   RESOURCES_DIRECTORY: "resources/",
   PLUGIN_IDENTIFIER: "com.cloudblue.sketch.exporter",
   POSITION_DEFAULT:0,
@@ -29,7 +30,8 @@ var SettingKeys = {
   PLUGIN_GOOGLE_CODE: "googleCode",
   PLUGIN_EXPORT_MODE: "exportMode",
   PLUGIN_HIDE_NAV: "hideNavigation",    
-  PLUGIN_SAVE_JSON: "plugninSaveJSON",     
+  PLUGIN_DISABLE_HOTSPOTS: "pluginDisableHotspots",    
+  PLUGIN_SAVE_JSON: "pluginSaveJSON",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
 
@@ -40,6 +42,7 @@ var SettingKeys = {
   DOC_EXPORTING_URL: "docExportingURL",
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
+  DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
 
   LAYER_ANNOTATIONS: "layerAnnotations",   
   LAYER_EXTERNAL_LINK: "externalLink",  

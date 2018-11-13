@@ -7,7 +7,7 @@
   "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "3.3.1",
+  "version" : "3.4.0",
   "icon": "icon.png",
   "commands" : [   
     {
@@ -21,6 +21,12 @@
       "handler" : "onRun",
       "name" : "Configure Artboard",
       "identifier" : "confArtboard"
+    },  
+    {
+      "script" : "menu-conf-document.js",
+      "handler" : "onRun",
+      "name" : "Configure Document",
+      "identifier" : "confDocument"
     },  
     {
       "script" : "menu-conf-plugin.js",
@@ -63,6 +69,7 @@
       "-",
       "externalLink",
       "confArtboard",      
+      "confDocument",
       "-",
       "confPlugin"
     ]

@@ -1,5 +1,13 @@
 # Change Log
 
+##  Version 3.4.0 (13 Nov 2018)
+- Added plugun settting to disable hotspots highlighting
+- Changed hotspot higlighting color
+- Many internal improvements
+- Fixed external URL artbords
+- Totally improved image preloading
+- Added image preloading process indicator
+
 ##  Version 3.3.1 (2 Nov 2018)
 - Rollbacked code to 3.2.0 (3.3.0 was too buggy)
 

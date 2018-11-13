@@ -1,6 +1,11 @@
-#container, #content, #header {
+#container{
 	text-align: center;
-	margin: 0 auto;		
+    margin: 0 auto;	
+}
+
+#content,#map{
+	text-align: center;
+    margin: 0 auto;	    
 }
 
 #content-shadow {
@@ -19,11 +24,4 @@
 	margin-top: 0 auto; 
 	margin-bottom: auto;
 	align-items: center;	
-}
-
-#header{
-	position: fixed;
-	z-index: 10;
-	background: #555;
-  	color: #f1f1f1;
 }

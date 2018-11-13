@@ -30,16 +30,16 @@ prepareMockups()
 	echo "-- prepare temp folder"
 	cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}${ver}/"
 	# inject version
-	sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/resources/viewer.js"	
-	sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/resources/story.js"
-	sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/resources/story.js"	
+	sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
+	sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
+	sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
 	
 	if [ "$skipLive" == "" ]; then
 		# copy version to live
 		cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}live"
-        sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})';/g" "${tmpFolder}live/resources/viewer.js"
-		sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}live/resources/story.js"
-		sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/resources/story.js"
+        sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})';/g" "${tmpFolder}live/viewer/viewer.js"
+		sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}live/viewer/story.js"
+		sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/viewer/story.js"
 
 	fi
 }

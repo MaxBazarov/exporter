@@ -1,4 +1,4 @@
-@import("classes/publisher.js")
+@import("exporter/publisher.js")
 
 var onRun = function(context) {  
 
