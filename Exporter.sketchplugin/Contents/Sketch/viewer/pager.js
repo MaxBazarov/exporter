@@ -86,7 +86,7 @@ function loadPageImages(page,force=false,visible=false){
         var panel = page.fixedPanels[panelType]
         var panelDiv = $("#fixed_"+panelType);    
 
-        panel.imageObj = loadPageOneImage(panel,page.index,'img_'+panelType+"_")     
+        panel.imageObj = loadPageOneImage(panel.transparent?page:panel,page.index,'img_'+panelType+"_")     
         panel.imageObj.addClass("hidden")   
         panel.imageObj.appendTo(panelDiv);
 	}
@@ -161,8 +161,8 @@ function pagerShowImg(img){
 function pageSwitchFixedPanels(page,show){		
     for(var panelType of viewer.fixedPanelTypes){
         var panel =  page.fixedPanels[panelType];
-        if(panel==undefined){					
-            //$("#fixed_"+panelType+"_back").addClass('hidden');	
+        if(panel==undefined){					            
+            $("#fixed_"+panelType+"_back").addClass('hidden');		
         }else{
             _pagerSwitchFixedPanel(page,panel,show);
         }
@@ -171,7 +171,7 @@ function pageSwitchFixedPanels(page,show){
 
 function _pagerSwitchFixedPanel (page,panel,show){			
     var panelDiv = $("#fixed_"+panel.type);
-    //var panelBackDiv = $("#fixed_"+panel.type+"_back");
+    var panelBackDiv = $("#fixed_"+panel.type+"_back");
 
     if(show){
         loadPageImages(page)
@@ -186,11 +186,11 @@ function _pagerSwitchFixedPanel (page,panel,show){
         
         panel.imageObj.removeClass('hidden');		
 
-        //panelBackDiv.removeClass('hidden');	
-        //panelBackDiv.height(panel.height);
-        //panelBackDiv.width(panel.width);	
+        panelBackDiv.removeClass('hidden');	
+        panelBackDiv.height(panel.height);
+        panelBackDiv.width(panel.width);	
     }else{
-        //panelBackDiv.addClass('hidden');
+        panelBackDiv.addClass('hidden');
         panel.imageObj.addClass('hidden');
     }		
 }

@@ -66,6 +66,9 @@ class MyLayer {
             return
         }
         this.fixedType = type
+
+        // detect if fixed layer is transparent or not
+        this.transparent = this.slayer.style.opacity==0
     }
 
 }

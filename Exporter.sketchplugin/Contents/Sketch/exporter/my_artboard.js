@@ -127,10 +127,12 @@ class MyArtboard extends MyLayer {
                 js += " 'width':" + l.frame.width + ",\n";
                 js += " 'height':" + l.frame.height + ",\n";
                 js += " 'type':'" + type + "'"+",\n";
-                js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + '_'+type+'.png', false)) + '",\n'
+                js += " 'transparent':" + (l.transparent?"true":"false") + ",\n";
+                const fileNamePostfix = l.transparent?"":('_'+type)
+                js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false)) + '",\n'
                 if (exporter.retinaImages)
                     js +=
-                        '"image2x": "' + Utils.quoteString(Utils.toFilename(mainName + '_'+type+'@2x.png', false)) + '",\n'                
+                        '"image2x": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false)) + '",\n'                
                 {
                     let css=""
                     for(var shadow of l.slayer.style.shadows){
@@ -262,30 +264,35 @@ class MyArtboard extends MyLayer {
     }
 
     _exportFixedLayersToImages(scales){
-        for(var layer of this.fixedLayers){
-            layer.calculateFixedType()            
-
+        for(var layer of this.fixedLayers){               
             // re-init Sketch Layer  (it was cleared before to help JSON procedure)
             if(layer.slayer==undefined)
                layer.slayer = Sketch.fromNative(layer.nlayer)
 
+            layer.calculateFixedType()         
+
             // temporary disable fixed panel shadows
             let orgShadows = layer.slayer.style.shadows
             layer.slayer.style.shadows = []            
-              
-            for(var scale of scales){                     
-                this._exportImage(scale,layer.nlayer,"_"+layer.fixedType)
-            }                 
+            
+            // for non-transparent fixed layer we need to generate its own image files
+            if(!layer.transparent){
+                for(var scale of scales){                     
+                    this._exportImage(scale,layer.nlayer,"_"+layer.fixedType)
+                }                 
+            }
 
-             // restore original fixed panel shadows
-             layer.slayer.style.shadows  = orgShadows
+            // restore original fixed panel shadows
+            layer.slayer.style.shadows  = orgShadows
         }
     }
 
-    _switchFixedLayers(hide){
+    _switchFixedLayers(hide){         
         for(var layer of this.fixedLayers){
-           // hide or show fixed panel                        
-           layer.slayer.hidden = hide
+            if(layer.transparent) continue
+
+            // hide or show fixed non-transparent panel                        
+            layer.slayer.hidden = hide
        }
     }
 
