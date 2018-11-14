@@ -313,15 +313,6 @@ hr {
 	margin: 0 auto;		
 }
 
-#fixed_top_back{
-	z-index: 5;
-	background: rgba(100,100,100,255);
-	color: #f1f1f1;
-	text-align: center;
-	margin: 0 auto;	
-	position: absolute;
-}
-
 #fixed_left{
 	position: fixed;
 	z-index: 10;
@@ -330,15 +321,6 @@ hr {
 	overflow: hidden;
 	text-align: center;
 	margin: 0 auto;		
-}
-
-#fixed_left_back{
-	z-index: 5;
-	background: rgba(100,100,100,255);
-	color: #f1f1f1;
-	text-align: center;
-	margin: 0 auto;	
-	position: absolute;
 }
 
 /*** LOADING INDICATOR ***/

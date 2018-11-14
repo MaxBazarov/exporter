@@ -58,8 +58,8 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode) {
   `;
   s += ' <div id="container">\n';
   s += ' <div id="content">\n';
-  s += ' <div id="fixed_top"></div><div id="fixed_top_back" class="hidden"></div>\n';
-  s += ' <div id="fixed_left"></div><div id="fixed_left_back" class="hidden"></div>\n';  
+  s += ' <div id="fixed_top"></div>\n';
+  s += ' <div id="fixed_left"></div>\n';  
   s += ' <div id="map_fixed_left" class="fixed_map"><img id="map_img_fixed_left" src="resources/1.png"/></div>\n';
   s += ' <div id="map_fixed_top" class="fixed_map"><img id="map_img_fixed_top" src="resources/1.png"/></div>\n';
   s += ' </div>\n'; 

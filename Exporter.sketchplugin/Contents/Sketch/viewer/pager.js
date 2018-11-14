@@ -77,27 +77,27 @@ function loadPageImages(page,force=false,visible=false){
         }).attr('width', page.width).attr('height', page.height)
         mapImage.appendTo(mapDiv)
     }
-    var img = loadPageOneImage(page,'img_')		 
+    var img = loadPageOneImage(page,page.index,'img_')		 
     page.imageObj = img
     img.appendTo(imageDiv)    
     if(!visible) imageDiv.addClass("hidden")    
 
 	for(var panelType of Object.keys(page.fixedPanels)){
         var panel = page.fixedPanels[panelType]
-        var panelDiv = $("#fixed_"+panelType);
+        var panelDiv = $("#fixed_"+panelType);    
 
-        panel.imageObj = loadPageOneImage(page,'img_'+panelType+"_")     
+        panel.imageObj = loadPageOneImage(panel,page.index,'img_'+panelType+"_")     
         panel.imageObj.addClass("hidden")   
         panel.imageObj.appendTo(panelDiv);
 	}
 }   
 
-function loadPageOneImage(page,idPrefix){
+function loadPageOneImage(page,pageIndex,idPrefix){
 	var hasRetinaImages = story.hasRetina
 	var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? page.image2x : page.image;	
 
 	var img = $('<img/>', {
-        id : idPrefix+page.index,
+        id : idPrefix+pageIndex,
 		src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),		
 	}).attr('width', page.width).attr('height', page.height);
 
@@ -162,8 +162,7 @@ function pageSwitchFixedPanels(page,show){
     for(var panelType of viewer.fixedPanelTypes){
         var panel =  page.fixedPanels[panelType];
         if(panel==undefined){					
-            //$("#fixed_"+panelType).addClass('hidden');	
-            $("#fixed_"+panelType+"_back").addClass('hidden');	
+            //$("#fixed_"+panelType+"_back").addClass('hidden');	
         }else{
             _pagerSwitchFixedPanel(page,panel,show);
         }
@@ -172,7 +171,7 @@ function pageSwitchFixedPanels(page,show){
 
 function _pagerSwitchFixedPanel (page,panel,show){			
     var panelDiv = $("#fixed_"+panel.type);
-    var panelBackDiv = $("#fixed_"+panel.type+"_back");
+    //var panelBackDiv = $("#fixed_"+panel.type+"_back");
 
     if(show){
         loadPageImages(page)
@@ -180,13 +179,18 @@ function _pagerSwitchFixedPanel (page,panel,show){
         panelDiv.height(panel.height);
         panelDiv.width(panel.width);				
 
+        if(panel.type=="left"){
+            panelDiv.css("top",panel.y+'px')
+        }
+        panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
+        
         panel.imageObj.removeClass('hidden');		
 
-        panelBackDiv.removeClass('hidden');	
-        panelBackDiv.height(panel.height);
-        panelBackDiv.width(panel.width);	
+        //panelBackDiv.removeClass('hidden');	
+        //panelBackDiv.height(panel.height);
+        //panelBackDiv.width(panel.width);	
     }else{
-        panelBackDiv.addClass('hidden');
+        //panelBackDiv.addClass('hidden');
         panel.imageObj.addClass('hidden');
     }		
 }

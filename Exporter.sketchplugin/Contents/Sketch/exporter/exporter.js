@@ -276,8 +276,7 @@ class Exporter {
     this.totalImages = 0
 
     for(var artboard of this.myLayers){
-      artboard.exportImages();
-      artboard.pushIntoJSStory(index++);
+      artboard.export(index++);    
     }
     log(" exportImages: done!")
   }

@@ -50,6 +50,24 @@ class MyLayer {
         this.artboard.fixedLayers.push(this)
     }
 
+    calculateFixedType(){              
+     
+        // Dirty code to detect a type of layer with fixed position
+        let type = "";
+        if (this.frame.width < this.frame.height) {
+            type = "left";
+        }
+        // handle the only one top-pinnded layers for now
+        if (this.frame.width > this.frame.height) {
+            type = "top";
+        }
+        if (type == "") {
+            exporter.logError("addSelfAsFixedLayerToArtboad: can't understand fixed panel type for artboard '" + this.artboard + "' layer='" + this.name + "' layer.frame=" + this.frame + " artboard.frame=" + this.artboard.frame)
+            return
+        }
+        this.fixedType = type
+    }
+
 }
 
 class MyLayerCollector {
