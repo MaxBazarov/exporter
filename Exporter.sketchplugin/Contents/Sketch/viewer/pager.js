@@ -181,6 +181,7 @@ function _pagerSwitchFixedPanel (page,panel,show){
 
         if(panel.type=="left"){
             panelDiv.css("top",panel.y+'px')
+            panelBackDiv.css("top",panel.y+'px')
         }
         panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
         
@@ -192,5 +193,6 @@ function _pagerSwitchFixedPanel (page,panel,show){
     }else{
         panelBackDiv.addClass('hidden');
         panel.imageObj.addClass('hidden');
+        panelDiv.css("box-shadow","none")  
     }		
 }
