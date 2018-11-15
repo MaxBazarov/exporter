@@ -37,8 +37,8 @@ You can use Sketch-native links or add links to external sites. When you're fini
 By default it will show 2x images for high pixel density screens. To turn this off uncheck `Export retina images` in Settings and re-export the page.
 
 ## Future 
-* Annotations (IN PROGRESS)
-* Commenting (IN PROGRESS)
+* Annotations
+* Commenting
 * Overlays
   * Show overlay near a mouse click position
   * Close overlays on a click outside overlay
