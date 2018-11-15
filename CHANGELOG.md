@@ -1,13 +1,17 @@
 # Change Log
 
+##  Version 3.4.1 (15 Nov 2018)
+- Supported two fixed layer usage types ((https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
+- Fixes
+
 ##  Version 3.4.0 (13 Nov 2018)
-- Added plugun settting to disable hotspots highlighting
+- Added plugin settting to disable hotspots highlighting
 - Changed hotspot higlighting color
 - Many internal improvements
 - Fixed external URL artbords
 - Totally improved image preloading
 - Added image preloading process indicator
-- Added limited support for "fixed position while scrolling" (https://github.com/MaxBazarov/exporter/tree/master/tests/FixeLayers)
+- Added limited support for "fixed position while scrolling" (https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 
 ##  Version 3.3.1 (2 Nov 2018)
 - Rollbacked code to 3.2.0 (3.3.0 was too buggy)
