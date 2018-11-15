@@ -14,7 +14,7 @@ Exporter Features:
 - Publishing to external site by SFTP
 
 Viewer features:
-- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png
+- Gallery /[Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
 - Async pre-loading of document pages
 
 [Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
