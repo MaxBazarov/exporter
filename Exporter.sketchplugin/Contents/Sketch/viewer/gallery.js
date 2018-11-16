@@ -13,6 +13,9 @@ function createGallery() {
         hide: function(){
             $('#gallery').addClass('hidden');
         },
+        isVisible: function(){
+            return ! $('#gallery').hasClass('hidden')
+        },
         toogle: function(){
             if ( $('#gallery').hasClass('hidden')) {
                 gallery.show();

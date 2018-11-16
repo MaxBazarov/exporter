@@ -286,6 +286,10 @@ hr {
 }
 
 
+area {
+    cursor: hand;
+}
+
 /*** MAPS ***/
 
 .map {

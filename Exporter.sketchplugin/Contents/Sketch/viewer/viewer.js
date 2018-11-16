@@ -33,7 +33,7 @@ function createViewer(story, files) {
         },		
         createImageMaps: function() {
 			var div = $('<div/>', {
-				'class': 'hidden'
+				'class': ''
 			});
 			var pages = story.pages;
 			for(var i = 0; i < pages.length; i ++) {
@@ -91,6 +91,14 @@ function createViewer(story, files) {
 			$(document).bind('keydown', 's', function() {
 				v.goToPage(0);
 			});
+			$(document).keydown(function(event) {
+				var ch = event.which
+				if (ch == 27) {
+					v.onKeyEscape()
+					return true;
+				}
+				return false;
+			})			
 		},
 		getPageHash: function(index) {
 			var image = story.pages[index].image;
@@ -200,6 +208,13 @@ function createViewer(story, files) {
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
 			
+
+			// Enable Escape to close overlay
+			/*if(newPage.type==="overlay"){
+				$(document).bind('keydown', 'escape return', function() {
+					this.goToPage(this.prevPageOverlayIndex)
+				});
+			}*/
 								
 		},
 
@@ -382,7 +397,20 @@ function createViewer(story, files) {
 			var page = story.pages[pageIndex];
 			loadPageImages(page,force=false,visible=true)						
 		},
-
+		onKeyEscape: function(){
+			// If gallery is enabled then close it
+			if(gallery.isVisible()){
+				gallery.toogle()
+				return
+			}
+			// If the current page is overlay then close it and go to the last non-overlay page
+			if(this.currentPageOverlay){
+				if(this.prevPageOverlayIndex>=0){
+					this.goToPage(this.prevPageOverlayIndex)
+				}
+				return
+			}
+		},
 
 		next : function() {
 			if (this.hasNext(this.currentPage)){

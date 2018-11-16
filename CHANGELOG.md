@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 3.4.2 (16 Nov 2018)
+- Fixed hotspot cursor view in Chrome
+- Added exit on Espace key from overlay pages and Gallery
+
 ##  Version 3.4.1 (15 Nov 2018)
 - Supported two fixed layer usage types ((https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 - Fixes
