@@ -125,7 +125,7 @@ class MyArtboard extends MyLayer {
                 js += " 'x':" + l.frame.x + ",\n";
                 js += " 'y':" + l.frame.y + ",\n";
                 js += " 'width':" + l.frame.width + ",\n";
-                js += " 'height':" + l.frame.height + ",\n";
+                js += " 'height':" + ("left" == type && l.transparent?this.frame.height:l.frame.height) + ",\n";
                 js += " 'type':'" + type + "'"+",\n";
                 js += " 'transparent':" + (l.transparent?"true":"false") + ",\n";
                 const fileNamePostfix = l.transparent?"":('_'+type)
@@ -205,8 +205,9 @@ class MyArtboard extends MyLayer {
         return Utils.toFilename(this.name, false) + panelPostix +  suffix + ".png";
       }
 
-    _exportImage(scale,nlayer,panelPostix="") {
-        exporter.log("exportImage()");
+    _exportImage(scale,layer,panelPostix="") {
+        exporter.log("exportImage() for "+layer.name);
+        const  nlayer = layer.nlayer
         
         const imagePath = exporter.imagesPath + this._getImageName(scale,panelPostix)
         let slice;        
@@ -224,7 +225,7 @@ class MyArtboard extends MyLayer {
 
     // new experimental code to export images
     // we don't use it because it doesn't allow to set a file name
-    _exportImage2(scales) {
+    _exportImage2(scales,slayer) {
         exporter.log("exportImage()");
         
         const imagePath = exporter.imagesPath // + this._getImageName(scales)
@@ -236,7 +237,7 @@ class MyArtboard extends MyLayer {
             'save-for-web': true, 
             formats: 'png' 
         }
-        Sketch.export(this.slayer, options)        
+        Sketch.export(slayer, options)        
         
     }
 
@@ -253,7 +254,7 @@ class MyArtboard extends MyLayer {
         this._switchFixedLayers(true)
                 
         for(var scale of scales){                     
-            this._exportImage(scale,this.nlayer)
+            this._exportImage(scale,this)
         }
         
         // show fixed panels back
@@ -278,7 +279,7 @@ class MyArtboard extends MyLayer {
             // for non-transparent fixed layer we need to generate its own image files
             if(!layer.transparent){
                 for(var scale of scales){                     
-                    this._exportImage(scale,layer.nlayer,"_"+layer.fixedType)
+                    this._exportImage(scale,layer,"_"+layer.fixedType)                    
                 }                 
             }
 

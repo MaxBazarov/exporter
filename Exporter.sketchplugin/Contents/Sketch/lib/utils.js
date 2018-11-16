@@ -11,6 +11,9 @@ Rectangle.prototype.round = function(){
 Rectangle.prototype.copy = function(){  
   return new Rectangle(this.x,this.y,this.width,this.height)
 }
+Rectangle.prototype.copyToRect = function(){  
+  return NSMakeRect(this.x,this.y,this.width,this.height)
+}
 
 class Utils {
 

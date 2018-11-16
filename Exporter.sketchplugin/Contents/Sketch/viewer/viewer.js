@@ -203,18 +203,14 @@ function createViewer(story, files) {
 			}
 
 			// handle panel with fixed top and left posititons
-			pageSwitchFixedPanels(newPage,show=true)
+			if(!this.currentPageOverlay)
+				pageSwitchFixedPanels(newPage,show=true)
 
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
 			
 
-			// Enable Escape to close overlay
-			/*if(newPage.type==="overlay"){
-				$(document).bind('keydown', 'escape return', function() {
-					this.goToPage(this.prevPageOverlayIndex)
-				});
-			}*/
+
 								
 		},
 
@@ -278,10 +274,9 @@ function createViewer(story, files) {
 			if(prevPageWasOverlay){
 				var prevImg = $('#img_'+this.prevPageIndex);
 				if(prevImg.length){
-					pagerHideImg(prevImg)
-					pageSwitchFixedPanels(story.pages[this.prevPageIndex],show=false);
+					pagerHideImg(prevImg)					
 				}
-			}	
+			}
 			
 		},
 
@@ -405,9 +400,7 @@ function createViewer(story, files) {
 			}
 			// If the current page is overlay then close it and go to the last non-overlay page
 			if(this.currentPageOverlay){
-				if(this.prevPageOverlayIndex>=0){
-					this.goToPage(this.prevPageOverlayIndex)
-				}
+				viewer.goBack()
 				return
 			}
 		},

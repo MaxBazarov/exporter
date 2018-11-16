@@ -162,7 +162,8 @@ function pageSwitchFixedPanels(page,show){
     for(var panelType of viewer.fixedPanelTypes){
         var panel =  page.fixedPanels[panelType];
         if(panel==undefined){					            
-            $("#fixed_"+panelType+"_back").addClass('hidden');		
+            $("#fixed_"+panelType).addClass('hidden');
+            $("#fixed_"+panelType+"_back").addClass('hidden');
         }else{
             _pagerSwitchFixedPanel(page,panel,show);
         }
@@ -171,20 +172,26 @@ function pageSwitchFixedPanels(page,show){
 
 function _pagerSwitchFixedPanel (page,panel,show){			
     var panelDiv = $("#fixed_"+panel.type);
-    var panelBackDiv = $("#fixed_"+panel.type+"_back");
+    var panelBackDiv = $("#fixed_"+panel.type+"_back");   
 
-    if(show){
+    if(show){       
         loadPageImages(page)
     
         panelDiv.height(panel.height);
         panelDiv.width(panel.width);				
 
         if(panel.type=="left"){
-            panelDiv.css("top",panel.y+'px')
-            panelBackDiv.css("top",panel.y+'px')
+            if(panel.transparent){
+                panelDiv.css("top",'0px')
+                panelBackDiv.css("top",'0px')
+            }else{
+                panelDiv.css("top",panel.y+'px')
+                panelBackDiv.css("top",panel.y+'px')
+            }
         }
         panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
         
+        panelDiv.removeClass('hidden');		
         panel.imageObj.removeClass('hidden');		
 
         panelBackDiv.removeClass('hidden');	
@@ -194,5 +201,7 @@ function _pagerSwitchFixedPanel (page,panel,show){
         panelBackDiv.addClass('hidden');
         panel.imageObj.addClass('hidden');
         panelDiv.css("box-shadow","none")  
+        panelDiv.css("top",'0px')
+        panelBackDiv.css("top",'0px')
     }		
 }
