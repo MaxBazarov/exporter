@@ -11,8 +11,7 @@ function createViewer(story, files) {
 		backStack: [],
 		urlLastIndex: -1,
 		files: files,
-		fixedPanelTypes:['left','top'],
-
+		
 		initialize: function() {
             this.addHotkeys();
 			this.createImageMaps();            

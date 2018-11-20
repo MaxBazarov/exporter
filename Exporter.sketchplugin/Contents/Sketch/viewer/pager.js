@@ -39,8 +39,7 @@ function reloadAllPageImages(){
 	for(var page of story.pages){        
         page.imageObj.parent().remove();        
         page.imageObj = undefined
-        for(var type of Object.keys(page.fixedPanels)){
-            var p = page.fixedPanels[type]            
+        for(var p of page.fixedPanels){
             p.imageObj.parent().remove(); 
             p.imageObj = undefined	
         }
@@ -56,6 +55,7 @@ function loadPageImages(page,force=false,visible=false){
     
     var content = $('#content');
 
+    // create main content image 
     var imageDiv = $('<div>',{class:"image_div",style:"height: "+page.height+"px; width: "+page.width+"px;"});
     page.imageDiv = imageDiv    
    
@@ -83,17 +83,17 @@ function loadPageImages(page,force=false,visible=false){
     img.appendTo(imageDiv)    
     if(!visible) imageDiv.addClass("hidden")    
 
-	for(var panelType of Object.keys(page.fixedPanels)){
-        var panel = page.fixedPanels[panelType]
+    // create fixed panel images
+	for(var panel of page.fixedPanels){
         // create Div for fixed paneli
-        var panelDiv = $("div",{
+        var panelDiv = $("<div>",{
             id:"fixed_"+page.index+"_"+panel.index,
             class:"hidden fixedPanel",
-            style:"height: "+panel.height+"px; width: "+panel.width+"px; align-top:"+panel.y+"px; align-left:"+panel.x+"px;",            
+            style:"height: "+panel.height+"px; width: "+panel.width+"px; top:"+panel.y+"px; margin-left:"+panel.x+"px;",            
         });
         panelDiv.appendTo(content);
 
-        panel.imageObj = loadPageOneImage(panel.isFloat?page:panel,page.index,'img_'+panel.index+"_")     
+        panel.imageObj = loadPageOneImage(panel.isFloat?panel:page,page.index,'img_'+panel.index+"_")     
         panel.imageObj.addClass("hidden")   
         panel.imageObj.appendTo(panelDiv);
 	}
@@ -118,16 +118,9 @@ function enablePageHotSpots(page){
     // init main area hotspots
     _pagerInitImgMap(page,$("#map_image_"+page.index),sizesFrom = page)
     // init or hide fixed are hotsposts
-    for(var panelType of viewer.fixedPanelTypes){
-        var panel =  page.fixedPanels[panelType];
-        var img = $("#map_img_fixed_"+panelType)
-        if(panel==undefined){					
-            // the page has no such fixed panel of this type
-            img.attr('usemap',"")
-        }else{
-            // the page has it
-            _pagerInitImgMap(page,img,sizesFrom = panel)        
-        }
+    for(var panel of page.fixedPanels){
+        var img = $("#map_img_fixed_"+page.index + "_"+panel.index)     
+        _pagerInitImgMap(page,img,sizesFrom = panel)        
     }
 }
 
@@ -166,20 +159,20 @@ function pagerShowImg(img){
 /////////////////////  HANDLE EVENTS IN VIEWER
 
 function pageSwitchFixedPanels(page,show){		
-    for(var panelType of viewer.fixedPanelTypes){
-        var panel =  page.fixedPanels[panelType];
-        if(panel==undefined){					            
+    for(var panel of page.fixedPanels){
+        /*if(panel==undefined){					            
             $("#fixed_"+panelType).addClass('hidden');
             $("#fixed_"+panelType+"_back").addClass('hidden');
         }else{
             _pagerSwitchFixedPanel(page,panel,show);
-        }
+        }*/
+        _pagerSwitchFixedPanel(page,panel,show);
     }
 }
 
 function _pagerSwitchFixedPanel (page,panel,show){			
-    var panelDiv = $("#fixed_"+panel.type);
-    var panelBackDiv = $("#fixed_"+panel.type+"_back");   
+    var panelDiv = $("#fixed_"+page.index + "_" + panel.index);
+    var panelBackDiv = $("#fixed_" + page.index + panel.index+"_back");   
 
     if(show){       
         loadPageImages(page)
@@ -187,7 +180,7 @@ function _pagerSwitchFixedPanel (page,panel,show){
         panelDiv.height(panel.height);
         panelDiv.width(panel.width);				
 
-        if(panel.type=="left"){
+        /*if(panel.type=="left"){
             if(panel.transparent){
                 panelDiv.css("top",'0px')
                 panelBackDiv.css("top",'0px')
@@ -195,7 +188,7 @@ function _pagerSwitchFixedPanel (page,panel,show){
                 panelDiv.css("top",panel.y+'px')
                 panelBackDiv.css("top",panel.y+'px')
             }
-        }
+        }*/
         panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
         
         panelDiv.removeClass('hidden');		

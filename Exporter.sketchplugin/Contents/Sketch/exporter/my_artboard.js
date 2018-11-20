@@ -100,7 +100,7 @@ class MyArtboard extends MyLayer {
 
 
     _pushFixedLayersIntoJSStory() {
-        let js = "'fixedPanels': {\n";
+        let js = "'fixedPanels': [\n";
 
         if (this.fixedLayers.length) {
             const mainName = this.name
@@ -111,9 +111,10 @@ class MyArtboard extends MyLayer {
                     exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     continue
                 }
+
                 exporter.totalImages++
 
-                if (foundPanels[type]) {
+                if (!l.isFloat && foundPanels[type]) {
                     exporter.logError("pushFixedLayersIntoJSStory: found more than one panel with type '" + type + "' for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     const existedPanelLayer = foundPanels[type]
                     exporter.logError("pushFixedLayersIntoJSStory: already exists panel layer='" + existedPanelLayer.name + "' layer.frame=" + existedPanelLayer.frame)
@@ -121,7 +122,7 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                js += "'" + type + "':" + "{\n";
+                js += "{\n";
                 js += " 'x':" + l.frame.x + ",\n";
                 js += " 'y':" + l.frame.y + ",\n";
                 js += " 'width':" + l.frame.width + ",\n";
@@ -130,7 +131,7 @@ class MyArtboard extends MyLayer {
                 js += " 'type':'" + type + "'"+",\n";
                 js += " 'index':" + l.fixedIndex + ",\n";
                 js += " 'isFloat':" + (l.isFloat?"true":"false") + ",\n";
-                const fileNamePostfix = l.isFloat?"":('_'+l.fixedIndex)
+                const fileNamePostfix = !l.isFloat?"":('_'+l.fixedIndex)
                 js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false)) + '",\n'
                 if (exporter.retinaImages)
                     js +=
@@ -157,7 +158,7 @@ class MyArtboard extends MyLayer {
             }
         }
 
-        js += "},\n";
+        js += "],\n";
 
         return js
     }
