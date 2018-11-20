@@ -90,15 +90,14 @@ function createViewer(story, files) {
 			});
 			$(document).bind('keydown', 's', function() {
 				v.goToPage(0);
-			});
+			});			
 			$(document).keydown(function(event) {
 				var ch = event.which
 				if (ch == 27) {
 					v.onKeyEscape()
-					return true;
-				}
-				return false;
-			})			
+					return false
+				}	
+			})						
 		},
 		getPageHash: function(index) {
 			var image = story.pages[index].image;
