@@ -11,6 +11,12 @@
   "icon": "icon.png",
   "commands" : [   
     {
+      "script" : "cmd-export-html.js",
+      "handler" : "onRun",
+      "name" : "Export to HTML from command line",
+      "identifier" : "cmdExportHTML"
+    },  
+    {
       "script" : "menu-external-link.js",
       "handler" : "onRun",
       "name" : "Set External Link for layer",
