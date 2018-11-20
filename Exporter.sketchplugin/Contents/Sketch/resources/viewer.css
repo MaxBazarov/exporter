@@ -306,7 +306,7 @@ area {
 
 /*** FIXED PANELS ***/
 
-#fixed_top{
+.fixedPanel{
 	position: fixed;
 	z-index: 12;
 	overflow: hidden;
@@ -316,6 +316,7 @@ area {
 	margin: 0 auto;		
 }
 
+/**
 #fixed_top_back{
 	z-index: 6;
 	background: rgba(100,100,100,255);
@@ -343,6 +344,7 @@ area {
 	margin: 0 auto;	
 	position: absolute;
 }
+**/
 
 
 /*** LOADING INDICATOR ***/

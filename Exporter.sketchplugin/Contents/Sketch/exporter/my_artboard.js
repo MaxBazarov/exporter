@@ -125,10 +125,12 @@ class MyArtboard extends MyLayer {
                 js += " 'x':" + l.frame.x + ",\n";
                 js += " 'y':" + l.frame.y + ",\n";
                 js += " 'width':" + l.frame.width + ",\n";
-                js += " 'height':" + ("left" == type && l.transparent?this.frame.height:l.frame.height) + ",\n";
+                //js += " 'height':" + ("left" == type && l.transparent?this.frame.height:l.frame.height) + ",\n";
+                js += " 'height':" + l.frame.height + ",\n";
                 js += " 'type':'" + type + "'"+",\n";
-                js += " 'transparent':" + (l.transparent?"true":"false") + ",\n";
-                const fileNamePostfix = l.transparent?"":('_'+type)
+                js += " 'index':" + l.fixedIndex + ",\n";
+                js += " 'isFloat':" + (l.isFloat?"true":"false") + ",\n";
+                const fileNamePostfix = l.isFloat?"":('_'+l.fixedIndex)
                 js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false)) + '",\n'
                 if (exporter.retinaImages)
                     js +=
@@ -276,10 +278,10 @@ class MyArtboard extends MyLayer {
             let orgShadows = layer.slayer.style.shadows
             layer.slayer.style.shadows = []            
             
-            // for non-transparent fixed layer we need to generate its own image files
-            if(!layer.transparent){
+            // for float fixed layer we need to generate its own image files
+            if(layer.isFloat){
                 for(var scale of scales){                     
-                    this._exportImage(scale,layer,"_"+layer.fixedType)                    
+                    this._exportImage(scale,layer,"_"+layer.fixedIndex)                    
                 }                 
             }
 
@@ -290,9 +292,10 @@ class MyArtboard extends MyLayer {
 
     _switchFixedLayers(hide){         
         for(var layer of this.fixedLayers){
-            if(layer.transparent) continue
-
-            // hide or show fixed non-transparent panel                        
+            // we need to hide/show only float panels
+            if(!layer.isFloat) continue
+            
+            // hide or show fixed float panel                        
             layer.slayer.hidden = hide
        }
     }

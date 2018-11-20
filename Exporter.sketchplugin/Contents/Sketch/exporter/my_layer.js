@@ -46,7 +46,8 @@ class MyLayer {
     }
 
 
-    addSelfAsFixedLayerToArtboad(){              
+    addSelfAsFixedLayerToArtboad(){         
+        this.fixedIndex = this.artboard.fixedLayers.length
         this.artboard.fixedLayers.push(this)
     }
 
@@ -54,21 +55,19 @@ class MyLayer {
      
         // Dirty code to detect a type of layer with fixed position
         let type = "";
-        if (this.frame.width < this.frame.height) {
+        if (0==this.frame.x && this.frame.width < this.frame.height) {
             type = "left";
         }
         // handle the only one top-pinnded layers for now
-        if (this.frame.width > this.frame.height) {
+        else if (0==this.frame.y && this.frame.width > this.frame.height) {
             type = "top";
         }
-        if (type == "") {
-            exporter.logError("addSelfAsFixedLayerToArtboad: can't understand fixed panel type for artboard '" + this.artboard + "' layer='" + this.name + "' layer.frame=" + this.frame + " artboard.frame=" + this.artboard.frame)
-            return
-        }
+        // ok, it will a float panel
+        else{
+            type = "float"
+        } 
         this.fixedType = type
-
-        // detect if fixed layer is transparent or not
-        this.transparent = this.slayer.style.opacity==0
+        this.isFloat = type=='float'
     }
 
 }

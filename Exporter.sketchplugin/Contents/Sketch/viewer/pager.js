@@ -53,13 +53,14 @@ function loadPageImages(page,force=false,visible=false){
 	if(!force && page.imageObj!=undefined){     
         return pagerMarkImageAsLoaded()
     }
-      
+    
+    var content = $('#content');
+
     var imageDiv = $('<div>',{class:"image_div",style:"height: "+page.height+"px; width: "+page.width+"px;"});
     page.imageDiv = imageDiv    
    
     {
         var isOverlay = page.type==="overlay";
-        var content = $('#content');
         var contentOverlay = $('#content-overlay');		
         
         imageDiv.appendTo(isOverlay?contentOverlay:content);	
@@ -84,9 +85,15 @@ function loadPageImages(page,force=false,visible=false){
 
 	for(var panelType of Object.keys(page.fixedPanels)){
         var panel = page.fixedPanels[panelType]
-        var panelDiv = $("#fixed_"+panelType);    
+        // create Div for fixed paneli
+        var panelDiv = $("div",{
+            id:"fixed_"+page.index+"_"+panel.index,
+            class:"hidden fixedPanel",
+            style:"height: "+panel.height+"px; width: "+panel.width+"px; align-top:"+panel.y+"px; align-left:"+panel.x+"px;",            
+        });
+        panelDiv.appendTo(content);
 
-        panel.imageObj = loadPageOneImage(panel.transparent?page:panel,page.index,'img_'+panelType+"_")     
+        panel.imageObj = loadPageOneImage(panel.isFloat?page:panel,page.index,'img_'+panel.index+"_")     
         panel.imageObj.addClass("hidden")   
         panel.imageObj.appendTo(panelDiv);
 	}
