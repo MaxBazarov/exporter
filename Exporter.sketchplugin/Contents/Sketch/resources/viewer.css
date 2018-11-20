@@ -43,7 +43,7 @@
 	bottom: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(64,75,88,.9);
+	background-color: rgba(64,75,88,1);
 	z-index: 100;
 	transition: all .24s;
 }
@@ -298,7 +298,7 @@ area {
 }
 .fixed_map{
 	position: fixed;
-	z-index: 11;
+	z-index: 13;
 	overflow: hidden;
 	text-align: center;
 	margin: 0 auto;		
