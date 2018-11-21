@@ -53,35 +53,10 @@ function loadPageImages(page,force=false,visible=false){
         return pagerMarkImageAsLoaded()
     }
     
-    var content = $('#content');
-
-    // create main content image 
+    var content = $('#content'); 
     var imageDiv = $('<div>',{class:"image_div",style:"height: "+page.height+"px; width: "+page.width+"px;"});
     page.imageDiv = imageDiv    
    
-    {
-        var isOverlay = page.type==="overlay";
-        var contentOverlay = $('#content-overlay');		
-        
-        imageDiv.appendTo(isOverlay?contentOverlay:content);	
-        
-        // create map div
-        var mapDiv = $("<div>",{
-            class:"map",
-        }).attr('width', page.width).attr('height', page.height)
-        mapDiv.appendTo(imageDiv)
-
-        // create image
-        var mapImage = $("<img>",{
-            id: "map_image_"+page.index,
-            src: "resources/1.png",            
-        }).attr('width', page.width).attr('height', page.height)
-        mapImage.appendTo(mapDiv)
-    }
-    var img = loadPageOneImage(page,page.index,'img_')		 
-    page.imageObj = img
-    img.appendTo(imageDiv)    
-    if(!visible) imageDiv.addClass("hidden")    
 
     // create fixed panel images
 	for(var panel of page.fixedPanels){
@@ -99,7 +74,7 @@ function loadPageImages(page,force=false,visible=false){
         // create Div for fixed panel
         var panelDiv = $("<div>",{
             id:"fixed_"+page.index+"_"+panel.index,
-            class:"hidden "+panel.isFloat?'fixedPanelFloat':'fixedPanel',
+            class:" "+(panel.isFloat?'fixedPanelFloat ':'fixedPanel ')+("top"==panel.type?'fixedPanelTop ':''),
             style:style
         });
         panelDiv.appendTo(content);
@@ -107,8 +82,42 @@ function loadPageImages(page,force=false,visible=false){
         panel.imageObj = loadPageOneImage(panel.isFloat?panel:page,page.index,'img_'+panel.index+"_")     
         panel.imageObj.addClass("hidden")   
         panel.imageObj.appendTo(panelDiv);
-	}
+        
+        // create Map for fixed panel
+        var fixedMapImg = $("<img>",{
+            id:"map_img_fixed_"+page.index+"_"+panel.index,
+            src:"resources/1.png"
+        });
+        fixedMapImg.appendTo(panelDiv);
+    }
+    
+     // create main content image 
+     
+     {
+         var isOverlay = page.type==="overlay";
+         var contentOverlay = $('#content-overlay');		
+         
+         imageDiv.appendTo(isOverlay?contentOverlay:content);	
+         
+         // create map div
+         var mapDiv = $("<div>",{
+             class:"map",
+         }).attr('width', page.width).attr('height', page.height)
+         mapDiv.appendTo(imageDiv)
+ 
+         // create image
+         var mapImage = $("<img>",{
+             id: "map_image_"+page.index,
+             src: "resources/1.png",            
+         }).attr('width', page.width).attr('height', page.height)
+         mapImage.appendTo(mapDiv)
+     }
+     var img = loadPageOneImage(page,page.index,'img_')		 
+     page.imageObj = img
+     img.appendTo(imageDiv)    
+     if(!visible) imageDiv.addClass("hidden")   
 }   
+
 
 function loadPageOneImage(page,pageIndex,idPrefix){
 	var hasRetinaImages = story.hasRetina

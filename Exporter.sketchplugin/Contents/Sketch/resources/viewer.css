@@ -113,8 +113,7 @@ a, a:focus {
 
 /*NAVIGATION*/
 
-body {
-    background: rgba(100,100,100,255);    
+body {    
 	font-size: 14px;
 	line-height: 20px;
 	color: #404B58;
@@ -296,12 +295,15 @@ area {
     z-index: 9;	
     position: absolute;
 }
-.fixed_map{
-	position: fixed;
-	z-index: 11;
+.fixedMapImg{
+	position: initial;
+	margin: 0 auto;
+	left: 0px;
+	top: 0px;
+	/*z-index: 11;
 	overflow: hidden;
 	text-align: center;
-	margin: 0 auto;		
+	margin: 0 auto;		*/
 }
 
 /*** FIXED PANELS ***/
@@ -310,15 +312,18 @@ area {
 	position: fixed;
 	z-index: 12;
 	overflow: hidden;
-	background: rgba(100,100,100,255);
+	/*background: rgba(100,100,100,255);*/
 	color: #f1f1f1;
 	text-align: center;
 	margin: 0 auto;		
 }
+.fixedPanelTop{
+	z-index: 13;
+}
 
 .fixedPanelFloat{
 	position: fixed;
-	z-index: 13;
+	z-index: 14;
 	overflow: hidden;
 	background: rgba(100,100,100,255);
 	color: #f1f1f1;

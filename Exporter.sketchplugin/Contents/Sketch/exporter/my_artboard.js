@@ -288,12 +288,24 @@ class MyArtboard extends MyLayer {
     }
 
     _switchFixedLayers(hide){         
+        const show = !hide
         for(var layer of this.fixedLayers){
             // we need to hide/show only float panels
-            if(!layer.isFloat) continue
-            
-            // hide or show fixed float panel                        
-            layer.slayer.hidden = hide
+            if(layer.isFloat){
+                layer.slayer.hidden = hide
+            }
+
+            // temporary remove fixed panel shadows
+            if(hide){
+                layer.fixedShadows = layer.slayer.style.shadows
+                layer.slayer.style.shadows = []  
+            }
+
+            // restore original fixed panel shadows
+            if(show){
+            layer.slayer.style.shadows  = layer.fixedShadows
+            }
+
        }
     }
 

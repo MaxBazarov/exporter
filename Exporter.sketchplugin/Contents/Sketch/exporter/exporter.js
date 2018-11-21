@@ -191,9 +191,11 @@ class Exporter {
     if(commentsURL==undefined) commentsURL = ''
     let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
     if(googleCode==undefined) googleCode = ''
+    let backColor = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_BACK_COLOR)
+    if(backColor==undefined || ""==backColor) backColor = Constants.DEF_BACK_COLOR
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode);
+    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,backColor);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     Utils.writeToFile(s, filePath);

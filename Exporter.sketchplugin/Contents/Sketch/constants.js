@@ -13,6 +13,7 @@ var Constants = {
   POSITION_CENTER:2,
   EXPORT_MODE_SELECTED_ARTBOARDS:0,
   EXPORT_MODE_CURRENT_PAGE:1,
+  DEF_BACK_COLOR: "#646464"
 };
 
 var PublishKeys = {
@@ -43,6 +44,7 @@ var SettingKeys = {
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
   DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
+  DOC_BACK_COLOR: "docBackColor",
 
   LAYER_ANNOTATIONS: "layerAnnotations",   
   LAYER_EXTERNAL_LINK: "externalLink",  
