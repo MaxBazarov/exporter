@@ -85,11 +85,22 @@ function loadPageImages(page,force=false,visible=false){
 
     // create fixed panel images
 	for(var panel of page.fixedPanels){
-        // create Div for fixed paneli
+        let style="height: "+panel.height+"px; width: "+panel.width+"px; " 
+        if(panel.constrains.top){
+            style+="top:"+panel.y+"px;"
+        }else if(panel.constrains.bottom){
+            style+="bottom:"+(page.height - panel.y- panel.height)+"px;"
+        }
+        if(panel.constrains.left){
+            style+="margin-left:"+panel.x+"px;"
+        }else if(panel.constrains.right){
+            style+="margin-left:"+panel.x+"px;"
+        }
+        // create Div for fixed panel
         var panelDiv = $("<div>",{
             id:"fixed_"+page.index+"_"+panel.index,
-            class:"hidden fixedPanel",
-            style:"height: "+panel.height+"px; width: "+panel.width+"px; top:"+panel.y+"px; margin-left:"+panel.x+"px;",            
+            class:"hidden "+panel.isFloat?'fixedPanelFloat':'fixedPanel',
+            style:style
         });
         panelDiv.appendTo(content);
 
@@ -159,13 +170,7 @@ function pagerShowImg(img){
 /////////////////////  HANDLE EVENTS IN VIEWER
 
 function pageSwitchFixedPanels(page,show){		
-    for(var panel of page.fixedPanels){
-        /*if(panel==undefined){					            
-            $("#fixed_"+panelType).addClass('hidden');
-            $("#fixed_"+panelType+"_back").addClass('hidden');
-        }else{
-            _pagerSwitchFixedPanel(page,panel,show);
-        }*/
+    for(var panel of page.fixedPanels){        
         _pagerSwitchFixedPanel(page,panel,show);
     }
 }

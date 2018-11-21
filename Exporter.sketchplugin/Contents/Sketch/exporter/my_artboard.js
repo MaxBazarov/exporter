@@ -100,7 +100,7 @@ class MyArtboard extends MyLayer {
 
 
     _pushFixedLayersIntoJSStory() {
-        let js = "'fixedPanels': [\n";
+        let recs = []
 
         if (this.fixedLayers.length) {
             const mainName = this.name
@@ -111,7 +111,6 @@ class MyArtboard extends MyLayer {
                     exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     continue
                 }
-
                 exporter.totalImages++
 
                 if (!l.isFloat && foundPanels[type]) {
@@ -122,43 +121,40 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                js += "{\n";
-                js += " 'x':" + l.frame.x + ",\n";
-                js += " 'y':" + l.frame.y + ",\n";
-                js += " 'width':" + l.frame.width + ",\n";
-                //js += " 'height':" + ("left" == type && l.transparent?this.frame.height:l.frame.height) + ",\n";
-                js += " 'height':" + l.frame.height + ",\n";
-                js += " 'type':'" + type + "'"+",\n";
-                js += " 'index':" + l.fixedIndex + ",\n";
-                js += " 'isFloat':" + (l.isFloat?"true":"false") + ",\n";
                 const fileNamePostfix = !l.isFloat?"":('_'+l.fixedIndex)
-                js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false)) + '",\n'
-                if (exporter.retinaImages)
-                    js +=
-                        '"image2x": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false)) + '",\n'                
-                {
-                    let css=""
-                    for(var shadow of l.slayer.style.shadows){
-                        if(!shadow.enabled) continue
-                        if(css=="")
-                            css = " 'shadow': '"  
-                        else   
-                            css+=","
-                        css += shadow.x + "px "
-                        css += shadow.y + "px "
-                        css += shadow.blur + "px "
-                        css += shadow.spread + " "
-                        css += shadow.color + " "
-                    }
-                    if(css!="")
-                        js += css + "',\n"
+
+                const rec = {
+                    constrains:l.constrains,
+                    x:l.frame.x,
+                    y:l.frame.y,
+                    width:l.frame.width,
+                    height:l.frame.height,
+                    type:type,
+                    index:l.fixedIndex,
+                    isFloat: l.isFloat,
+                    image:Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false))
                 }                
+                if (exporter.retinaImages)
+                    rec.image2x = Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false))
                 
-                js += "},";
+                // setup shadow
+                let shadowsStyle=""
+                for(var shadow of l.slayer.style.shadows){
+                    if(!shadow.enabled) continue
+                    if(shadowsStyle!="") shadowsStyle+=","
+                    shadowsStyle += shadow.x + "px "
+                    shadowsStyle += shadow.y + "px "
+                    shadowsStyle += shadow.blur + "px "
+                    shadowsStyle += shadow.spread + " "
+                    shadowsStyle += shadow.color + " "
+                }
+                if(shadowsStyle!="")
+                    rec.shadow = shadowsStyle                  
+                recs.push(rec)
             }
         }
 
-        js += "],\n";
+        let js = "'fixedPanels': \n" + JSON.stringify(recs,null,"\t")+",\n";
 
         return js
     }

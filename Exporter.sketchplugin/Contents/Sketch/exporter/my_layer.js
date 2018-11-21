@@ -2,6 +2,17 @@
 @import("lib/utils.js")
 @import("exporter/child-finder.js")
 
+var ResizingConstraint = {
+    NONE: 0,
+    RIGHT: 1 << 0,
+    WIDTH: 1 << 1,
+    LEFT: 1 << 2,
+    BOTTOM: 1 << 3,
+    HEIGHT: 1 << 4,
+    TOP: 1 << 5
+}
+
+
 Sketch = require('sketch/dom')
 var MyLayerPageCounter = 0
 
@@ -38,13 +49,25 @@ class MyLayer {
         
         this.frame = undefined
         this.orgFrame = undefined
-        
+        if(myParent!=undefined) this.constrains = this._calculateConstrains()
         this.tempOverrides = undefined        
         
         if(nlayer.isFixedToViewport()) this.addSelfAsFixedLayerToArtboad()    
         
     }
 
+    _calculateConstrains(){
+        const resizingConstraint = 63 ^ this.nlayer.resizingConstraint()
+        const res = {
+            top : (resizingConstraint & ResizingConstraint.TOP) === ResizingConstraint.TOP,
+            bottom : (resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM,
+            left : (resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT,
+            right : (resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT,
+            width : (resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT,
+            height : (resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH
+        }
+        return res        
+    }
 
     addSelfAsFixedLayerToArtboad(){         
         this.fixedIndex = this.artboard.fixedLayers.length

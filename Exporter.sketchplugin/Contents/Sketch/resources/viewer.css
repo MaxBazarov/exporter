@@ -316,6 +316,16 @@ area {
 	margin: 0 auto;		
 }
 
+.fixedPanelFloat{
+	position: fixed;
+	z-index: 13;
+	overflow: hidden;
+	background: rgba(100,100,100,255);
+	color: #f1f1f1;
+	text-align: center;
+}
+
+
 /**
 #fixed_top_back{
 	z-index: 6;
