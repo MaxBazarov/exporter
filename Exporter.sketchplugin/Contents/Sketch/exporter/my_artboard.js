@@ -57,7 +57,7 @@ class MyArtboard extends MyLayer {
 
         let js = pageIndex ? ',' : '';
         js +=
-            '{\n' +
+            '$.extend(new ViewerPage(),{\n' +        
             '"index": ' + pageIndex + ',\n' +
             '"image": "' + Utils.quoteString(Utils.toFilename(mainName + '.png', false)) + '",\n'
         if (exporter.retinaImages)
@@ -93,7 +93,7 @@ class MyArtboard extends MyLayer {
             }
         }, this);
 
-        js += ']}\n';
+        js += ']})\n';
 
         exporter.jsStory += js;
     }

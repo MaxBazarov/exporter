@@ -18,7 +18,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   s += '<script type="text/javascript" src="resources/jquery.maphilight.min.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="resources/jquery.hotkeys.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="viewer/pager.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="viewer/viewer-page.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/story.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/gallery.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/viewer.js" charset="UTF-8"></script>\n';
