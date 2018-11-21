@@ -13,10 +13,10 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   }else{
     s += '<link rel="stylesheet" type="text/css" href="resources/viewer-top.css">\n';
   }
-  s += '<script type="text/javascript" src="resources/jquery-1.12.4.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery-migrate-1.4.1.min.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery-3.3.1.min.js" charset="UTF-8"></script>\n';
+//  s += '<script type="text/javascript" src="resources/jquery-migrate-1.4.1.min.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="resources/jquery.maphilight.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery.hotkeys.min.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery.hotkeys.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/pager.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/story.js" charset="UTF-8"></script>\n';
