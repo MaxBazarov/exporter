@@ -19,7 +19,7 @@ class ViewerPage {
         this.imageDiv = imageDiv    
     
 
-        // create fixed panel images
+        // create fixed panel images        
         for(var panel of this.fixedPanels){
             let style="height: "+panel.height+"px; width: "+panel.width+"px; " 
             if(panel.constrains.top){
@@ -38,7 +38,8 @@ class ViewerPage {
                 class:" "+(panel.isFloat?'fixedPanelFloat ':'fixedPanel ')+("top"==panel.type?'fixedPanelTop ':''),
                 style:style
             });
-            panelDiv.appendTo(imageDiv);
+            panelDiv.appendTo(content);
+            panel.imageDiv = panelDiv
 
             panel.imageObj = this._loadSingleImage(panel.isFloat?panel:this,'img_'+panel.index+"_")     
             //panel.imageObj.addClass("hidden")   
@@ -77,7 +78,13 @@ class ViewerPage {
         img.appendTo(imageDiv)
 
         this.enableHotSpots()
-        if(!visible) imageDiv.addClass("hidden")   
+
+        if(!visible){
+            imageDiv.addClass("hidden")   
+            for(var panel of this.fixedPanels){
+                panel.imageObj.addClass("hidden")
+            }
+        }
     }   
 
     _loadSingleImage(sizeSrc,idPrefix){
@@ -122,10 +129,31 @@ class ViewerPage {
     }
     
     hide(){
+        for(var panel of this.fixedPanels){
+            panel.imageObj.addClass("hidden")
+        }
         this.imageDiv.addClass('hidden');
     }
+    
 
     show(){
-        this.imageDiv.removeClass('hidden');
+        // prepare overlay div
+        var isOverlay = this.type==="overlay";			
+        if(isOverlay){
+            var contentOverlay = $('#content-overlay');		
+            contentOverlay.width(this.width);
+        }
+
+        if(!this.imageObj){        
+            // load image     
+            this.loadImages(false,true)						
+        }else{
+            // just show already loaded, but hidden image main div
+            this.imageDiv.removeClass('hidden');
+            for(var panel of this.fixedPanels){
+                panel.imageObj.removeClass("hidden")
+            }
+        }
+
     }
 }

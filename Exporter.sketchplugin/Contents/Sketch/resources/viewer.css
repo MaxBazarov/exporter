@@ -325,7 +325,7 @@ area {
 	position: fixed;
 	z-index: 14;
 	overflow: hidden;
-	background: rgba(100,100,100,255);
+	/*background: rgba(100,100,100,255);*/
 	color: #f1f1f1;
 	text-align: center;
 }

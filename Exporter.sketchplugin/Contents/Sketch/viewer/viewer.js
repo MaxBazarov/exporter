@@ -239,8 +239,9 @@ function createViewer(story, files) {
 			}
 			this.prevPageIndex = this.currentPage;		
 			
-			this.refresh_adjust_content_layer(index);					
-			this.refresh_show_or_create_img(index,true);			
+			this.refresh_adjust_content_layer(index);	
+			this.refresh_hide_last_image(index)	
+			newPage.show()			
 			this.refresh_switch_overlay_layer(index);	
 			this.refresh_update_navbar(index);			
 			if(refreshURL) this.refresh_url(index)			
@@ -250,12 +251,8 @@ function createViewer(story, files) {
 				this.lastRegularPage = index;				
 			}
 
-
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
-			
-
-
 								
 		},
 
@@ -371,27 +368,7 @@ function createViewer(story, files) {
 			}
 			contentOverlay.removeClass('hidden');			
 		},
-
-		refresh_show_or_create_img: function(pageIndex,hideLast=false){
-			var page = story.pages[pageIndex];
-			var img = page.imageObj;
-			var isOverlay = page.type==="overlay";
-			
-			if(isOverlay){
-				var contentOverlay = $('#content-overlay');		
-				contentOverlay.width(page.width);
-			}
-				
-			if(img){			
-				page.show()
-				if(hideLast) this.refresh_hide_last_image(pageIndex);	
-				//pagerShowImg(img)		
-			}else{
-				this.create_img(pageIndex,hideLast);
-			}			
-
-			//page.enableHotSpots()	
-		},
+	
  
 		clear_context_hide_all_images: function(){
 			var page = story.pages[this.currentPage];
@@ -438,14 +415,9 @@ function createViewer(story, files) {
 
 		refresh: function(){
 			reloadAllPageImages()
-			this.create_img(this.currentPage);			
+			story.pages[this.currentPage].show()
 		},
 
-		create_img: function(pageIndex,hideLast=false){
-			if(hideLast) viewer.refresh_hide_last_image(pageIndex);		
-			var page = story.pages[pageIndex];
-			page.loadImages(force=false,visible=true)						
-		},
 		onKeyEscape: function(){
 			// If gallery is enabled then close it
 			if(gallery.isVisible()){
