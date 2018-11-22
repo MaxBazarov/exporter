@@ -70,6 +70,7 @@ class MyLayer {
     }
 
     addSelfAsFixedLayerToArtboad(){         
+        this.isFixed = true
         this.fixedIndex = this.artboard.fixedLayers.length
         this.artboard.fixedLayers.push(this)
     }

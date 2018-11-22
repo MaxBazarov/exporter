@@ -57,7 +57,7 @@ class MyArtboard extends MyLayer {
 
         let js = pageIndex ? ',' : '';
         js +=
-            '$.extend(new ViewerPage(),{\n' +        
+            '{\n' +
             '"index": ' + pageIndex + ',\n' +
             '"image": "' + Utils.quoteString(Utils.toFilename(mainName + '.png', false)) + '",\n'
         if (exporter.retinaImages)
@@ -82,18 +82,9 @@ class MyArtboard extends MyLayer {
         js += this._pushFixedLayersIntoJSStory()
 
         // build flat link array
-        js += '"links": [\n';
+        js += '"links": '+this._convHotSpotsIntoJSON(this.hotspots)+',\n';
 
-        let hotspotIndex = 0;
-        this.hotspots.forEach(function (hotspot) {
-            const spotJs = this._pushHotspotIntoJSStory(hotspot);
-            if (spotJs != '') {
-                js += hotspotIndex++ ? ',' : '';
-                js += spotJs;
-            }
-        }, this);
-
-        js += ']})\n';
+        js+="}\n"
 
         exporter.jsStory += js;
     }
@@ -108,15 +99,18 @@ class MyArtboard extends MyLayer {
             for (var l of this.fixedLayers) {
                 let type = l.fixedType
                 if(type == "") {
-                    exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
+                    exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name 
+                        + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     continue
                 }
                 exporter.totalImages++
 
                 if (!l.isFloat && foundPanels[type]) {
-                    exporter.logError("pushFixedLayersIntoJSStory: found more than one panel with type '" + type + "' for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
+                    exporter.logError("pushFixedLayersIntoJSStory: found more than one panel with type '" + type + "' for artboard '" 
+                        + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     const existedPanelLayer = foundPanels[type]
-                    exporter.logError("pushFixedLayersIntoJSStory: already exists panel layer='" + existedPanelLayer.name + "' layer.frame=" + existedPanelLayer.frame)
+                    exporter.logError("pushFixedLayersIntoJSStory: already exists panel layer='" + existedPanelLayer.name 
+                        + "' layer.frame=" + existedPanelLayer.frame)
                     continue
                 }
                 foundPanels[type] = l
@@ -154,44 +148,47 @@ class MyArtboard extends MyLayer {
             }
         }
 
-        let js = "'fixedPanels': \n" + JSON.stringify(recs,null,"\t")+",\n";
+        let js = "'fixedPanels': " + JSON.stringify(recs,null,"\t")+",\n";
 
         return js
     }
 
-    _pushHotspotIntoJSStory(hotspot) {
-        let js =
-            '{\n' +
-            '  "rect": [\n' +
-            '    ' + hotspot.r.x + ',\n' +
-            '    ' + hotspot.r.y + ',\n' +
-            '    ' + (hotspot.r.x + hotspot.r.width) + ',\n' +
-            '    ' + (hotspot.r.y + hotspot.r.height) + '\n' +
-            '   ],\n';
+    _convHotSpotsIntoJSON(srcHotspots) {
+        let newHotspots = []
 
-        if (hotspot.linkType == 'back') {
-            js += '   "action": "back"\n';
-        } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardName] != undefined && exporter.pagesDict[hotspot.artboardName].externalArtboardURL != undefined) {
-            js += '   "url": "' + exporter.pagesDict[hotspot.artboardName].externalArtboardURL + '"\n';
-        } else if (hotspot.linkType == 'artboard') {
-            const targetPage = exporter.pagesDict[hotspot.artboardName]
-            if (targetPage == undefined) {
-                exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
-                return '';
+        for(var hotspot of srcHotspots){
+            const newHotspot = {
+               rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.x + hotspot.r.height],               
             }
-            const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
-            js += '   "page": ' + targetPageIndex + '\n';
-        } else if (hotspot.linkType == 'href') {
-            js += '   "url": "' + hotspot.href + '"\n';
-        } else if (hotspot.target != undefined) {
-            js += '   "target": "' + hotspot.target + '",\n';
-        } else {
-            exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+
+            if (hotspot.linkType == 'back') {
+                newHotspot.action = 'back'
+            } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardName] != undefined 
+                && exporter.pagesDict[hotspot.artboardName].externalArtboardURL != undefined
+            ) {
+                newHotspot.url = exporter.pagesDict[hotspot.artboardName].externalArtboardURL
+            } else if (hotspot.linkType == 'artboard') {
+                const targetPage = exporter.pagesDict[hotspot.artboardName]
+                if (targetPage == undefined) {
+                    exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
+                    return '';
+                }
+                const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
+                newHotspot.page = targetPageIndex
+            } else if (hotspot.linkType == 'href') {
+                newHotspot.url = hotspot.href 
+            } else if (hotspot.target != undefined) {
+                newHotspot.target = hotspot.target
+            } else {
+                exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+            }
+
+            newHotspots.push(newHotspot)
+
         }
 
-        js += '  }\n';
-
-        return js;
+        const json = JSON.stringify(newHotspots,null,"\t")
+        return json!=''?json:'[]'
     }
 
 
