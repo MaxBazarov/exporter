@@ -157,7 +157,7 @@ class MyArtboard extends MyLayer {
         let newHotspots = []
         for(var hotspot of srcHotspots){
             const newHotspot = {
-               rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.x + hotspot.r.height],               
+               rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.y + hotspot.r.height],               
             }
 
             if (hotspot.linkType == 'back') {
