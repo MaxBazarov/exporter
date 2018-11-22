@@ -334,7 +334,7 @@ class MyLayerResizer {
                 const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width
                 const width = parentAbsoluteFrame.width - orgFrame.x - rightDistance
                 newFrame.width = width < 1 ? 1 : width;
-            } else if (l.constrains.width) {
+            } else if (!l.constrains.width) {
                 exporter.log(prefix+" getAbsoluteRect() 3");
                 newFrame.width = (frame.width / (parentOrgFrame.width - orgFrame.x)) * (parentAbsoluteFrame.width - orgFrame.x);
             }
@@ -366,7 +366,7 @@ class MyLayerResizer {
                 const height = parentAbsoluteFrame.height - orgFrame.y - bottomDistance;
                 newFrame.height = height < 1 ? 1 : height;
                 exporter.log(prefix+" getAbsoluteRect() 8 ret.y="+newFrame.y+  "parent.y="+parentAbsoluteFrame.y+" frame.y="+frame.y);
-            } else if (l.constrains.height) {
+            } else if (!l.constrains.height) {
                 newFrame.height = (frame.height / (parentOrgFrame.height - orgFrame.y)) * (parentAbsoluteFrame.height - orgFrame.y);
                 exporter.log(prefix+" getAbsoluteRect() 9");
             }
