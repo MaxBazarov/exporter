@@ -57,7 +57,7 @@ class MyArtboard extends MyLayer {
 
         let js = pageIndex ? ',' : '';
         js +=
-            '{\n' +
+            '$.extend(new ViewerPage(),{\n' + 
             '"index": ' + pageIndex + ',\n' +
             '"image": "' + Utils.quoteString(Utils.toFilename(mainName + '.png', false)) + '",\n'
         if (exporter.retinaImages)
@@ -82,9 +82,9 @@ class MyArtboard extends MyLayer {
         js += this._pushFixedLayersIntoJSStory()
 
         // build flat link array
-        js += '"links": '+this._convHotSpotsIntoJSON(this.hotspots)+',\n';
+        js += this._hotSpotsToStr(this.hotspots)
 
-        js+="}\n"
+        js+="})\n"
 
         exporter.jsStory += js;
     }
@@ -153,9 +153,8 @@ class MyArtboard extends MyLayer {
         return js
     }
 
-    _convHotSpotsIntoJSON(srcHotspots) {
+    _hotSpotsToStr(srcHotspots) {        
         let newHotspots = []
-
         for(var hotspot of srcHotspots){
             const newHotspot = {
                rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.x + hotspot.r.height],               
@@ -171,7 +170,7 @@ class MyArtboard extends MyLayer {
                 const targetPage = exporter.pagesDict[hotspot.artboardName]
                 if (targetPage == undefined) {
                     exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
-                    return '';
+                    continue
                 }
                 const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
                 newHotspot.page = targetPageIndex
@@ -186,9 +185,7 @@ class MyArtboard extends MyLayer {
             newHotspots.push(newHotspot)
 
         }
-
-        const json = JSON.stringify(newHotspots,null,"\t")
-        return json!=''?json:'[]'
+        return "'links' : " +JSON.stringify(newHotspots,null,"\t") +",\n" 
     }
 
 
