@@ -30,9 +30,11 @@ async function preloadAllPageImages(){
     pagerLoadingTotal = story.totalImages
 	var pages = story.pages;
 	for(var page of story.pages){
-		page.loadImages()
-    }
-    
+		if(page.imageObj==undefined){
+			page.loadImages()
+			page.hide()
+		}
+	}	
 }
 
 function reloadAllPageImages(){

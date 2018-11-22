@@ -3,8 +3,8 @@
 
 class ViewerPage {
 
-//function loadPageImages(page,force=false,visible=false){
-    loadImages(force=false,visible=false){
+//function loadPageImages(force=false,visible=false){
+    loadImages(force=false){
         /// check if already loaded images for this page
         if(!force && this.imageObj!=undefined){     
             return pagerMarkImageAsLoaded()
@@ -38,19 +38,15 @@ class ViewerPage {
                 class:" "+(panel.isFloat?'fixedPanelFloat ':'fixedPanel ')+("top"==panel.type?'fixedPanelTop ':''),
                 style:style
             });
+            //panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
             panelDiv.appendTo(content);
             panel.imageDiv = panelDiv
 
             panel.imageObj = this._loadSingleImage(panel.isFloat?panel:this,'img_'+panel.index+"_")     
-            //panel.imageObj.addClass("hidden")   
             panel.imageObj.appendTo(panelDiv);
             
-            // create Map for fixed panel
-            var fixedMapImg = $("<img>",{
-                id:"map_img_fixed_"+this.index+"_"+panel.index,
-                src:"resources/1.png"
-            });
-            fixedMapImg.appendTo(panelDiv);
+            this._createPanelMap(panel)
+
         }
         
         // create main content image      
@@ -77,14 +73,7 @@ class ViewerPage {
         this.imageObj = img
         img.appendTo(imageDiv)
 
-        this.enableHotSpots()
-
-        if(!visible){
-            imageDiv.addClass("hidden")   
-            for(var panel of this.fixedPanels){
-                panel.imageObj.addClass("hidden")
-            }
-        }
+        this._enableMainHotSpots()
     }   
 
     _loadSingleImage(sizeSrc,idPrefix){
@@ -101,6 +90,18 @@ class ViewerPage {
         });
         return img;
     } 
+
+
+    _enableMainHotSpots(){
+        // init main area hotspots
+        this._initImgMap($("#map_image_"+this.index), this)
+    }
+
+    _enablePanelFixedHotSpots(panel){
+        // init or hide fixed are hotsposts
+        var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
+        this._initImgMap(img,panel)        
+    }
 
     enableHotSpots(){
         // init main area hotspots
@@ -129,8 +130,18 @@ class ViewerPage {
     }
     
     hide(){
-        for(var panel of this.fixedPanels){
+        const fixedZs = {
+            'float':0,            
+            'top':0,
+            'left':0
+        }
+                
+        for(var panel of this.fixedPanels){       
             panel.imageObj.addClass("hidden")
+            //if(panel.isFloat) panel.imageObj.addClass("hidden")
+            panel.imageDiv.css("box-shadow","none")  
+            panel.imageDiv.css("z-index",fixedZs[panel.type])
+            //this._hidePanelMap(panel)
         }
         this.imageDiv.addClass('hidden');
     }
@@ -146,14 +157,57 @@ class ViewerPage {
 
         if(!this.imageObj){        
             // load image     
-            this.loadImages(false,true)						
-        }else{
-            // just show already loaded, but hidden image main div
-            this.imageDiv.removeClass('hidden');
-            for(var panel of this.fixedPanels){
-                panel.imageObj.removeClass("hidden")
-            }
+            this.loadImages()						
+        }            
+
+        const fixedZs = {
+            'float':14,            
+            'top':13,
+            'left':12
+        }
+        
+        for(var panel of this.fixedPanels){
+            panel.imageObj.removeClass("hidden")
+            //if(panel.isFloat) panel.imageObj.removeClass("hidden")
+            panel.imageDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")                
+            panel.imageDiv.css("z-index",fixedZs[panel.type])
+            //this._showPanelMap(panel)                             
         }
 
+        this.imageDiv.removeClass('hidden');        
+
+    }
+
+    _hidePanelMap(panel){
+        const img = panel.fixedMapImg
+        
+        if(img==undefined) return
+        if(img.parent().attr("id")==panel.imageDiv.attr("id"))
+            img.addClass('hidden');
+        else
+            img.parent().addClass('hidden');
+    }
+    
+    _showPanelMap(panel){
+        let img = panel.fixedMapImg
+        if(img==undefined){
+            img = this._createPanelMap(panel)
+        }else{
+            if(img.parent().attr("id")==panel.imageDiv.attr("id"))
+                img.removeClass('hidden');
+            else
+                img.parent().removeClass('hidden');
+        }
+    }
+
+    _createPanelMap(panel){
+        // create Map for fixed panel
+        panel.fixedMapImg = $("<img>",{
+            id:"map_img_fixed_"+this.index+"_"+panel.index,
+            src:"resources/1.png"
+        });
+        panel.fixedMapImg.appendTo(panel.imageDiv);   
+        this._enablePanelFixedHotSpots(panel)     
+        return panel.fixedMapImg
     }
 }
