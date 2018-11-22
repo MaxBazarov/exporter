@@ -250,9 +250,6 @@ function createViewer(story, files) {
 				this.lastRegularPage = index;				
 			}
 
-			// handle panel with fixed top and left posititons
-			//if(!this.currentPageOverlay)
-				//pageSwitchFixedPanels(newPage,show=true)
 
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
@@ -312,7 +309,8 @@ function createViewer(story, files) {
 			if(!isOverlay && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
 				if(lastPageImg.length){
-					pagerHideImg(lastPageImg)
+					story.pages[this.lastRegularPage].hide()
+					//pagerHideImg(lastPageImg)
 					//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 				}
 			}
@@ -322,7 +320,8 @@ function createViewer(story, files) {
 			if(prevPageWasOverlay){
 				var prevImg = $('#img_'+this.prevPageIndex);
 				if(prevImg.length){
-					pagerHideImg(prevImg)					
+					story.pages[this.prevPageIndex].hide()
+					//pagerHideImg(prevImg)
 				}
 			}
 			
@@ -384,13 +383,14 @@ function createViewer(story, files) {
 			}
 				
 			if(img){			
+				page.show()
 				if(hideLast) this.refresh_hide_last_image(pageIndex);	
-				pagerShowImg(img)		
+				//pagerShowImg(img)		
 			}else{
 				this.create_img(pageIndex,hideLast);
 			}			
 
-			//enablePageHotSpots(page)	
+			//page.enableHotSpots()	
 		},
  
 		clear_context_hide_all_images: function(){
@@ -406,14 +406,20 @@ function createViewer(story, files) {
 			// hide last regular page
 			if(this.lastRegularPage>=0){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
-				if(lastPageImg.length) pagerHideImg(lastPageImg)
+				if(lastPageImg.length){
+					story.pages[this.lastRegularPage].hide()
+					//pagerHideImg(lastPageImg)
+				}
 				//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 			}
 
 			// hide current overlay 
 			if(isOverlay){
 				var overlayImg = $('#img_'+this.currentPage);
-				if(overlayImg.length) pagerHideImg(overlayImg);
+				if(overlayImg.length){
+					story.pages[this.currentPage].hide()
+					//pagerHideImg(overlayImg);
+				}
 				//pageSwitchFixedPanels(story.pages[this.currentPage],show=false);
 			}
 			
@@ -475,7 +481,7 @@ function createViewer(story, files) {
 			this.highlightLinks = !this.highlightLinks;
 			this.refresh_update_links_toggler(this.currentPage);
 			var page = story.pages[this.currentPage]
-			enablePageHotSpots(page)		
+			page.enableHotSpots()		
 		},
 		showHints : function(){
 			var text = story.pages[this.currentPage].annotations;

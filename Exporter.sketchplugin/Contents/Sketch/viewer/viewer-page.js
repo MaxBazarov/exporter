@@ -76,7 +76,7 @@ class ViewerPage {
         this.imageObj = img
         img.appendTo(imageDiv)
 
-        enablePageHotSpots(this)
+        this.enableHotSpots()
         if(!visible) imageDiv.addClass("hidden")   
     }   
 
@@ -94,82 +94,38 @@ class ViewerPage {
         });
         return img;
     } 
-}
 
-function enablePageHotSpots(page){
-    // init main area hotspots
-    _pagerInitImgMap(page,$("#map_image_"+page.index),sizesFrom = page)
-    // init or hide fixed are hotsposts
-    for(var panel of page.fixedPanels){
-        var img = $("#map_img_fixed_"+page.index + "_"+panel.index)     
-        _pagerInitImgMap(page,img,sizesFrom = panel)        
+    enableHotSpots(){
+        // init main area hotspots
+        this._initImgMap($("#map_image_"+this.index), this)
+        // init or hide fixed are hotsposts
+        for(var panel of this.fixedPanels){
+            var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
+            this._initImgMap(img,panel)        
+        }
+    }
+
+    _initImgMap(img,sizesFrom){    
+        img.attr('usemap',"#map"+this.index).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
+    
+        // 0=non-transparent  1.0=fully transparent
+        let transp = 0
+        if(viewer.highlightLinks) transp = 0.4
+        else if(!story.disableHotspots) transp = 0.2
+    
+        img.maphilight({
+            alwaysOn: viewer.highlightLinks,
+            stroke: false,
+            fillColor: 'FFC400',
+            fillOpacity: transp
+        });	    
+    }
+    
+    hide(){
+        this.imageDiv.addClass('hidden');
+    }
+
+    show(){
+        this.imageDiv.removeClass('hidden');
     }
 }
-
-function _pagerInitImgMap(page,img,sizesFrom){    
-    img.attr('usemap',"#map"+page.index).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
-
-    // 0=non-transparent  1.0=fully transparent
-    let transp = 0
-    if(viewer.highlightLinks) transp = 0.4
-    else if(!story.disableHotspots) transp = 0.2
-
-    img.maphilight({
-        alwaysOn: viewer.highlightLinks,
-        stroke: false,
-        fillColor: 'FFC400',
-        fillOpacity: transp
-    });	    
-}
-
-
-
-function pagerHideImg(img){
-    if(img.parent().attr("id")=="content")
-        img.addClass('hidden');
-    else
-        img.parent().addClass('hidden');
-}
-
-function pagerShowImg(img){
-    if(img.parent().attr("id")=="content")
-        img.removeClass('hidden');
-    else
-        img.parent().removeClass('hidden');
-}
-
-/////////////////////  HANDLE EVENTS IN VIEWER
-
-/*
-function pageSwitchFixedPanels(page,show){
-    for(var panel of page.fixedPanels){        
-        _pagerSwitchFixedPanel(page,panel,show);
-    }
-}
-
-function _pagerSwitchFixedPanel (page,panel,show){			
-    var panelDiv = $("#fixed_"+page.index + "_" + panel.index);
-    var panelBackDiv = $("#fixed_" + page.index + panel.index+"_back");   
-
-    if(show){       
-        //loadPageImages(page)
-    
-        //panelDiv.height(panel.height);
-        //panelDiv.width(panel.width);				
-    
-        //panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
-        
-        panelDiv.removeClass('hidden');		
-
-        //panelBackDiv.removeClass('hidden');	
-        //panelBackDiv.height(panel.height);
-        //panelBackDiv.width(panel.width);	
-    }else{
-        //panelBackDiv.addClass('hidden');
-        panelDiv.addClass('hidden');
-        //panelDiv.css("box-shadow","none")  
-        //panelDiv.css("top",'0px')
-        //panelBackDiv.css("top",'0px')
-    }		
-}
-*/
