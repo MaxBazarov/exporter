@@ -149,20 +149,7 @@ class MyLayerResizer {
         hotspots.push(finalHotspot);          
 
         // finalization
-        l.hotspots = hotspots
-        // for non-fixed layer add his hotspots to parent artboard
-        if(!l.isFixed)
-            if(hotspots.length>0)
-                Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);
-        else
-        // for fixed layer need to transform hotspots coordinates into layer local relative
-        {   
-            for(var hotspot of hotspots){
-                hotspot.r.x -= l.frame.x
-                hotspot.r.y -= l.frame.y
-            }
-        }
-
+        Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);        
     }
 
     _specifyExternalURLHotspot(prefix,l,finalHotspot,externalLink){   

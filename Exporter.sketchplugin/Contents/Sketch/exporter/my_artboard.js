@@ -44,8 +44,28 @@ class MyArtboard extends MyLayer {
 
     export(pageIndex){
         this._exportImages()
+        this._findFixedPanelHotspots()
         this._pushIntoJSStory(pageIndex)
         this._cleanUpAfterExport()
+    }
+
+
+    //------------------- FIND HOTSPOTS WHICH LOCATE OVER FIXED HOTPOSTS ----------------------------
+    //------------------- AND MOVE THEM INTO FIXED LAYER SPECIAL HOTSPOTS ---------------------------
+    _findFixedPanelHotspots(){
+        for (var l of this.fixedLayers){
+            for (let hIndex=0;hIndex<this.hotspots.length;hIndex++){
+                let hotspot = this.hotspots[hIndex]
+                // move hotspot from artboard hotspots to fixed layer hotspots
+                if(hotspot.r.insideRectangle(l.frame)){
+                    this.hotspots.splice(hIndex--,1)                                        
+                    hotspot.r.x-=l.frame.x
+                    hotspot.r.y-=l.frame.y
+                    l.hotspots.push(hotspot)                    
+                }
+            }
+            
+        }
     }
 
     //------------------ GENERATE STORY.JS FILE  ------------------
@@ -79,10 +99,12 @@ class MyArtboard extends MyLayer {
             js += "'type': 'regular',\n";
         }
 
+        // add fixed layers
         js += this._pushFixedLayersIntoJSStory()
 
-        // build flat link array
-        js += this._hotSpotsToStr(this.hotspots)
+        // add hotspots 
+        js += "'links' : " +JSON.stringify(this._buildHotspots(this.hotspots),null,"\t") +",\n" 
+            
 
         js+="})\n"
 
@@ -126,6 +148,7 @@ class MyArtboard extends MyLayer {
                     type:type,
                     index:l.fixedIndex,
                     isFloat: l.isFloat,
+                    links: this._buildHotspots(l.hotspots),
                     image:Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false))
                 }                
                 if (exporter.retinaImages)
@@ -153,7 +176,7 @@ class MyArtboard extends MyLayer {
         return js
     }
 
-    _hotSpotsToStr(srcHotspots) {        
+    _buildHotspots(srcHotspots) {        
         let newHotspots = []
         for(var hotspot of srcHotspots){
             const newHotspot = {
@@ -185,7 +208,7 @@ class MyArtboard extends MyLayer {
             newHotspots.push(newHotspot)
 
         }
-        return "'links' : " +JSON.stringify(newHotspots,null,"\t") +",\n" 
+        return newHotspots
     }
 
 

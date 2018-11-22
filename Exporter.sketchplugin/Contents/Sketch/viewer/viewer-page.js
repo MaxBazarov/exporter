@@ -3,7 +3,65 @@
 
 class ViewerPage {
 
-//function loadPageImages(force=false,visible=false){
+    /*------------------------------- PUBLIC -----------------------------*/
+    createAreaMaps(parentDiv){
+        let map = this._createSingleMapWithAreas(this.links,'map' + this.index,this.type)
+        map.appendTo(parentDiv)
+        for(var panel of this.fixedPanels){       
+            map = this._createSingleMapWithAreas(panel.links,'map' + this.index+"_"+panel.index,this.type)
+            map.appendTo(parentDiv)
+        }
+    }
+
+    hide(){
+        const fixedZs = {
+            'float':0,            
+            'top':0,
+            'left':0
+        }
+                
+        for(var panel of this.fixedPanels){       
+            panel.imageObj.addClass("hidden")
+            //if(panel.isFloat) panel.imageObj.addClass("hidden")
+            panel.imageDiv.css("box-shadow","none")  
+            panel.imageDiv.css("z-index",fixedZs[panel.type])
+            //this._hidePanelMap(panel)
+        }
+        this.imageDiv.addClass('hidden');
+    }
+    
+
+    show(){
+        // prepare overlay div
+        var isOverlay = this.type==="overlay";			
+        if(isOverlay){
+            var contentOverlay = $('#content-overlay');		
+            contentOverlay.width(this.width);
+        }
+
+        if(!this.imageObj){        
+            // load image     
+            this.loadImages()						
+        }            
+
+        const fixedZs = {
+            'float':14,            
+            'top':13,
+            'left':12
+        }
+        
+        for(var panel of this.fixedPanels){
+            panel.imageObj.removeClass("hidden")
+            //if(panel.isFloat) panel.imageObj.removeClass("hidden")
+            panel.imageDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")                
+            panel.imageDiv.css("z-index",fixedZs[panel.type])
+            //this._showPanelMap(panel)                             
+        }
+
+        this.imageDiv.removeClass('hidden');        
+
+    }
+
     loadImages(force=false){
         /// check if already loaded images for this page
         if(!force && this.imageObj!=undefined){     
@@ -76,6 +134,7 @@ class ViewerPage {
         this._enableMainHotSpots()
     }   
 
+    /*------------------------------- INTERNAL METHODS -----------------------------*/
     _loadSingleImage(sizeSrc,idPrefix){
         var hasRetinaImages = story.hasRetina
         var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? sizeSrc.image2x : sizeSrc.image;	
@@ -94,13 +153,13 @@ class ViewerPage {
 
     _enableMainHotSpots(){
         // init main area hotspots
-        this._initImgMap($("#map_image_"+this.index), this)
+        this._initImgMap($("#map_image_"+this.index), this,"#map"+this.index)
     }
 
     _enablePanelFixedHotSpots(panel){
         // init or hide fixed are hotsposts
         var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
-        this._initImgMap(img,panel)        
+        this._initImgMap(img,panel,"#map"+this.index+"_"+panel.index)
     }
 
     enableHotSpots(){
@@ -113,8 +172,8 @@ class ViewerPage {
         }
     }
 
-    _initImgMap(img,sizesFrom){    
-        img.attr('usemap',"#map"+this.index).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
+    _initImgMap(img,sizesFrom,mapName){    
+        img.attr('usemap',mapName).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
     
         // 0=non-transparent  1.0=fully transparent
         let transp = 0
@@ -129,54 +188,6 @@ class ViewerPage {
         });	    
     }
     
-    hide(){
-        const fixedZs = {
-            'float':0,            
-            'top':0,
-            'left':0
-        }
-                
-        for(var panel of this.fixedPanels){       
-            panel.imageObj.addClass("hidden")
-            //if(panel.isFloat) panel.imageObj.addClass("hidden")
-            panel.imageDiv.css("box-shadow","none")  
-            panel.imageDiv.css("z-index",fixedZs[panel.type])
-            //this._hidePanelMap(panel)
-        }
-        this.imageDiv.addClass('hidden');
-    }
-    
-
-    show(){
-        // prepare overlay div
-        var isOverlay = this.type==="overlay";			
-        if(isOverlay){
-            var contentOverlay = $('#content-overlay');		
-            contentOverlay.width(this.width);
-        }
-
-        if(!this.imageObj){        
-            // load image     
-            this.loadImages()						
-        }            
-
-        const fixedZs = {
-            'float':14,            
-            'top':13,
-            'left':12
-        }
-        
-        for(var panel of this.fixedPanels){
-            panel.imageObj.removeClass("hidden")
-            //if(panel.isFloat) panel.imageObj.removeClass("hidden")
-            panel.imageDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")                
-            panel.imageDiv.css("z-index",fixedZs[panel.type])
-            //this._showPanelMap(panel)                             
-        }
-
-        this.imageDiv.removeClass('hidden');        
-
-    }
 
     _hidePanelMap(panel){
         const img = panel.fixedMapImg
@@ -209,5 +220,42 @@ class ViewerPage {
         panel.fixedMapImg.appendTo(panel.imageDiv);   
         this._enablePanelFixedHotSpots(panel)     
         return panel.fixedMapImg
+    }
+
+
+    _createSingleMapWithAreas(links,name,type){
+
+        var map = $('<map/>', {
+            id: name,
+            type: type,
+            name: name
+        });
+
+        for(var link of links) {
+            var title, href, target;
+            if(link.page != null) {			
+                title = story.pages[link.page].title;
+                href = 'javascript:viewer.goTo(' + link.page + ')';
+                target = null;
+            } else if(link.action != null && link.action == 'back') {
+                title = "Go Back";
+                href = 'javascript:viewer.goBack()';
+                target = null;
+            } else if(link.url != null){
+                title = link.url;
+                href = link.url;
+                target = link.target!=null?link.target:null;						
+            }
+            
+            $('<area/>', {
+                shape: 'rect',
+                coords: link.rect.join(','),
+                href: href,
+                alt: title,
+                title: title,
+                target: target
+            }).appendTo(map);
+        } 
+        return map
     }
 }

@@ -83,46 +83,14 @@ function createViewer(story, files) {
         },		
         createImageMaps: function() {
 			var div = $('<div/>', {
-				'class': ''
+				'class': '',
+				'id' : 'divMaps'
 			});
-			var pages = story.pages;
-			for(var i = 0; i < pages.length; i ++) {
-				var page = pages[i];
-				var name = 'map' + i;
-				var map = $('<map/>', {
-					id: name,
-					type: "'"+page.type+"'",
-					name: name
-				});
-				for(var j = page.links.length - 1; j >= 0; j --) {
-					var link = page.links[j];
-					var title, href, target;
-					if(link.page != null) {			
-						title = story.pages[link.page].title;
-						href = 'javascript:viewer.goTo(' + link.page + ')';
-						target = null;
-					} else if(link.action != null && link.action == 'back') {
-						title = "Go Back";
-						href = 'javascript:viewer.goBack()';
-						target = null;
-					} else if(link.url != null){
-						title = link.url;
-						href = link.url;
-						target = link.target!=null?link.target:null;						
-					}
-					
-					$('<area/>', {
-						shape: 'rect',
-						coords: link.rect.join(','),
-						href: href,
-						alt: title,
-						title: title,
-						target: target
-					}).appendTo(map);
-				}
-				map.appendTo(div);
-			}
 			div.appendTo('body');
+
+			for(var page of story.pages){
+				page.createAreaMaps(div)
+			}			
 		},
 		addHotkeys: function() {
 			var v = this;

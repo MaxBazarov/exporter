@@ -8,6 +8,12 @@ Rectangle.prototype.round = function(){
   this.width = Math.round(this.width)
 }
 
+Rectangle.prototype.insideRectangle= function(r){  
+  return this.x >= r.x && this.y >= r.y
+    && ((this.x+this.width)<=(r.x+r.width))
+    && ((this.y+this.height)<=(r.y+r.height))
+}
+
 Rectangle.prototype.copy = function(){  
   return new Rectangle(this.x,this.y,this.width,this.height)
 }
