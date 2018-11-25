@@ -44,8 +44,28 @@ class MyArtboard extends MyLayer {
 
     export(pageIndex){
         this._exportImages()
+        this._findFixedPanelHotspots()
         this._pushIntoJSStory(pageIndex)
         this._cleanUpAfterExport()
+    }
+
+
+    //------------------- FIND HOTSPOTS WHICH LOCATE OVER FIXED HOTPOSTS ----------------------------
+    //------------------- AND MOVE THEM INTO FIXED LAYER SPECIAL HOTSPOTS ---------------------------
+    _findFixedPanelHotspots(){
+        for (var l of this.fixedLayers){
+            for (let hIndex=0;hIndex<this.hotspots.length;hIndex++){
+                let hotspot = this.hotspots[hIndex]
+                // move hotspot from artboard hotspots to fixed layer hotspots
+                if(hotspot.r.insideRectangle(l.frame)){
+                    this.hotspots.splice(hIndex--,1)                                        
+                    hotspot.r.x-=l.frame.x
+                    hotspot.r.y-=l.frame.y
+                    l.hotspots.push(hotspot)                    
+                }
+            }
+            
+        }
     }
 
     //------------------ GENERATE STORY.JS FILE  ------------------
@@ -57,7 +77,7 @@ class MyArtboard extends MyLayer {
 
         let js = pageIndex ? ',' : '';
         js +=
-            '{\n' +
+            '$.extend(new ViewerPage(),{\n' + 
             '"index": ' + pageIndex + ',\n' +
             '"image": "' + Utils.quoteString(Utils.toFilename(mainName + '.png', false)) + '",\n'
         if (exporter.retinaImages)
@@ -79,28 +99,21 @@ class MyArtboard extends MyLayer {
             js += "'type': 'regular',\n";
         }
 
+        // add fixed layers
         js += this._pushFixedLayersIntoJSStory()
 
-        // build flat link array
-        js += '"links": [\n';
+        // add hotspots 
+        js += "'links' : " +JSON.stringify(this._buildHotspots(this.hotspots),null,"\t") +",\n" 
+            
 
-        let hotspotIndex = 0;
-        this.hotspots.forEach(function (hotspot) {
-            const spotJs = this._pushHotspotIntoJSStory(hotspot);
-            if (spotJs != '') {
-                js += hotspotIndex++ ? ',' : '';
-                js += spotJs;
-            }
-        }, this);
-
-        js += ']}\n';
+        js+="})\n"
 
         exporter.jsStory += js;
     }
 
 
     _pushFixedLayersIntoJSStory() {
-        let js = "'fixedPanels': {\n";
+        let recs = []
 
         if (this.fixedLayers.length) {
             const mainName = this.name
@@ -108,91 +121,94 @@ class MyArtboard extends MyLayer {
             for (var l of this.fixedLayers) {
                 let type = l.fixedType
                 if(type == "") {
-                    exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
+                    exporter.logError("pushFixedLayersIntoJSStory: can't understand fixed panel type for artboard '" + this.name 
+                        + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     continue
                 }
                 exporter.totalImages++
 
-                if (foundPanels[type]) {
-                    exporter.logError("pushFixedLayersIntoJSStory: found more than one panel with type '" + type + "' for artboard '" + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
+                if (!l.isFloat && foundPanels[type]) {
+                    exporter.logError("pushFixedLayersIntoJSStory: found more than one panel with type '" + type + "' for artboard '" 
+                        + this.name + "' layer='" + l.name + "' layer.frame=" + l.frame + " this.frame=" + this.frame)
                     const existedPanelLayer = foundPanels[type]
-                    exporter.logError("pushFixedLayersIntoJSStory: already exists panel layer='" + existedPanelLayer.name + "' layer.frame=" + existedPanelLayer.frame)
+                    exporter.logError("pushFixedLayersIntoJSStory: already exists panel layer='" + existedPanelLayer.name 
+                        + "' layer.frame=" + existedPanelLayer.frame)
                     continue
                 }
                 foundPanels[type] = l
 
-                js += "'" + type + "':" + "{\n";
-                js += " 'x':" + l.frame.x + ",\n";
-                js += " 'y':" + l.frame.y + ",\n";
-                js += " 'width':" + l.frame.width + ",\n";
-                js += " 'height':" + ("left" == type && l.transparent?this.frame.height:l.frame.height) + ",\n";
-                js += " 'type':'" + type + "'"+",\n";
-                js += " 'transparent':" + (l.transparent?"true":"false") + ",\n";
-                const fileNamePostfix = l.transparent?"":('_'+type)
-                js += ' "image": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false)) + '",\n'
-                if (exporter.retinaImages)
-                    js +=
-                        '"image2x": "' + Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false)) + '",\n'                
-                {
-                    let css=""
-                    for(var shadow of l.slayer.style.shadows){
-                        if(!shadow.enabled) continue
-                        if(css=="")
-                            css = " 'shadow': '"  
-                        else   
-                            css+=","
-                        css += shadow.x + "px "
-                        css += shadow.y + "px "
-                        css += shadow.blur + "px "
-                        css += shadow.spread + " "
-                        css += shadow.color + " "
-                    }
-                    if(css!="")
-                        js += css + "',\n"
+                const fileNamePostfix = !l.isFloat?"":('_'+l.fixedIndex)
+
+                const rec = {
+                    constrains:l.constrains,
+                    x:l.frame.x,
+                    y:l.frame.y,
+                    width:l.frame.width,
+                    height:l.frame.height,
+                    type:type,
+                    index:l.fixedIndex,
+                    isFloat: l.isFloat,
+                    links: this._buildHotspots(l.hotspots),
+                    image:Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false))
                 }                
+                if (exporter.retinaImages)
+                    rec.image2x = Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false))
                 
-                js += "},";
+                // setup shadow
+                let shadowsStyle=""
+                for(var shadow of l.slayer.style.shadows){
+                    if(!shadow.enabled) continue
+                    if(shadowsStyle!="") shadowsStyle+=","
+                    shadowsStyle += shadow.x + "px "
+                    shadowsStyle += shadow.y + "px "
+                    shadowsStyle += shadow.blur + "px "
+                    shadowsStyle += shadow.spread + " "
+                    shadowsStyle += shadow.color + " "
+                }
+                if(shadowsStyle!="")
+                    rec.shadow = shadowsStyle                  
+                recs.push(rec)
             }
         }
 
-        js += "},\n";
+        let js = "'fixedPanels': " + JSON.stringify(recs,null,"\t")+",\n";
 
         return js
     }
 
-    _pushHotspotIntoJSStory(hotspot) {
-        let js =
-            '{\n' +
-            '  "rect": [\n' +
-            '    ' + hotspot.r.x + ',\n' +
-            '    ' + hotspot.r.y + ',\n' +
-            '    ' + (hotspot.r.x + hotspot.r.width) + ',\n' +
-            '    ' + (hotspot.r.y + hotspot.r.height) + '\n' +
-            '   ],\n';
-
-        if (hotspot.linkType == 'back') {
-            js += '   "action": "back"\n';
-        } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardName] != undefined && exporter.pagesDict[hotspot.artboardName].externalArtboardURL != undefined) {
-            js += '   "url": "' + exporter.pagesDict[hotspot.artboardName].externalArtboardURL + '"\n';
-        } else if (hotspot.linkType == 'artboard') {
-            const targetPage = exporter.pagesDict[hotspot.artboardName]
-            if (targetPage == undefined) {
-                exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
-                return '';
+    _buildHotspots(srcHotspots) {        
+        let newHotspots = []
+        for(var hotspot of srcHotspots){
+            const newHotspot = {
+               rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.y + hotspot.r.height],               
             }
-            const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
-            js += '   "page": ' + targetPageIndex + '\n';
-        } else if (hotspot.linkType == 'href') {
-            js += '   "url": "' + hotspot.href + '"\n';
-        } else if (hotspot.target != undefined) {
-            js += '   "target": "' + hotspot.target + '",\n';
-        } else {
-            exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+
+            if (hotspot.linkType == 'back') {
+                newHotspot.action = 'back'
+            } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardName] != undefined 
+                && exporter.pagesDict[hotspot.artboardName].externalArtboardURL != undefined
+            ) {
+                newHotspot.url = exporter.pagesDict[hotspot.artboardName].externalArtboardURL
+            } else if (hotspot.linkType == 'artboard') {
+                const targetPage = exporter.pagesDict[hotspot.artboardName]
+                if (targetPage == undefined) {
+                    exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
+                    continue
+                }
+                const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
+                newHotspot.page = targetPageIndex
+            } else if (hotspot.linkType == 'href') {
+                newHotspot.url = hotspot.href 
+            } else if (hotspot.target != undefined) {
+                newHotspot.target = hotspot.target
+            } else {
+                exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+            }
+
+            newHotspots.push(newHotspot)
+
         }
-
-        js += '  }\n';
-
-        return js;
+        return newHotspots
     }
 
 
@@ -276,10 +292,10 @@ class MyArtboard extends MyLayer {
             let orgShadows = layer.slayer.style.shadows
             layer.slayer.style.shadows = []            
             
-            // for non-transparent fixed layer we need to generate its own image files
-            if(!layer.transparent){
+            // for float fixed layer we need to generate its own image files
+            if(layer.isFloat){
                 for(var scale of scales){                     
-                    this._exportImage(scale,layer,"_"+layer.fixedType)                    
+                    this._exportImage(scale,layer,"_"+layer.fixedIndex)                    
                 }                 
             }
 
@@ -289,11 +305,24 @@ class MyArtboard extends MyLayer {
     }
 
     _switchFixedLayers(hide){         
+        const show = !hide
         for(var layer of this.fixedLayers){
-            if(layer.transparent) continue
+            // we need to hide/show only float panels
+            if(layer.isFloat){
+                layer.slayer.hidden = hide
+            }
 
-            // hide or show fixed non-transparent panel                        
-            layer.slayer.hidden = hide
+            // temporary remove fixed panel shadows
+            if(hide){
+                layer.fixedShadows = layer.slayer.style.shadows
+                layer.slayer.style.shadows = []  
+            }
+
+            // restore original fixed panel shadows
+            if(show){
+            layer.slayer.style.shadows  = layer.fixedShadows
+            }
+
        }
     }
 

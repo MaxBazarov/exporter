@@ -2,17 +2,6 @@
 @import("lib/utils.js")
 @import("exporter/child-finder.js")
 
-
-var ResizingConstraint = {
-    NONE: 0,
-    RIGHT: 1 << 0,
-    WIDTH: 1 << 1,
-    LEFT: 1 << 2,
-    BOTTOM: 1 << 3,
-    HEIGHT: 1 << 4,
-    TOP: 1 << 5
-}
-
 var ResizingType = {
     STRETCH: 0,
     PIN_TO_CORNER: 1,
@@ -27,12 +16,8 @@ class MyLayerResizer {
     
     resizeLayers(){
         log( " resizeLayers: running...")
-
         this.childFinder = new ChildFinder()
-
-
         this._resizeLayers(exporter.myLayers)        
-
         log( " resizeLayers: done!")
     }
 
@@ -164,11 +149,7 @@ class MyLayerResizer {
         hotspots.push(finalHotspot);          
 
         // finalization
-        l.hotspots = hotspots
-        if(hotspots.length>0){
-            Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);
-        }
-
+        Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);        
     }
 
     _specifyExternalURLHotspot(prefix,l,finalHotspot,externalLink){   
@@ -317,6 +298,7 @@ class MyLayerResizer {
         l.tempOverrides = newLostOverrides
     }
 
+
     _applyLayerConstrains(prefix,l){
         const layer = l.nlayer
         if (layer.resizingConstraint == undefined || l.parent == undefined) return
@@ -340,22 +322,20 @@ class MyLayerResizer {
         exporter.log(prefix+" getAbsoluteRect() 0 parent name:"+parent.name+" parentOrgFrame= "+parentOrgFrame+" parentAbsoluteFrame="+parentAbsoluteFrame )
         exporter.log(prefix+" getAbsoluteRect() 0 frame:"+l.frame + " orgFrame:"+l.orgFrame )
 
-
-        const resizingConstraint = 63 ^ layer.resizingConstraint();
-        const frame = l.frame
+        const frame = l.frame        
         
-        if ((resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT) {
-            if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
+        if (l.constrains.left) {
+            if (l.constrains.rigth) {
                 exporter.log(prefix+" getAbsoluteRect() 2 "+newFrame.y);
                 const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width
                 const width = parentAbsoluteFrame.width - orgFrame.x - rightDistance
                 newFrame.width = width < 1 ? 1 : width;
-            } else if ((resizingConstraint & ResizingConstraint.WIDTH) !== ResizingConstraint.WIDTH) {
+            } else if (!l.constrains.width) {
                 exporter.log(prefix+" getAbsoluteRect() 3");
                 newFrame.width = (frame.width / (parentOrgFrame.width - orgFrame.x)) * (parentAbsoluteFrame.width - orgFrame.x);
             }
-        } else if ((resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT) {
-            if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
+        } else if (l.constrains.right) {
+            if (l.constrains.width) {
                 exporter.log(prefix+" getAbsoluteRect() 4");
                 newFrame.x = (parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - frame.width);
             } else {
@@ -365,7 +345,7 @@ class MyLayerResizer {
                 exporter.log(prefix+" getAbsoluteRect() 5 rightDistance="+rightDistance);
             }
         } else {
-            if ((resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH) {
+            if (l.constrains.width) {
                 newFrame.x = parentAbsoluteFrame.x + ((((orgFrame.x + frame.width / 2.0) / parentOrgFrame.width) * parentAbsoluteFrame.width) - (orgFrame.width / 2.0));
                 exporter.log(prefix+" getAbsoluteRect() 6");
             } else {
@@ -376,18 +356,18 @@ class MyLayerResizer {
             }
         }
 
-        if ((resizingConstraint & ResizingConstraint.TOP) === ResizingConstraint.TOP) { 
-            if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
+        if (l.constrains.top) { 
+            if (l.constrains.bottom) {
                 const bottomDistance = parentOrgFrame.height - orgFrame.y - orgFrame.height;
                 const height = parentAbsoluteFrame.height - orgFrame.y - bottomDistance;
                 newFrame.height = height < 1 ? 1 : height;
                 exporter.log(prefix+" getAbsoluteRect() 8 ret.y="+newFrame.y+  "parent.y="+parentAbsoluteFrame.y+" frame.y="+frame.y);
-            } else if ((resizingConstraint & ResizingConstraint.HEIGHT) !== ResizingConstraint.HEIGHT) {
+            } else if (!l.constrains.height) {
                 newFrame.height = (frame.height / (parentOrgFrame.height - orgFrame.y)) * (parentAbsoluteFrame.height - orgFrame.y);
                 exporter.log(prefix+" getAbsoluteRect() 9");
             }
-        } else if ((resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM) {
-            if ((resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT) {
+        } else if (l.constrains.bottom) {
+            if (l.constrains.height) {
                 newFrame.y = (parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - frame.height);
                 exporter.log(prefix+" getAbsoluteRect() 10");
             } else {
@@ -397,7 +377,7 @@ class MyLayerResizer {
                 exporter.log(prefix+" getAbsoluteRect() 11 bottomDistance="+bottomDistance);
             }
         } else {
-            if ((resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT) {
+            if (l.constrains.height) {
                 newFrame.y = ((((frame.y + frame.height / 2.0) / parentOrgFrame.height) * parentAbsoluteFrame.height) - (frame.height / 2.0));
                 exporter.log(prefix+" getAbsoluteRect() 12");
             } else {
@@ -409,9 +389,9 @@ class MyLayerResizer {
         }
         newFrame.round()
 
-        exporter.log(prefix+" getAbsoluteRect() 99 old "+l.frame + " const="+resizingConstraint)
+        //exporter.log(prefix+" getAbsoluteRect() 99 old "+l.frame + " const=")
         l.frame = newFrame        
-        exporter.log(prefix+" getAbsoluteRect() 99 new "+newFrame)
+        //exporter.log(prefix+" getAbsoluteRect() 99 new "+newFrame)
             
     }
     

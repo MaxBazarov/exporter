@@ -8,7 +8,7 @@
 
 var exporter = undefined
 
-const replaceValidKeys = ["name","frame","x","y","width","height","childs"]
+const replaceValidKeys = ["name","frame","x","y","width","height","childs","constrains"]
 function replacer(key, value) {
   // Pass known keys and array indexes
   if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
@@ -191,9 +191,11 @@ class Exporter {
     if(commentsURL==undefined) commentsURL = ''
     let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
     if(googleCode==undefined) googleCode = ''
+    let backColor = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_BACK_COLOR)
+    if(backColor==undefined || ""==backColor) backColor = Constants.DEF_BACK_COLOR
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode);
+    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,backColor);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     Utils.writeToFile(s, filePath);

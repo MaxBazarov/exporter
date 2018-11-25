@@ -43,7 +43,7 @@
 	bottom: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(64,75,88,1);
+	background-color: rgba(64,75,88,.9);
 	z-index: 100;
 	transition: all .24s;
 }
@@ -113,8 +113,7 @@ a, a:focus {
 
 /*NAVIGATION*/
 
-body {
-    background: rgba(100,100,100,255);    
+body {    
 	font-size: 14px;
 	line-height: 20px;
 	color: #404B58;
@@ -296,27 +295,43 @@ area {
     z-index: 9;	
     position: absolute;
 }
-.fixed_map{
-	position: fixed;
-	z-index: 13;
+.fixedMapImg{
+	position: initial;
+	margin: 0 auto;
+	left: 0px;
+	top: 0px;
+	/*z-index: 11;
 	overflow: hidden;
 	text-align: center;
-	margin: 0 auto;		
+	margin: 0 auto;		*/
 }
 
 /*** FIXED PANELS ***/
 
-#fixed_top{
+.fixedPanel{
 	position: fixed;
 	z-index: 12;
 	overflow: hidden;
-	background: rgba(100,100,100,255);
+	/*background: rgba(100,100,100,255);*/
 	color: #f1f1f1;
 	text-align: center;
 	margin: 0 auto;		
 }
+.fixedPanelTop{
+	z-index: 13;
+}
 
-#fixed_top_back{
+.fixedPanelFloat{
+	position: fixed;
+	z-index: 14;
+	overflow: hidden;
+	/*background: rgba(100,100,100,255);*/
+	color: #f1f1f1;
+	text-align: center;
+}
+
+
+.fixed_back{
 	z-index: 6;
 	background: rgba(100,100,100,255);
 	color: #f1f1f1;
@@ -324,6 +339,7 @@ area {
 	margin: 0 auto;	
 	position: absolute;
 }
+/*
 
 #fixed_left{
 	position: fixed;
@@ -343,6 +359,7 @@ area {
 	margin: 0 auto;	
 	position: absolute;
 }
+**/
 
 
 /*** LOADING INDICATOR ***/

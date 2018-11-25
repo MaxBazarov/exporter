@@ -2,6 +2,17 @@
 @import("lib/utils.js")
 @import("exporter/child-finder.js")
 
+var ResizingConstraint = {
+    NONE: 0,
+    RIGHT: 1 << 0,
+    WIDTH: 1 << 1,
+    LEFT: 1 << 2,
+    BOTTOM: 1 << 3,
+    HEIGHT: 1 << 4,
+    TOP: 1 << 5
+}
+
+
 Sketch = require('sketch/dom')
 var MyLayerPageCounter = 0
 
@@ -38,15 +49,29 @@ class MyLayer {
         
         this.frame = undefined
         this.orgFrame = undefined
-        
+        if(myParent!=undefined) this.constrains = this._calculateConstrains()
         this.tempOverrides = undefined        
         
         if(nlayer.isFixedToViewport()) this.addSelfAsFixedLayerToArtboad()    
         
     }
 
+    _calculateConstrains(){
+        const resizingConstraint = 63 ^ this.nlayer.resizingConstraint()
+        const res = {
+            top : (resizingConstraint & ResizingConstraint.TOP) === ResizingConstraint.TOP,
+            bottom : (resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM,
+            left : (resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT,
+            right : (resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT,
+            width : (resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT,
+            height : (resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH
+        }
+        return res        
+    }
 
-    addSelfAsFixedLayerToArtboad(){              
+    addSelfAsFixedLayerToArtboad(){         
+        this.isFixed = true
+        this.fixedIndex = this.artboard.fixedLayers.length
         this.artboard.fixedLayers.push(this)
     }
 
@@ -54,21 +79,19 @@ class MyLayer {
      
         // Dirty code to detect a type of layer with fixed position
         let type = "";
-        if (this.frame.width < this.frame.height) {
+        if (0==this.frame.x && this.frame.width < this.frame.height) {
             type = "left";
         }
         // handle the only one top-pinnded layers for now
-        if (this.frame.width > this.frame.height) {
+        else if (0==this.frame.y && this.frame.width > this.frame.height) {
             type = "top";
         }
-        if (type == "") {
-            exporter.logError("addSelfAsFixedLayerToArtboad: can't understand fixed panel type for artboard '" + this.artboard + "' layer='" + this.name + "' layer.frame=" + this.frame + " artboard.frame=" + this.artboard.frame)
-            return
-        }
+        // ok, it will a float panel
+        else{
+            type = "float"
+        } 
         this.fixedType = type
-
-        // detect if fixed layer is transparent or not
-        this.transparent = this.slayer.style.opacity==0
+        this.isFloat = type=='float'
     }
 
 }

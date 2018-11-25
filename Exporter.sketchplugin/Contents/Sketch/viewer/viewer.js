@@ -1,4 +1,55 @@
 
+// =============================== PRELOAD IMAGES =========================
+var pagerLoadingTotal=0
+
+$.fn.preload = function (callback) {
+    var length = this.length;
+    var iterator = 0;
+  
+    return this.each(function () {
+      var self = this;
+      var tmp = new Image();
+  
+      if (callback) tmp.onload = function () {
+        callback.call(self, 100 * ++iterator / length, iterator === length);
+        pagerMarkImageAsLoaded()
+      };  
+      tmp.src = this.src;
+    });
+  };
+
+function pagerMarkImageAsLoaded(){
+    console.log(pagerLoadingTotal);
+    if(--pagerLoadingTotal==0){
+        $("#loading").addClass("hidden")
+    }
+}
+
+async function preloadAllPageImages(){
+    $("#loading").removeClass("hidden")
+    pagerLoadingTotal = story.totalImages
+	var pages = story.pages;
+	for(var page of story.pages){
+		if(page.imageObj==undefined){
+			page.loadImages()
+			page.hide()
+		}
+	}	
+}
+
+function reloadAllPageImages(){
+	for(var page of story.pages){        
+        page.imageObj.parent().remove();        
+        page.imageObj = undefined
+        for(var p of page.fixedPanels){
+            p.imageObj.parent().remove(); 
+            p.imageObj = undefined	
+        }
+    }	
+    preloadAllPageImages()
+}
+
+// ============================ VIEWER ====================================
 
 function createViewer(story, files) {
 	return {
@@ -11,8 +62,7 @@ function createViewer(story, files) {
 		backStack: [],
 		urlLastIndex: -1,
 		files: files,
-		fixedPanelTypes:['left','top'],
-
+		
 		initialize: function() {
             this.addHotkeys();
 			this.createImageMaps();            
@@ -33,46 +83,14 @@ function createViewer(story, files) {
         },		
         createImageMaps: function() {
 			var div = $('<div/>', {
-				'class': ''
+				'class': '',
+				'id' : 'divMaps'
 			});
-			var pages = story.pages;
-			for(var i = 0; i < pages.length; i ++) {
-				var page = pages[i];
-				var name = 'map' + i;
-				var map = $('<map/>', {
-					id: name,
-					type: "'"+page.type+"'",
-					name: name
-				});
-				for(var j = page.links.length - 1; j >= 0; j --) {
-					var link = page.links[j];
-					var title, href, target;
-					if(link.page != null) {			
-						title = story.pages[link.page].title;
-						href = 'javascript:viewer.goTo(' + link.page + ')';
-						target = null;
-					} else if(link.action != null && link.action == 'back') {
-						title = "Go Back";
-						href = 'javascript:viewer.goBack()';
-						target = null;
-					} else if(link.url != null){
-						title = link.url;
-						href = link.url;
-						target = link.target!=null?link.target:null;						
-					}
-					
-					$('<area/>', {
-						shape: 'rect',
-						coords: link.rect.join(','),
-						href: href,
-						alt: title,
-						title: title,
-						target: target
-					}).appendTo(map);
-				}
-				map.appendTo(div);
-			}
 			div.appendTo('body');
+
+			for(var page of story.pages){
+				page.createAreaMaps(div)
+			}			
 		},
 		addHotkeys: function() {
 			var v = this;
@@ -190,8 +208,9 @@ function createViewer(story, files) {
 			}
 			this.prevPageIndex = this.currentPage;		
 			
-			this.refresh_adjust_content_layer(index);					
-			this.refresh_show_or_create_img(index,true);			
+			this.refresh_adjust_content_layer(index);	
+			this.refresh_hide_last_image(index)	
+			newPage.show()			
 			this.refresh_switch_overlay_layer(index);	
 			this.refresh_update_navbar(index);			
 			if(refreshURL) this.refresh_url(index)			
@@ -201,15 +220,8 @@ function createViewer(story, files) {
 				this.lastRegularPage = index;				
 			}
 
-			// handle panel with fixed top and left posititons
-			if(!this.currentPageOverlay)
-				pageSwitchFixedPanels(newPage,show=true)
-
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
-			
-
-
 								
 		},
 
@@ -263,8 +275,9 @@ function createViewer(story, files) {
 			if(!isOverlay && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
 				if(lastPageImg.length){
-					pagerHideImg(lastPageImg)
-					pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
+					story.pages[this.lastRegularPage].hide()
+					//pagerHideImg(lastPageImg)
+					//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 				}
 			}
 
@@ -273,7 +286,8 @@ function createViewer(story, files) {
 			if(prevPageWasOverlay){
 				var prevImg = $('#img_'+this.prevPageIndex);
 				if(prevImg.length){
-					pagerHideImg(prevImg)					
+					story.pages[this.prevPageIndex].hide()
+					//pagerHideImg(prevImg)
 				}
 			}
 			
@@ -323,26 +337,7 @@ function createViewer(story, files) {
 			}
 			contentOverlay.removeClass('hidden');			
 		},
-
-		refresh_show_or_create_img: function(pageIndex,hideLast=false){
-			var page = story.pages[pageIndex];
-			var img = page.imageObj;
-			var isOverlay = page.type==="overlay";
-			
-			if(isOverlay){
-				var contentOverlay = $('#content-overlay');		
-				contentOverlay.width(page.width);
-			}
-				
-			if(img){			
-				if(hideLast) this.refresh_hide_last_image(pageIndex);	
-				pagerShowImg(img)		
-			}else{
-				this.create_img(pageIndex,hideLast);
-			}			
-
-			enablePageHotSpots(page)	
-		},
+	
  
 		clear_context_hide_all_images: function(){
 			var page = story.pages[this.currentPage];
@@ -357,15 +352,21 @@ function createViewer(story, files) {
 			// hide last regular page
 			if(this.lastRegularPage>=0){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
-				if(lastPageImg.length) pagerHideImg(lastPageImg)
-				pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
+				if(lastPageImg.length){
+					story.pages[this.lastRegularPage].hide()
+					//pagerHideImg(lastPageImg)
+				}
+				//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 			}
 
 			// hide current overlay 
 			if(isOverlay){
 				var overlayImg = $('#img_'+this.currentPage);
-				if(overlayImg.length) pagerHideImg(overlayImg);
-				pageSwitchFixedPanels(story.pages[this.currentPage],show=false);
+				if(overlayImg.length){
+					story.pages[this.currentPage].hide()
+					//pagerHideImg(overlayImg);
+				}
+				//pageSwitchFixedPanels(story.pages[this.currentPage],show=false);
 			}
 			
 		},
@@ -383,14 +384,9 @@ function createViewer(story, files) {
 
 		refresh: function(){
 			reloadAllPageImages()
-			this.create_img(this.currentPage);			
+			story.pages[this.currentPage].show()
 		},
 
-		create_img: function(pageIndex,hideLast=false){
-			if(hideLast) viewer.refresh_hide_last_image(pageIndex);		
-			var page = story.pages[pageIndex];
-			loadPageImages(page,force=false,visible=true)						
-		},
 		onKeyEscape: function(){
 			// If gallery is enabled then close it
 			if(gallery.isVisible()){
@@ -426,7 +422,7 @@ function createViewer(story, files) {
 			this.highlightLinks = !this.highlightLinks;
 			this.refresh_update_links_toggler(this.currentPage);
 			var page = story.pages[this.currentPage]
-			enablePageHotSpots(page)		
+			page.enableHotSpots()		
 		},
 		showHints : function(){
 			var text = story.pages[this.currentPage].annotations;
