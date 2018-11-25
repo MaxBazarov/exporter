@@ -331,8 +331,7 @@ area {
 }
 
 
-/**
-#fixed_top_back{
+.fixed_back{
 	z-index: 6;
 	background: rgba(100,100,100,255);
 	color: #f1f1f1;
@@ -340,6 +339,7 @@ area {
 	margin: 0 auto;	
 	position: absolute;
 }
+/*
 
 #fixed_left{
 	position: fixed;
