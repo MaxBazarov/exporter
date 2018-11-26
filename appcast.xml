@@ -6,9 +6,9 @@
         <description>Generates a HTML clickable prototype</description>
         <language>en</language>
          <item>
-            <title>Version 3.4.3</title>
-            <date>21 Nov 2018</date>
-            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="3.4.3"/>
+            <title>Version 4.0.0</title>
+            <date>26 Nov 2018</date>
+            <enclosure url="https://github.com/MaxBazarov/exporter/raw/master/Exporter.sketchplugin.zip" sparkle:version="4.0.0"/>
         </item> 
         
     </channel>
