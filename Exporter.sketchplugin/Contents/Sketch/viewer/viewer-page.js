@@ -49,13 +49,17 @@ class ViewerPage {
             'top':13,
             'left':12
         }
-        
+                
         for(var panel of this.fixedPanels){
             panel.imageObj.removeClass("hidden")
             //if(panel.isFloat) panel.imageObj.removeClass("hidden")
             panel.imageDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")                
             panel.imageDiv.css("z-index",fixedZs[panel.type])
             //this._showPanelMap(panel)                             
+        }
+
+        if(this.highlightLinks==undefined || this.highlightLinks != viewer.highlightLinks){
+            this.enableHotSpots()
         }
 
         this.imageDiv.removeClass('hidden');        
@@ -164,12 +168,17 @@ class ViewerPage {
 
     enableHotSpots(){
         // init main area hotspots
-        this._initImgMap($("#map_image_"+this.index), this)
-        // init or hide fixed are hotsposts
+        //this._initImgMap($("#map_image_"+this.index), this)
+        this._enableMainHotSpots()
+            
+        // init or hide fixed are hotsposts        
         for(var panel of this.fixedPanels){
-            var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
-            this._initImgMap(img,panel)        
+            this._enablePanelFixedHotSpots(panel)
+            /*var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
+            this._initImgMap(img,panel)            */
         }
+        // save current highlightLinks mode to able to check it on future showing 
+        this.highlightLinks = viewer.highlightLinks
     }
 
     _initImgMap(img,sizesFrom,mapName){    
