@@ -1,9 +1,12 @@
 # Change Log
 
+##  Version 4.0.1 (27 Nov 2018)
+- Supported arboards with non-unique names
+- "Highlight hotlinks" current mode is common for all pages
+
 ##  Version 4.0.0 (26 Nov 2018)
 - Redesigned support for layers with "fixed position during scrolling" option enabled ((https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 - Moved to modern jQuery and jQuery plugins
-
 
 ##  Version 3.4.3 (21 Nov 2018)
 - Improved Esc key handling
