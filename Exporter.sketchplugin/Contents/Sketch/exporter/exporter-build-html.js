@@ -75,7 +75,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
     s += '    <h2>Leave a comment</h2>\n';
     s += '  <div id="CommentForm"></div>\n';
     s += ' </div>\n';
-    }
+    }    
 s += '<div id="gallery" class="hidden" onclick="gallery.hide(); return false;"></div>\n';
 s += "        <div id=\"nav\" class=\""+(hideNav?"hidden":"nav")+"\">";
 s += "            <div class=\"navLeft\">";

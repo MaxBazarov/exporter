@@ -134,28 +134,34 @@ svg {
 }
 
 .nav {
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	width: calc(100% - 24px);
-	display: flex;
-	justify-content: space-between;
-	margin: 12px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: calc(100% - 24px);
+    display: flex;
+    justify-content: space-between;
+    margin: 12px;
     user-select: none;
+    pointer-events: none;
     z-index: 60;
 }
 
 .navLeft, .navRight {
-	display: flex;
-	flex-grow: 1;
-	width: 100%;
+    display: flex;
+}
+
+.navLeft{
+    pointer-events: all;
+}
+
+
+.navRight{
+    width: 132px;
 }
 
 .navCenter{
-	display: flex;
-	justify-content: center;
-	flex-grow: 2;
-	width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .btnMenu, .navPreviewNext, .pageName {
