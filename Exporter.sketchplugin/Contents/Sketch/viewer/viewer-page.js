@@ -45,8 +45,8 @@ class ViewerPage {
         }            
 
         const fixedZs = {
-            'float':14,            
-            'top':13,
+            'float':13,            
+            'top':14,
             'left':12
         }
                 
