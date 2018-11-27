@@ -48,6 +48,7 @@ class Exporter {
     this.exportOptions = exportOptions
 
     this.pagesDict = []
+    this.pageIDsDict = []
 
     // init global variable
     exporter = this
@@ -251,7 +252,7 @@ class Exporter {
     var dict = []
     
     for(var ab of this.myLayers){
-      dict[ab.objectID] = ab
+      dict[ab.objecID] = ab
     }  
 
     this.artboadDict = dict

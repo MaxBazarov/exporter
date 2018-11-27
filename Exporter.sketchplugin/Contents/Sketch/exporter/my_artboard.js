@@ -27,6 +27,21 @@ class MyArtboard extends MyLayer {
         super(nlayer, undefined)
 
         this.fixedLayers = [] // list of layers which are configured as fixed
+
+        // check if the page name is unique in document
+        if(this.name in exporter.pagesDict){
+            // we need to find a new name                        
+            for(let i=1;i<1000;i++){               
+                const newName = this.name+"("+i+")"
+                if( !(newName in exporter.pagesDict)){
+                    // found new unique name!
+                    this.name = newName
+                    break
+                }
+            }            
+        }
+        exporter.pagesDict[this.name] = this
+        exporter.pageIDsDict[this.objecID] = this
         
         // init Artboard own things
         this.isOverlay =
@@ -38,8 +53,7 @@ class MyArtboard extends MyLayer {
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
 
-        this.pageIndex = MyLayerPageCounter++
-        exporter.pagesDict[this.name] = this
+        this.pageIndex = MyLayerPageCounter++        
     }
 
     export(pageIndex){
@@ -185,17 +199,17 @@ class MyArtboard extends MyLayer {
 
             if (hotspot.linkType == 'back') {
                 newHotspot.action = 'back'
-            } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardName] != undefined 
-                && exporter.pagesDict[hotspot.artboardName].externalArtboardURL != undefined
+            } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardID] != undefined 
+                && exporter.pageIDsDict[hotspot.artboardID].externalArtboardURL != undefined
             ) {
-                newHotspot.url = exporter.pagesDict[hotspot.artboardName].externalArtboardURL
+                newHotspot.url = exporter.pageIDsDict[hotspot.artboardID].externalArtboardURL
             } else if (hotspot.linkType == 'artboard') {
-                const targetPage = exporter.pagesDict[hotspot.artboardName]
+                const targetPage = exporter.pageIDsDict[hotspot.artboardID]
                 if (targetPage == undefined) {
                     exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
                     continue
                 }
-                const targetPageIndex = exporter.pagesDict[hotspot.artboardName].pageIndex;
+                const targetPageIndex = targetPage.pageIndex;
                 newHotspot.page = targetPageIndex
             } else if (hotspot.linkType == 'href') {
                 newHotspot.url = hotspot.href 
