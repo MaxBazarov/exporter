@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 4.0.2 (29 Nov 2018)
+- Minor fixes
+
 ##  Version 4.0.1 (27 Nov 2018)
 - Supported arboards with non-unique names
 - "Highlight hotlinks" current mode is common for all pages
