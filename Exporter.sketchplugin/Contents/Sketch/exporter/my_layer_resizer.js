@@ -180,6 +180,7 @@ class MyLayerResizer {
         }else if(l.customLink.linkType=="artboard"){
             const targetArtboadID = l.customLink.artboardID
             const targetArtboad = exporter.pageIDsDict[targetArtboadID]
+            log("_specifyCustomizedHotspot name="+l.name+" "+l.customLink.artboardID)
             finalHotspot.artboardID = targetArtboadID
             finalHotspot.artboardName = targetArtboad.name
             finalHotspot.href = Utils.toFilename(targetArtboad.name) + ".html";
@@ -203,6 +204,11 @@ class MyLayerResizer {
             // hande direct link
             let targetArtboadID = flow.targetId
             let targetArtboad = exporter.pageIDsDict[targetArtboadID]
+
+            if(undefined==targetArtboad){
+                exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboadID+"'")
+                return false
+            }
             
             finalHotspot.linkType = "artboard";
             finalHotspot.artboardID = targetArtboadID;
@@ -224,7 +230,7 @@ class MyLayerResizer {
         let newLostOverrides = undefined
         let overrides = []
 
-        if( lostOverrides!=undefined && l.objecID in lostOverrides) Array.prototype.push.apply(overrides,lostOverrides[l.objecID])    
+        if( lostOverrides!=undefined && l.objectID in lostOverrides) Array.prototype.push.apply(overrides,lostOverrides[l.objectID])    
         if( l.isSymbolInstance && slayer.overrides) Array.prototype.push.apply(overrides,slayer.overrides)
         
         if(overrides.length==0) return newLostOverrides        
@@ -244,7 +250,7 @@ class MyLayerResizer {
                 // find override owner
                 exporter.log(prefix+"override owner path="+sourceID)            
                 srcLayer = this.childFinder.findChildInPath(prefix+" ",l,splitedPath,0)                
-                if(srcLayer==undefined && !(l.objecID in lostOverrides) )
+                if(srcLayer==undefined && !(l.objectID in lostOverrides) )
                 {          
                     exporter.log(prefix+"pushed to newLostOverrides")         
 
@@ -283,15 +289,15 @@ class MyLayerResizer {
                 return
             }else{       
                 // handle link to artboard
-                const targetArtboard = exporter.artboadDict[customProperty.value]
-                if(targetArtboard==undefined){
+                if(!(customProperty.value in exporter.pageIDsDict)){
                     return
                 }
+                const targetArtboard = exporter.pageIDsDict[customProperty.value]
                 srcLayer.customLink = {
                     linkType: "artboard",
-                    artboardID: targetArtboard.objecID
-                }                
-                exporter.log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType)
+                    artboardID: targetArtboard.objectID
+                }                                
+                log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType+" artboardID="+ srcLayer.customLink.artboardID+" customValue='"+customProperty.value+"'")
                 return
             }
 

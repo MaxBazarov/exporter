@@ -248,17 +248,6 @@ class Exporter {
     return artboardGroups;
   }
 
-  buildArtboardDict() {
-    var dict = []
-    
-    for(var ab of this.myLayers){
-      dict[ab.objecID] = ab
-    }  
-
-    this.artboadDict = dict
-      
-  }
-
   buildSymbolDict() {
     var symDict = []
 
@@ -334,8 +323,7 @@ class Exporter {
     {
       const layerCollector  = new MyLayerCollector()
       layerCollector.collectArtboardsLayers()
-    }    
-    this.buildArtboardDict()
+    }        
     {
       const layerResizer  = new MyLayerResizer()
       layerResizer.resizeLayers()

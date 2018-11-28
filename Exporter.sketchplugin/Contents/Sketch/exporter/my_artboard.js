@@ -41,7 +41,7 @@ class MyArtboard extends MyLayer {
             }            
         }
         exporter.pagesDict[this.name] = this
-        exporter.pageIDsDict[this.objecID] = this
+        exporter.pageIDsDict[this.objectID] = this
         
         // init Artboard own things
         this.isOverlay =

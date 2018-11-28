@@ -13,13 +13,13 @@ class ChildFinder {
         const lastIndex = path.length - 1
 
         // if start from current layer itself?
-        if (seekId == l.objecID) {
+        if (seekId == l.objectID) {
             seekId = path[++index]
         }
 
         for (var layer of l.childs) {
-            exporter.log(prefix + "scan layer.id=" + layer.objecID + "  seekID=" + seekId)
-            if (layer.objecID == seekId || layer.originalID == seekId) {
+            exporter.log(prefix + "scan layer.id=" + layer.objectID + "  seekID=" + seekId)
+            if (layer.objectID == seekId || layer.originalID == seekId) {
                 exporter.log(prefix + "found!")
                 if (index == lastIndex) {
                     foundLayer = layer
@@ -43,7 +43,7 @@ class ChildFinder {
     // find child layer by ID
     findChildByID(l, id, recursive=true) {
         for (var layer of l.childs) {
-            if (layer.objecID == id) {
+            if (layer.objectID == id) {
                 return layer
             }
             if (recursive && layer.childs.length > 0) {

@@ -24,7 +24,7 @@ class MyLayer {
         this.nlayer = nlayer
         this.name = nlayer.name() + ""
         this.parent = myParent
-        this.objecID = nlayer.objectID()
+        this.objectID = nlayer.objectID()
         this.originalID = undefined
         this.symbolMaster = undefined
         this.slayer = Sketch.fromNative(nlayer)
