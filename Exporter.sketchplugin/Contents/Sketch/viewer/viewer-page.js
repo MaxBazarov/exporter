@@ -193,7 +193,8 @@ class ViewerPage {
             alwaysOn: viewer.highlightLinks,
             stroke: false,
             fillColor: 'FFC400',
-            fillOpacity: transp
+            fillOpacity: transp,
+            wrapClass: "fixedMapDiv"
         });	    
     }
     

@@ -301,15 +301,8 @@ area {
     z-index: 9;	
     position: absolute;
 }
-.fixedMapImg{
-	position: initial;
-	margin: 0 auto;
-	left: 0px;
-	top: 0px;
-	/*z-index: 11;
-	overflow: hidden;
-	text-align: center;
-	margin: 0 auto;		*/
+.fixedMapDiv{
+	pointer-events: auto;
 }
 
 /*** FIXED PANELS ***/
@@ -322,6 +315,7 @@ area {
 	color: #f1f1f1;
 	text-align: center;
 	margin: 0 auto;		
+	pointer-events: none; user-select: none;
 }
 .fixedPanelTop{
 	z-index: 14;
