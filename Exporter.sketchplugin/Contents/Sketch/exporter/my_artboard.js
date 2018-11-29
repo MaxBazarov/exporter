@@ -262,7 +262,7 @@ class MyArtboard extends MyLayer {
         exporter.log("exportImage()");
         
         const imagePath = exporter.imagesPath // + this._getImageName(scales)
-        
+        log('_exportImage2 name='+slayer.name)
         const options = { 
             scales: scales,
             output: exporter.imagesPath,
@@ -311,6 +311,7 @@ class MyArtboard extends MyLayer {
             
             // for float fixed layer we need to generate its own image files
             if(layer.isFloat){
+                //this._exportImage2('1, 2',layer.slayer)         
                 for(var scale of scales){                     
                     this._exportImage(scale,layer,"_"+layer.fixedIndex)                    
                 }                 
