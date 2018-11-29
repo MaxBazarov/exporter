@@ -135,7 +135,7 @@ class MyLayerResizer {
                     'openNewWindow': false
 
                 }
-                if( !this._specifyExternalURLHotspot(prefix+" ",l,finalHotspot,externalLink)) return
+                if( !this._specifyExternalURLHotspot(prefix+" ",finalHotspot,externalLink)) return
                 break            
             }
 
@@ -146,16 +146,16 @@ class MyLayerResizer {
             }
             return
         }
+        exporter.log(prefix+"_processLayerLinks: finalHotspot type="+finalHotspot.linkType)
         hotspots.push(finalHotspot);          
 
         // finalization
         Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);        
     }
 
-    _specifyExternalURLHotspot(prefix,l,finalHotspot,externalLink){   
-        const layer = l.nlayer  
+    _specifyExternalURLHotspot(prefix,finalHotspot,externalLink){   
         
-        exporter.log(prefix+"hotspot: href")
+        exporter.log(prefix+"_specifyExternalURLHotspothotspot: href")
         // found external link
         const regExp = new RegExp("^http(s?)://");
         var href= externalLink.href
@@ -177,10 +177,14 @@ class MyLayerResizer {
         
         if(l.customLink.linkType=="back"){                    
             // linkType copied already, nothing more to do for Back link
+        }else if(l.customLink.linkType=="href"){
+            exporter.log("_specifyCustomizedHotspot: href name="+l.name+" "+l.customLink.artboardID)
+            finalHotspot.href = l.customLink.href 
+            finalHotspot.target = l.customLink.target
         }else if(l.customLink.linkType=="artboard"){
             const targetArtboadID = l.customLink.artboardID
             const targetArtboad = exporter.pageIDsDict[targetArtboadID]
-            log("_specifyCustomizedHotspot name="+l.name+" "+l.customLink.artboardID)
+            exporter.log("_specifyCustomizedHotspot: artboard name="+l.name+" "+l.customLink.artboardID)
             finalHotspot.artboardID = targetArtboadID
             finalHotspot.artboardName = targetArtboad.name
             finalHotspot.href = Utils.toFilename(targetArtboad.name) + ".html";
@@ -293,9 +297,24 @@ class MyLayerResizer {
                     return
                 }
                 const targetArtboard = exporter.pageIDsDict[customProperty.value]
-                srcLayer.customLink = {
-                    linkType: "artboard",
-                    artboardID: targetArtboard.objectID
+
+                // handle link to External Artboard
+                if(targetArtboard.externalArtboardURL!=undefined){                
+                    const externalLink = {
+                        'href' : targetArtboard.externalArtboardURL,
+                        'openNewWindow': false        
+                    }
+                    srcLayer.customLink = {
+                        artboardID: targetArtboard.objectID
+                    }
+                    this._specifyExternalURLHotspot(prefix+" ",srcLayer.customLink,externalLink)                
+                    log(srcLayer.customLink)
+                }else{
+                    // handle link to Reguler Artboard
+                    srcLayer.customLink = {
+                        linkType: "artboard",
+                        artboardID: targetArtboard.objectID
+                    }
                 }                                
                 log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType+" artboardID="+ srcLayer.customLink.artboardID+" customValue='"+customProperty.value+"'")
                 return

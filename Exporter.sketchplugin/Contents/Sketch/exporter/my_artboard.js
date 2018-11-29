@@ -48,6 +48,8 @@ class MyArtboard extends MyLayer {
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY) == 1
         this.externalArtboardURL =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_EXTERNAL_LINK)
+        if(this.externalArtboardURL!=undefined && ''==this.externalArtboardURL) 
+            this.externalArtboardURL = undefined
         this.isOverlayShadow =
             this.isOverlay && exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_SHADOW) == 1
         this.disableAutoScroll =
@@ -196,6 +198,8 @@ class MyArtboard extends MyLayer {
             const newHotspot = {
                rect: [ hotspot.r.x, hotspot.r.y,hotspot.r.x + hotspot.r.width,hotspot.r.y + hotspot.r.height],               
             }
+
+            exporter.log(' _buildHotspots linkType='+hotspot.linkType+" l.name="+hotspot.l.name)
 
             if (hotspot.linkType == 'back') {
                 newHotspot.action = 'back'
