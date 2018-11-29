@@ -14,16 +14,16 @@ class MyLayerResizer {
     constructor() {        
     }
     
-    resizeLayers(){
-        log( " resizeLayers: running...")
+    resizeLayers(prefix){
+        log( prefix+"resizeLayers: running...")
         this.childFinder = new ChildFinder()
-        this._resizeLayers(exporter.myLayers)        
-        log( " resizeLayers: done!")
+        this._resizeLayers(prefix+" ",exporter.myLayers)
+        log( prefix+"resizeLayers: done!")
     }
 
 
 
-    _resizeLayers(layers,topOffset=undefined,prefix="",lostOverrides=[]){
+    _resizeLayers(prefix,layers,topOffset=undefined,lostOverrides=[]){
         layers.forEach(function (layer) {
             if(layer.parent == undefined){
                 // process top layer (artboard)            
@@ -59,7 +59,7 @@ class MyLayerResizer {
             l.orgFrame.width = master.absoluteRect().width()
             l.orgFrame.height = master.absoluteRect().height()
            
-            exporter.log(prefix+" _resizeLayer() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name)      
+            exporter.logLayer(prefix+" _resizeLayer() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name)      
         }          
 
         const srcFrame = l.frame.copy()
@@ -73,12 +73,12 @@ class MyLayerResizer {
             // reset topOfset for all symbol content
             topOffset = new Rectangle(master.absoluteRect().x() - l.frame.x, master.absoluteRect().y() - l.frame.y,0,0)
            
-            exporter.log(prefix+" _resizeLayer1() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name + " master.absoluteRect="+master.absoluteRect())      
+            exporter.logLayer(prefix+" _resizeLayer1() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name + " master.absoluteRect="+master.absoluteRect())      
         }else if(l.isGroup ){      
             // reset topOfset for all symbol content
             topOffset = new Rectangle(layer.absoluteRect().x() - l.frame.x, layer.absoluteRect().y() - l.frame.y,0,0)
            
-            exporter.log(prefix+" _resizeLayer2() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name + " absoluteRect="+layer.absoluteRect())      
+            exporter.logLayer(prefix+" _resizeLayer2() orgFrame:"+l.orgFrame +"frame"+l.frame+" name:"+l.name + " absoluteRect="+layer.absoluteRect())      
         } 
 
         this._processLayerLinks(l,prefix+" ",lostOverrides)
@@ -87,9 +87,9 @@ class MyLayerResizer {
             exporter.log(prefix+" _resizeLayer, newOverrides="+Object.keys(lostOverrides).length) 
         }
 
-        exporter.log(prefix+"- frame="+l.frame+ " topOffset: "+topOffset + " absoluteRect="+layer.absoluteRect() )
+        exporter.logLayer(prefix+"- frame="+l.frame+ " topOffset: "+topOffset + " absoluteRect="+layer.absoluteRect() )
           
-        this._resizeLayers(l.childs,topOffset,prefix,lostOverrides)
+        this._resizeLayers(prefix,l.childs,topOffset,lostOverrides)
         
         this._clearRefsBeforeJSON(l)
        
@@ -182,12 +182,12 @@ class MyLayerResizer {
             finalHotspot.href = l.customLink.href 
             finalHotspot.target = l.customLink.target
         }else if(l.customLink.linkType=="artboard"){
-            const targetArtboadID = l.customLink.artboardID
-            const targetArtboad = exporter.pageIDsDict[targetArtboadID]
+            const targetArtboardID = l.customLink.artboardID
+            const targetArtboard = exporter.pageIDsDict[targetArtboardID]
             exporter.log("_specifyCustomizedHotspot: artboard name="+l.name+" "+l.customLink.artboardID)
-            finalHotspot.artboardID = targetArtboadID
-            finalHotspot.artboardName = targetArtboad.name
-            finalHotspot.href = Utils.toFilename(targetArtboad.name) + ".html";
+            finalHotspot.artboardID = targetArtboardID
+            finalHotspot.artboardName = targetArtboard.name
+            finalHotspot.href = Utils.toFilename(targetArtboard.name) + ".html";
         }else{
             exporter.log(prefix+"CUSTOM hotspot: " + l.customLink.linkType)  
             return false            
@@ -206,19 +206,29 @@ class MyLayerResizer {
             exporter.log(prefix+"hotspot: back")                             
         }else if(target!=null){
             // hande direct link
-            let targetArtboadID = flow.targetId
-            let targetArtboad = exporter.pageIDsDict[targetArtboadID]
+            let targetArtboardID = flow.targetId
+            let targetArtboard = exporter.pageIDsDict[targetArtboardID]
 
-            if(undefined==targetArtboad){
-                exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboadID+"'")
+            if(undefined==targetArtboard){
+                exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
                 return false
             }
-            
-            finalHotspot.linkType = "artboard";
-            finalHotspot.artboardID = targetArtboadID;
-            finalHotspot.href = Utils.toFilename(targetArtboad.name) + ".html";
 
-            exporter.log(prefix+"hotspot: direct")
+            if(targetArtboard.externalArtboardURL!=undefined){                
+                const externalLink = {
+                    'href' : targetArtboard.externalArtboardURL,
+                    'openNewWindow': false        
+                }
+                finalHotspot.artboardID = targetArtboard.objectID                
+                this._specifyExternalURLHotspot(prefix+" ",finalHotspot,externalLink)
+            }else{            
+                finalHotspot.linkType = "artboard";
+                finalHotspot.artboardID = targetArtboardID;
+                finalHotspot.href = Utils.toFilename(targetArtboard.name) + ".html";
+            }
+
+            exporter.log(prefix+"hotspot: artboard ")
+            
         }else{                    
             exporter.log(prefix+"hotspot: none  l.isSymbolInstance="+l.isSymbolInstance)
             return false
@@ -308,7 +318,6 @@ class MyLayerResizer {
                         artboardID: targetArtboard.objectID
                     }
                     this._specifyExternalURLHotspot(prefix+" ",srcLayer.customLink,externalLink)                
-                    log(srcLayer.customLink)
                 }else{
                     // handle link to Reguler Artboard
                     srcLayer.customLink = {
@@ -347,40 +356,40 @@ class MyLayerResizer {
         if (parentAbsoluteFrame.width==parentOrgFrame.width && parentAbsoluteFrame.height==parentOrgFrame.height) return
         let newFrame = l.frame.copy()
     
-        exporter.log(prefix+" getAbsoluteRect() 0 parent name:"+parent.name+" parentOrgFrame= "+parentOrgFrame+" parentAbsoluteFrame="+parentAbsoluteFrame )
-        exporter.log(prefix+" getAbsoluteRect() 0 frame:"+l.frame + " orgFrame:"+l.orgFrame )
+        exporter.logLayer(prefix+" getAbsoluteRect() 0 parent name:"+parent.name+" parentOrgFrame= "+parentOrgFrame+" parentAbsoluteFrame="+parentAbsoluteFrame )
+        exporter.logLayer(prefix+" getAbsoluteRect() 0 frame:"+l.frame + " orgFrame:"+l.orgFrame )
 
         const frame = l.frame        
         
         if (l.constrains.left) {
             if (l.constrains.rigth) {
-                exporter.log(prefix+" getAbsoluteRect() 2 "+newFrame.y);
+                exporter.logLayer(prefix+" getAbsoluteRect() 2 "+newFrame.y);
                 const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width
                 const width = parentAbsoluteFrame.width - orgFrame.x - rightDistance
                 newFrame.width = width < 1 ? 1 : width;
             } else if (!l.constrains.width) {
-                exporter.log(prefix+" getAbsoluteRect() 3");
+                exporter.logLayer(prefix+" getAbsoluteRect() 3");
                 newFrame.width = (frame.width / (parentOrgFrame.width - orgFrame.x)) * (parentAbsoluteFrame.width - orgFrame.x);
             }
         } else if (l.constrains.right) {
             if (l.constrains.width) {
-                exporter.log(prefix+" getAbsoluteRect() 4");
+                exporter.logLayer(prefix+" getAbsoluteRect() 4");
                 newFrame.x = (parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - frame.width);
             } else {
                 const rightDistance = parentOrgFrame.width - orgFrame.x - orgFrame.width;
                 newFrame.width = (frame.width / (parentOrgFrame.width - rightDistance)) * (parentAbsoluteFrame.width - rightDistance);
                 newFrame.x = parentAbsoluteFrame.width - (parentOrgFrame.width - (frame.x + frame.width)) - newFrame.width
-                exporter.log(prefix+" getAbsoluteRect() 5 rightDistance="+rightDistance);
+                exporter.logLayer(prefix+" getAbsoluteRect() 5 rightDistance="+rightDistance);
             }
         } else {
             if (l.constrains.width) {
                 newFrame.x = parentAbsoluteFrame.x + ((((orgFrame.x + frame.width / 2.0) / parentOrgFrame.width) * parentAbsoluteFrame.width) - (orgFrame.width / 2.0));
-                exporter.log(prefix+" getAbsoluteRect() 6");
+                exporter.logLayer(prefix+" getAbsoluteRect() 6");
             } else {
                 const inc = parentOrgFrame.width / parentAbsoluteFrame.width
                 newFrame.x = frame.x + (orgFrame.x / inc) - orgFrame.x
                 newFrame.width = frame.width / inc
-                exporter.log(prefix+" getAbsoluteRect() 7 inc="+inc);
+                exporter.logLayer(prefix+" getAbsoluteRect() 7 inc="+inc);
             }
         }
 
@@ -389,30 +398,30 @@ class MyLayerResizer {
                 const bottomDistance = parentOrgFrame.height - orgFrame.y - orgFrame.height;
                 const height = parentAbsoluteFrame.height - orgFrame.y - bottomDistance;
                 newFrame.height = height < 1 ? 1 : height;
-                exporter.log(prefix+" getAbsoluteRect() 8 ret.y="+newFrame.y+  "parent.y="+parentAbsoluteFrame.y+" frame.y="+frame.y);
+                exporter.logLayer(prefix+" getAbsoluteRect() 8 ret.y="+newFrame.y+  "parent.y="+parentAbsoluteFrame.y+" frame.y="+frame.y);
             } else if (!l.constrains.height) {
                 newFrame.height = (frame.height / (parentOrgFrame.height - orgFrame.y)) * (parentAbsoluteFrame.height - orgFrame.y);
-                exporter.log(prefix+" getAbsoluteRect() 9");
+                exporter.logLayer(prefix+" getAbsoluteRect() 9");
             }
         } else if (l.constrains.bottom) {
             if (l.constrains.height) {
                 newFrame.y = (parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - frame.height);
-                exporter.log(prefix+" getAbsoluteRect() 10");
+                exporter.logLayer(prefix+" getAbsoluteRect() 10");
             } else {
                 const bottomDistance = parentOrgFrame.height - orgFrame.y - orgFrame.height
                 newFrame.height = (frame.height / (parentOrgFrame.height - bottomDistance)) * (parentAbsoluteFrame.height - bottomDistance)
                 newFrame.y =  parentAbsoluteFrame.height - (parentOrgFrame.height - (frame.y + frame.height)) - newFrame.height
-                exporter.log(prefix+" getAbsoluteRect() 11 bottomDistance="+bottomDistance);
+                exporter.logLayer(prefix+" getAbsoluteRect() 11 bottomDistance="+bottomDistance);
             }
         } else {
             if (l.constrains.height) {
                 newFrame.y = ((((frame.y + frame.height / 2.0) / parentOrgFrame.height) * parentAbsoluteFrame.height) - (frame.height / 2.0));
-                exporter.log(prefix+" getAbsoluteRect() 12");
+                exporter.logLayer(prefix+" getAbsoluteRect() 12");
             } else {
                 const inc = parentOrgFrame.height / parentAbsoluteFrame.height
                 newFrame.y = frame.y + (orgFrame.y / inc) - orgFrame.y
                 newFrame.height = frame.height / inc
-                exporter.log(prefix+" getAbsoluteRect() 13 inc="+inc);
+                exporter.logLayer(prefix+" getAbsoluteRect() 13 inc="+inc);
             }
         }
         newFrame.round()

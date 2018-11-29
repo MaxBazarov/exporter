@@ -100,17 +100,17 @@ class MyLayerCollector {
     constructor() {        
     }
     
-    collectArtboardsLayers(){        
-        log( " collectArtboardsLayers: running...")
+    collectArtboardsLayers(prefix){                
+        log( prefix+"collectArtboardsLayers: running...")
         this.childFinder = new ChildFinder()        
         const myLayers = []
         exporter.artboardGroups.forEach(function (artboardGroup) {
             const artboard = artboardGroup[0].artboard;
-            myLayers.push(this.getCollectLayer("",artboard,undefined,{}))
+            myLayers.push(this.getCollectLayer(prefix+" ",artboard,undefined,{}))
         }, this);
 
         exporter.myLayers = myLayers
-        log( " collectArtboardsLayers: done!")
+        log( prefix+"collectArtboardsLayers: done!")
     }
 
     getCollectLayer(prefix,nlayerOrg,myParent,symbolOverrides){

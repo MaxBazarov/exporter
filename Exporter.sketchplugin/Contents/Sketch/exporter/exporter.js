@@ -93,6 +93,12 @@ class Exporter {
     log(msg)
   }
 
+  logLayer(msg){
+    if(!Constants.LAYER_LOGGING) return
+    log(msg)
+  }
+
+
   logError(error){
     log("[ ERROR ] "+error)
   }
@@ -322,11 +328,11 @@ class Exporter {
     this.buildSymbolDict()
     {
       const layerCollector  = new MyLayerCollector()
-      layerCollector.collectArtboardsLayers()
+      layerCollector.collectArtboardsLayers(" ")
     }        
     {
       const layerResizer  = new MyLayerResizer()
-      layerResizer.resizeLayers()
+      layerResizer.resizeLayers(" ")
     }    
 
     // Copy static files

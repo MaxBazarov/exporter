@@ -234,13 +234,12 @@ class MyArtboard extends MyLayer {
 
 
     _getImageName(scale,panelPostix="") {
-        exporter.log("getArtboardImageName()");
         const suffix = scale == 2 ? "@2x" : "";
         return Utils.toFilename(this.name, false) + panelPostix +  suffix + ".png";
       }
 
     _exportImage(scale,layer,panelPostix="") {
-        exporter.log("exportImage() for "+layer.name);
+        exporter.log("   exportImage() for "+layer.name);
         const  nlayer = layer.nlayer
         
         const imagePath = exporter.imagesPath + this._getImageName(scale,panelPostix)
