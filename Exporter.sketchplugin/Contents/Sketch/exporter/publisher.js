@@ -14,14 +14,10 @@ class Publisher {
 		this.ver = ''
 		this.remoteFolder = ''
 		
-		this.allMockupsdDir = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
-		this.setScriptName("publish.sh")
+		this.allMockupsdDir = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)		
+		this.compressToolPath = this.Settings.settingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH)		
 	}
 
-	setScriptName(scriptName){
-		this.scriptPath = this.allMockupsdDir + "/" + scriptName
-		this.scriptName = scriptName
-	}
 
 	log(msg){
 		//log(msg)
@@ -36,21 +32,40 @@ class Publisher {
 		let version = this.ver
 		let destFolder = this.remoteFolder
 
-		// prepare script
-		if(!this.copyScript()){			
+		// copy publish script
+		if(!this.copyScript("publish.sh")){			
 			return false
 		}
+		// copy compress script
+		if(this.doCompress){
+			if(this.compressToolPath==undefined || this.compressToolPath==''){
+				this.UI.alert('Error', "You need to setup a path to image compressing tool in plugin settings.")	
+				return false
+			}
 
-		// run script
+			if(!this.copyScript("compress.sh")){			
+				return false
+			}
+		}
+		
 		let docFolder =  this.doc.cloudName();
 		let posSketch =  docFolder.indexOf(".sketch")
 		if(posSketch>0){
 			docFolder = docFolder.slice(0,posSketch)
+		}		
+		// copy compress script
+		if(this.doCompress){
+			const runResult = this.runCompressScript(this.allMockupsdDir,docFolder)
+			if(!runResult.result){
+				this.showOutput(runResult)
+				return false
+			}
 		}
 
+		// run publish script
 		let commentsID = destFolder
 		commentsID = Utils.toFilename(commentsID)
-		const runResult = this.runScript(version,this.allMockupsdDir,docFolder,destFolder,commentsID)
+		const runResult = this.runPublishScript(version,this.allMockupsdDir,docFolder,destFolder,commentsID)
 		
 		if(runResult.result){
 			// open browser
@@ -109,8 +124,10 @@ class Publisher {
 		let siteRoot =  Settings.settingForKey(SettingKeys.PLUGIN_PUBLISH_SITEROOT)
 		if(siteRoot==undefined || siteRoot==null) siteRoot = ''
 		let remoteFolder =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER)
-		if(remoteFolder==undefined || remoteFolder==null) remoteFolder = ''
+		if(remoteFolder==undefined || remoteFolder==null) remoteFolder = ''		
+		let doCompress =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS)==1
 
+		
 
 		// show dialod
 		const dialog = new UIDialog("Publish HTML",NSMakeRect(0, 0, 400, 340),"Publish","Generated HTML will be uploaded to external site by SFTP.")
@@ -120,6 +137,9 @@ class Publisher {
 
 		dialog.addTextInput("remoteFolder","Remote Site Folder", remoteFolder,'myprojects/project1',350)  
 		dialog.addHint("Relative path on server")
+
+		dialog.addCheckbox("doCompress","Compress Images", doCompress)
+  		dialog.addHint("Compress PNG imaged before publishing (see Plugin Settings)")
 
 		dialog.addTextInput("login","SFTP Login", login,'html@mysite.com:/var/www/html/',350)  
 		dialog.addHint("SSH key should be uploaded to the site already")
@@ -139,6 +159,9 @@ class Publisher {
 			this.remoteFolder = dialog.inputs['remoteFolder'].stringValue()+""
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER,this.remoteFolder )    
 
+			this.doCompress = dialog.inputs['doCompress'].state() == 1
+			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS,this.doCompress)    	
+
 
 			// save new version into document settings
 			ver =  dialog.inputs['version'].stringValue()+""
@@ -152,38 +175,44 @@ class Publisher {
 	
 	}
 
-	runScript(version, allMockupsdDir, docFolder, remoteFolder,commentsID){
+	runPublishScript(version, allMockupsdDir, docFolder, remoteFolder,commentsID){
 		let args = [version,allMockupsdDir, docFolder, remoteFolder,commentsID]
 		args.push(this.login)
 		//args.push(Constants.MIRROR2)
-		return this.runScriptWithArgs(args)		
+		return this.runScriptWithArgs("publish.sh",args)		
 	}
 
-	runScriptWithArgs(args){				
-		args.unshift(this.scriptPath) // add script itself as a first argument
-		const res =  Utils.runCommand('/bin/bash', args)		
+	runCompressScript(allMockupsdDir, docFolder){
+		let args = [allMockupsdDir+"/"+docFolder+"/images",this.compressToolPath ]
+		return this.runScriptWithArgs("compress.sh",args)		
+	}
+
+	runScriptWithArgs(scriptName,args){				
+		const scriptPath = this.allMockupsdDir + "/" + scriptName
+		args.unshift(scriptPath) // add script itself as a first argument
+		const res =  Utils.runCommand('/bin/bash', args)				
 
 		// delete script
-		Utils.deleteFile(this.scriptPath)
+		Utils.deleteFile(scriptPath)
 
 		return res
 	}
 
 
-	copyScript() {    
+	copyScript(scriptName) {    
+
+		const scriptPath = this.allMockupsdDir + "/" + scriptName
 
 	    const fileManager = NSFileManager.defaultManager()
 	    const resFolder = PublishKeys.RESOURCES_FOLDER
-	    const targetPath = this.scriptPath
+	    const targetPath = scriptPath
 
 	    // delete old copy
 		Utils.deleteFile(targetPath)
 	    
-	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/"+this.scriptName
+	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/"+scriptName
 		let error = MOPointer.alloc().init();
-		
-		this.log('sourcePath:'+sourcePath)
-		this.log('targetPath:'+targetPath)
+		)
 	    
 	    if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
 			this.UI.alert('Can`t copy script', error.value().localizedDescription())

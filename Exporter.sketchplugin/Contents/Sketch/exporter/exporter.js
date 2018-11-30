@@ -281,10 +281,9 @@ class Exporter {
 
   buildPreviews(){
     log(" buildPreviews: running...")
-    const pub = new Publisher(this.context,this.context.document);
-    pub.setScriptName("resize.sh")
-    pub.copyScript()
-    const res = pub.runScriptWithArgs([this.imagesPath])
+    const pub = new Publisher(this.context,this.context.document);    
+    pub.copyScript("resize.sh")
+    const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
     log(" buildPreviews: done!")
     if(!res.result) pub.showOutput(res)    
   }

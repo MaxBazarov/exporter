@@ -35,12 +35,14 @@ var SettingKeys = {
   PLUGIN_SAVE_JSON: "pluginSaveJSON",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
+  PLUGIN_COMPRESS_TOOL_PATH: "pluginCompressPath",
 
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
   
   DOC_EXPORTING_URL: "docExportingURL",
+  DOC_PUBLISH_COMPRESS: "docPublishCompress",
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
   DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
