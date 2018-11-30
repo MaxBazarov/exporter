@@ -5,7 +5,6 @@
 # Usage: > ./compres.sh IMG_FOLDER FULLPATH_TO_pngquant
 
 initial_folder="$1" # You can use "." to target the folder in which you are running the script for example
-app="$2"
 
 ## go to images folder
 cd "$initial_folder"
@@ -20,14 +19,10 @@ if [ -f _compressed ]; then
 fi
 
 ## run pngquant to compress all *.png files into *.gnp
-${app} --force --quality=60-80 --ext .gnp -- *.png
+imageoptim --imagealpha  *.png
 if [ $? != 0 ]; then
-    echo "Error: can't find pngquant tool.  Get it here - https://pngquant.org"
+    echo "Error: can't find imageoptim tool.  Get it here -https://github.com/JamieMason/ImageOptim-CLI"
     exit 1
 fi
-## drop old PNG files
-rm *.png
-## rename all GNP files into PNG
-for file in *.gnp; do mv "$file" "${file/.gnp/.png}"; done
 ## mark this folders as already compressed
 touch _compressed
