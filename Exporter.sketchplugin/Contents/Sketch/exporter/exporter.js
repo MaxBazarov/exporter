@@ -223,6 +223,10 @@ class Exporter {
         }
         const artBoards = MyArtboard.getArtboardGroupsInPage(page, context, false)
         if(!artBoards.length) return
+        artBoards.sort((
+          function(a, b){
+            return a[0].artboard.absoluteRect().x()-b[0].artboard.absoluteRect().x()
+        }))
         artboardGroups.push.apply(artboardGroups,artBoards);
       })
     }else if (this.exportOptions.mode==Constants.EXPORT_MODE_CURRENT_PAGE){      
