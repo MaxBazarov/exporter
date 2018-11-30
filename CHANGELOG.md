@@ -1,5 +1,10 @@
 # Change Log
 
+##  Version 4.1.0 (30 Nov 2018)
+- Added ability to compress PNG files before publishing
+- Added artboard sorting by X position 
+- Fixed wrong handling of resized symbol hotspots
+
 ##  Version 4.0.3 (29 Nov 2018)
 - Minor fixes
 
