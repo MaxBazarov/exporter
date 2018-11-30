@@ -247,8 +247,9 @@ class MyArtboard extends MyLayer {
 
         if (nlayer.isKindOfClass(MSArtboardGroup)) {
             slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
-        } else {
-            slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(nlayer, nlayer.absoluteInfluenceRect(), false).firstObject();
+        } else {            
+            slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
+            //slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(nlayer, nlayer.absoluteInfluenceRect(), false).firstObject();
         }
         slice.scale = scale;
         slice.saveForWeb = false;
@@ -311,9 +312,9 @@ class MyArtboard extends MyLayer {
             
             // for float fixed layer we need to generate its own image files
             if(layer.isFloat){
-                //this._exportImage2('1, 2',layer.slayer)         
-                for(var scale of scales){                     
-                    this._exportImage(scale,layer,"_"+layer.fixedIndex)                    
+                //this._exportImage2('1, 2',layer.parent.slayer)         
+                for(var scale of scales){                                         
+                    this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"_"+layer.fixedIndex)                    
                 }                 
             }
 
@@ -338,7 +339,7 @@ class MyArtboard extends MyLayer {
 
             // restore original fixed panel shadows
             if(show){
-            layer.slayer.style.shadows  = layer.fixedShadows
+                layer.slayer.style.shadows  = layer.fixedShadows
             }
 
        }
