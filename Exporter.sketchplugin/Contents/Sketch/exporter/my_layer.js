@@ -63,8 +63,8 @@ class MyLayer {
             bottom : (resizingConstraint & ResizingConstraint.BOTTOM) === ResizingConstraint.BOTTOM,
             left : (resizingConstraint & ResizingConstraint.LEFT) === ResizingConstraint.LEFT,
             right : (resizingConstraint & ResizingConstraint.RIGHT) === ResizingConstraint.RIGHT,
-            width : (resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT,
-            height : (resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH
+            height : (resizingConstraint & ResizingConstraint.HEIGHT) === ResizingConstraint.HEIGHT,
+            width: (resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH
         }
         return res        
     }
