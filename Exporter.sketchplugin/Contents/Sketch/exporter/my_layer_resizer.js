@@ -325,7 +325,7 @@ class MyLayerResizer {
                         artboardID: targetArtboard.objectID
                     }
                 }                                
-                log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType+" artboardID="+ srcLayer.customLink.artboardID+" customValue='"+customProperty.value+"'")
+                //log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType+" artboardID="+ srcLayer.customLink.artboardID+" customValue='"+customProperty.value+"'")
                 return
             }
 

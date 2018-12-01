@@ -109,6 +109,20 @@ class UIDialog {
     return v
   } 
 
+  addButton(id,label,func,width=100){
+      // create OK button
+    var btn = NSButton.alloc().initWithFrame(this.getNewFrame(20,width)); 
+    btn.setTitle(label)
+    btn.setBezelStyle(NSRoundedBezelStyle)
+    btn.sizeToFit()
+    btn.setCOSJSTargetFunction(func)
+
+    this.container.addSubview(btn)
+    this.inputs[id] = btn
+    return btn
+
+  }
+
   addHint(label,height = 30){
     this.y += 3
 
