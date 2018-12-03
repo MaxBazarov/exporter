@@ -15,7 +15,6 @@ var onRun = function(context) {
   if(position==undefined || position=="") position = Constants.POSITION_DEFAULT
 
   
-  const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
@@ -36,7 +35,6 @@ var onRun = function(context) {
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("Specify how artboard will be aligned in browser page")
 
-  dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
   dialog.addCheckbox("disableHotspots","Highlight hotspots on mouse over", !disableHotspots)
@@ -50,8 +48,7 @@ var onRun = function(context) {
   */
   
   if(dialog.run()){
-    Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.inputs['position'].indexOfSelectedItem())
-    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.inputs['position'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.inputs['retina'].state() != 1) 
     /*Temporary disable, it's too experimental
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.inputs['comments'].stringValue()+"")*/

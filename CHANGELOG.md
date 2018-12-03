@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 4.2.0 (3 Dec 2018)
+- Redesigned Export to HTML dialog
+- Moved "Open in browser..."  checkbox from Plugin Settings to Export to HTML
+
 ##  Version 4.1.0 (30 Nov 2018)
 - Added ability to compress PNG files before publishing
 - Added artboard sorting by X position 

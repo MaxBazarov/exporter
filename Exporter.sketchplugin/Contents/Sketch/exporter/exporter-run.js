@@ -33,7 +33,9 @@ function runExporter(context,exportOptions=null) {
   const doc = context.document
   const Doc = Dom.fromNative(doc)
   const Settings = require('sketch/settings')   
+
   const isCmdExportToHTML = exportOptions!=null && exportOptions['cmd']=="exportHTML"
+  const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
 
   // ask for output path
   let currentPath = Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
@@ -42,7 +44,7 @@ function runExporter(context,exportOptions=null) {
   }
 
   if(!isCmdExportToHTML){
-    const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 500, 100),"Export")
+    const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 500, 130),"Export")
 
     dialog.addTextInput("path","Destination Folder",currentPath,'e.g. ~/HTML',450)  
     dialog.addButton("ss","Select Folder",function(){
@@ -52,6 +54,8 @@ function runExporter(context,exportOptions=null) {
       }
       return
     })
+    dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
+
 
     while(true){
       if(!dialog.run()) return
@@ -63,6 +67,7 @@ function runExporter(context,exportOptions=null) {
     dialog.finish()
 
     Settings.setDocumentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL,currentPath)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
   }
       
   exportHTML(currentPath,doc,exportOptions,context)
