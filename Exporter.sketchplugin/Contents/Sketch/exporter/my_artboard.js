@@ -54,6 +54,12 @@ class MyArtboard extends MyLayer {
             this.isOverlay && exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_SHADOW) == 1
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
+        this.transNextSecs = 
+            exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS)
+        if(undefined != this.transNextSecs && '' == this.transNextSecs)
+            this.transNextSecs = undefined
+
+        
 
         this.pageIndex = MyLayerPageCounter++        
     }
@@ -94,15 +100,19 @@ class MyArtboard extends MyLayer {
         let js = pageIndex ? ',' : '';
         js +=
             '$.extend(new ViewerPage(),{\n' + 
-            '"index": ' + pageIndex + ',\n' +
+            '"index": ' + parseInt(pageIndex) + ',\n' +
             '"image": "' + Utils.quoteString(Utils.toFilename(mainName + '.png', false)) + '",\n'
         if (exporter.retinaImages)
             js +=
                 '"image2x": "' + Utils.quoteString(Utils.toFilename(mainName + '@2x.png', false)) + '",\n'
         js +=
-            '"width": ' + this.frame.width + ',\n' +
-            '"height": ' + this.frame.height + ',\n' +
+            '"width": ' + parseInt(this.frame.width) + ',\n' +
+            '"height": ' + parseInt(this.frame.height) + ',\n' +
             '"title": "' + Utils.quoteString(mainName) + '",\n';
+
+        if( this.transNextSecs!=undefined ){
+            js += "'transNextSecs': " + parseInt(this.transNextSecs) + ",\n";
+        }
 
         if (this.disableAutoScroll) {
             js += "'disableAutoScroll': " + (this.disableAutoScroll ? 'true' : 'false') + ",\n";

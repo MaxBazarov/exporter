@@ -40,6 +40,7 @@ var SettingKeys = {
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
+  ARTBOARD_TRANS_TO_NEXT_SECS: "artboardTransNextSecs",
   
   DOC_EXPORTING_URL: "docExportingURL",
   DOC_PUBLISH_COMPRESS: "docPublishCompress",

@@ -2,6 +2,10 @@
 // =============================== PRELOAD IMAGES =========================
 var pagerLoadingTotal=0
 
+function doTransNext(){
+	viewer.next()
+}
+
 $.fn.preload = function (callback) {
     var length = this.length;
     var iterator = 0;
@@ -222,7 +226,16 @@ function createViewer(story, files) {
 
 			if(!newPage.disableAutoScroll)
 				window.scrollTo(0,0)
+
+			if(newPage.transNextSecs!=undefined){				
+				this._setupTransNext(newPage.transNextSecs)
+			}
 								
+		},
+
+		_setupTransNext: function(secs){
+			// convert secs to millisecs
+			setTimeout(doTransNext,secs*1000)
 		},
 
 		refresh_update_navbar: function(pageIndex) {

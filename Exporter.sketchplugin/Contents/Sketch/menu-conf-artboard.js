@@ -23,9 +23,11 @@ var onRun = function(context) {
   const enabledOverlay = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY)==1
   const enabledOverlayShadow = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_SHADOW)==1
   const enableAutoScroll = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)!=1
+  let transNextSecs = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS)
+  if(undefined == transNextSecs) transNextSecs = ""
 
   //
-  const dialog = new UIDialog("Artboard Settings",NSMakeRect(0, 0, 300, 240),"Save","Configure exporting options for the selected artboard. ")
+  const dialog = new UIDialog("Artboard Settings",NSMakeRect(0, 0, 300, 280),"Save","Configure exporting options for the selected artboard. ")
 
   dialog.addCheckbox("enable_overlay","Enable overlay", enabledOverlay)
   dialog.addHint("Determines whether artboard will be shown as an overlay over a previous artboard.")
@@ -36,13 +38,31 @@ var onRun = function(context) {
   dialog.addCheckbox("enableAutoScroll","Scroll browser page to top", enableAutoScroll)
   dialog.addHint("The artboard will be scrolled on top after showing")
 
+  dialog.addTextInput("transNextSecs","Delay for autotranstion to next screen (Secs)", transNextSecs,'',60)
+  dialog.addHint("Go to the next page auto the delay (0..60 secs)")
 
   //
+  while(true){ 
+    // Cancel clicked
+    if(!dialog.run()) break;
+    
+    // OK clicked
+    // read data
+    transNextSecs = dialog.inputs['transNextSecs'].stringValue()+""
 
-  if(dialog.run()){
-    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY, dialog.inputs['enable_overlay'].state() == 1)    
-    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_SHADOW, dialog.inputs['enable_shadow'].state() == 1)    
+    // check data
+    if(transNextSecs!='' && isNaN(transNextSecs)){
+      continue
+    }
+
+    // save data
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY, dialog.inputs['enable_overlay'].state() == 1)
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_SHADOW, dialog.inputs['enable_shadow'].state() == 1)
     Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, dialog.inputs['enableAutoScroll'].state() != 1)    
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS, transNextSecs)
+
+    break
+
   }
   dialog.finish()
 

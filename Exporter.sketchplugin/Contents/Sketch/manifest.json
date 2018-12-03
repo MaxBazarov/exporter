@@ -19,7 +19,7 @@
     {
       "script" : "menu-external-link.js",
       "handler" : "onRun",
-      "name" : "Set External Link for layer",
+      "name" : "Set External Link for Layer or Artboard",
       "identifier" : "externalLink"
     },  
     {
