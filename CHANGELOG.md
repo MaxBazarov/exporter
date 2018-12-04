@@ -1,5 +1,10 @@
 # Change Log
 
+##  Version 4.3.0 (4 Dec 2018)
+- Added ability to enable page auto-transition (https://github.com/MaxBazarov/exporter/raw/master/tests/PageTransition.sketch)
+- Excluded artboards with "External URL" enabled from exporting
+- Changed float fixed panel image name generation to fix possible name collisitions
+
 ##  Version 4.2.0 (3 Dec 2018)
 - Redesigned Export to HTML dialog
 - Moved "Open in browser..."  checkbox from Plugin Settings to Export to HTML
@@ -20,7 +25,7 @@
 - "Highlight hotlinks" current mode is common for all pages
 
 ##  Version 4.0.0 (26 Nov 2018)
-- Redesigned support for layers with "fixed position during scrolling" option enabled ((https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
+- Redesigned support for layers with "fixed position during scrolling" option enabled (https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 - Moved to modern jQuery and jQuery plugins
 
 ##  Version 3.4.3 (21 Nov 2018)
@@ -31,7 +36,7 @@
 - Added exit on Espace key from overlay pages and Gallery
 
 ##  Version 3.4.1 (15 Nov 2018)
-- Supported two fixed layer usage types ((https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
+- Supported two fixed layer usage types (https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 - Fixes
 
 ##  Version 3.4.0 (13 Nov 2018)
