@@ -269,16 +269,26 @@ class Exporter {
     }
 
     this.symDict = symDict
-      
   }
+
+  filterArtboards(){
+    const filtered = []
+    for(var artboard of this.myLayers){
+      // Skip artboards with external URL enabled
+      if(artboard.externalArtboardURL!=undefined) continue
+      artboard.pageIndex = filtered.length
+      filtered.push(artboard)      
+    }
+    this.myLayers = filtered
+  }
+
 
   exportArtboardImagesAndDef(){
     log(" exportImages: running...")
-    let index = 0
     this.totalImages = 0
 
     for(var artboard of this.myLayers){
-      artboard.export(index++);    
+      artboard.export();    
     }
     log(" exportImages: done!")
   }
@@ -328,15 +338,20 @@ class Exporter {
     this.artboardGroups = this.getArtboardGroups(this.context);
     this.log('artboardGroups: '+this.artboardGroups.length);
     
+    // Collect all layers
     this.buildSymbolDict()
     {
       const layerCollector  = new MyLayerCollector()
       layerCollector.collectArtboardsLayers(" ")
     }        
+    // Resize layers and build links
     {
       const layerResizer  = new MyLayerResizer()
       layerResizer.resizeLayers(" ")
     }    
+
+    // Remove external URLs and other garbage
+    this.filterArtboards()
 
     // Copy static files
     this.copyStatic("resources");

@@ -60,14 +60,12 @@ class MyArtboard extends MyLayer {
             this.transNextSecs = undefined
 
         
-
-        this.pageIndex = MyLayerPageCounter++        
     }
 
-    export(pageIndex){
+    export(){
         this._exportImages()
         this._findFixedPanelHotspots()
-        this._pushIntoJSStory(pageIndex)
+        this._pushIntoJSStory(this.pageIndex)
         this._cleanUpAfterExport()
     }
 
@@ -121,6 +119,8 @@ class MyArtboard extends MyLayer {
         if (this.isOverlay) {
             js += "'type': 'overlay',\n";
             js += "'overlayShadow': " + (this.isOverlayShadow ? 1 : 0) + ",\n";
+        } else if (this.externalArtboardURL!=undefined && this.externalArtboardURL!=''){
+            js += "'type': 'external',\n";
         } else {
             js += "'type': 'regular',\n";
         }

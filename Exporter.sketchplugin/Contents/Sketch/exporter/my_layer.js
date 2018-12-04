@@ -14,7 +14,6 @@ var ResizingConstraint = {
 
 
 Sketch = require('sketch/dom')
-var MyLayerPageCounter = 0
 
 class MyLayer {
 
