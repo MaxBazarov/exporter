@@ -26,6 +26,7 @@ async function exportHTML(currentPath,doc,exportOptions,context){
    }
 }
 
+
 function runExporter(context,exportOptions=null) {    
   UIDialog.setUp(context);
 

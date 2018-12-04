@@ -3,7 +3,18 @@
 var pagerLoadingTotal=0
 
 function doTransNext(){
-	viewer.next()
+	// get oldest transition
+	const trans = viewer.transQueue[0]
+	// if it still active then run it
+	if(trans.active){
+		viewer.next()
+		console.log("RUN transition")
+	}else{
+		console.log("skip transition")
+	}
+	
+	// remove this transtion from stack
+	viewer.transQueue.shift()
 }
 
 $.fn.preload = function (callback) {
@@ -66,6 +77,8 @@ function createViewer(story, files) {
 		backStack: [],
 		urlLastIndex: -1,
 		files: files,
+
+		transQueue : [],
 		
 		initialize: function() {
             this.addHotkeys();
@@ -185,6 +198,9 @@ function createViewer(story, files) {
 			this.goTo(page);
 		},
 		goTo : function(page,refreshURL=true) {
+			// We don't need any waiting page transitions anymore
+			this._resetTransQueue()
+
 			var index = this.getPageIndex(page);
 
 			if(!this.currentPageOverlay && this.currentPage>=0){
@@ -233,9 +249,27 @@ function createViewer(story, files) {
 								
 		},
 
-		_setupTransNext: function(secs){
-			// convert secs to millisecs
+		_setupTransNext: function(secs){	
+			// deactivate all waiting transitions
+			for(var trans of this.transQueue){
+				trans.active = false	
+			}
+			// place new active transition over the top of stack
+			this.transQueue.push({
+				page: story.pages[this.currentPage],
+				active: true
+			})
+			// set timer in milisecs
+			console.log("ADD NEW transition")
 			setTimeout(doTransNext,secs*1000)
+		},
+
+		// Deactivate all waiting transitions
+		_resetTransQueue: function(){	
+			for(var trans of this.transQueue){
+				trans.active = false	
+			}
+			console.log("RESET ALL transitions")
 		},
 
 		refresh_update_navbar: function(pageIndex) {
