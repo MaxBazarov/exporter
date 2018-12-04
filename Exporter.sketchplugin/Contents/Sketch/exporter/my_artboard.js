@@ -163,7 +163,7 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                const fileNamePostfix = !l.isFloat?"":('_'+l.fixedIndex)
+                const fileNamePostfix = !l.isFloat?"":('-'+l.fixedIndex)                
 
                 const rec = {
                     constrains:l.constrains,
@@ -175,10 +175,10 @@ class MyArtboard extends MyLayer {
                     index:l.fixedIndex,
                     isFloat: l.isFloat,
                     links: this._buildHotspots(l.hotspots),
-                    image:Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix+'.png', false))
+                    image:Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix+'.png')
                 }                
                 if (exporter.retinaImages)
-                    rec.image2x = Utils.quoteString(Utils.toFilename(mainName + fileNamePostfix +'@2x.png', false))
+                    rec.image2x = Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix +'@2x.png', false)
                 
                 // setup shadow
                 let shadowsStyle=""
@@ -324,7 +324,7 @@ class MyArtboard extends MyLayer {
             if(layer.isFloat){
                 //this._exportImage2('1, 2',layer.parent.slayer)         
                 for(var scale of scales){                                         
-                    this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"_"+layer.fixedIndex)                    
+                    this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"-"+layer.fixedIndex)                    
                 }                 
             }
 
