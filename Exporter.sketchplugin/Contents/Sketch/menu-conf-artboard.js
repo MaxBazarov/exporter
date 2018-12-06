@@ -48,7 +48,7 @@ var onRun = function(context) {
     
     // OK clicked
     // read data
-    transNextSecs = dialog.inputs['transNextSecs'].stringValue()+""
+    transNextSecs = dialog.views['transNextSecs'].stringValue()+""
 
     // check data
     if(transNextSecs!='' && isNaN(transNextSecs)){
@@ -56,9 +56,9 @@ var onRun = function(context) {
     }
 
     // save data
-    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY, dialog.inputs['enable_overlay'].state() == 1)
-    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_SHADOW, dialog.inputs['enable_shadow'].state() == 1)
-    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, dialog.inputs['enableAutoScroll'].state() != 1)    
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY, dialog.views['enable_overlay'].state() == 1)
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_SHADOW, dialog.views['enable_shadow'].state() == 1)
+    Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, dialog.views['enableAutoScroll'].state() != 1)    
     Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS, transNextSecs)
 
     break

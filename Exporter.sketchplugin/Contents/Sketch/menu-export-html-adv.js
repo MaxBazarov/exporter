@@ -17,12 +17,12 @@ function askMode(context){
   //
   const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 300, 80),"Export","")
 
-  dialog.addRadioButtons("mode","", mode,["Selected artboards","Current page artboards"],150)
+  dialog.addRadioButtons("mode","", mode,["Selected artboards","Current page artboards"],250)
   //dialog.addHint("Specify how artboard will be aligned in browser page")
   //
 
   if(dialog.run()){
-    mode = dialog.inputs['mode'].selectedIndex
+    mode = dialog.views['mode'].selectedIndex
     Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORT_MODE, mode)
   }else{
     mode = -1

@@ -26,8 +26,8 @@ var onRun = function(context) {
 
   //
   if(dialog.run()){
-    Settings.setDocumentSettingForKey(doc, SettingKeys.DOC_CUSTOM_HIDE_NAV, dialog.inputs['customHideNavigation'].indexOfSelectedItem())    
-    Settings.setDocumentSettingForKey(doc, SettingKeys.DOC_BACK_COLOR, dialog.inputs['backColor'].stringValue()+"")    
+    Settings.setDocumentSettingForKey(doc, SettingKeys.DOC_CUSTOM_HIDE_NAV, dialog.views['customHideNavigation'].indexOfSelectedItem())    
+    Settings.setDocumentSettingForKey(doc, SettingKeys.DOC_BACK_COLOR, dialog.views['backColor'].stringValue()+"")    
   }
   dialog.finish()
 

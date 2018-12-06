@@ -1,33 +1,18 @@
 var  UIDialog_iconImage = null
 
-class UIDialog {    
 
-  static setUp(context){
-    UIDialog_iconImage = NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path())
-  }  
+class UIAbstractWindow {    
+ 
+  constructor(window,intRect) {    
+    this.window = window
 
-  constructor(title,rect,okButtonTitle,description='') { 
-    var alert = NSAlert.alloc().init()
-    alert.setIcon(UIDialog_iconImage)
-    alert.setMessageText(title)
-    if(description!=''){
-        alert.setInformativeText(description)
-    }
-    alert.addButtonWithTitle(okButtonTitle)
-    alert.addButtonWithTitle("Cancel")
-    this.alert = alert
-
-    var container = NSView.alloc().initWithFrame(rect)
-    alert.setAccessoryView(container)
+    var container = NSView.alloc().initWithFrame(intRect)
     this.container = container
+    this.views = []
 
-    this.userClickedOK = false
-    this.inputs = []
-
-    this.y = NSHeight(rect)
-    this.rect = rect
+    this.y = NSHeight(intRect)
+    this.rect = intRect
   }
-  
 
   getNewFrame(height = 25,width=-1){
     var frame = NSMakeRect(0, this.y - height, width==-1?NSWidth(this.rect)-10:width,height)
@@ -58,7 +43,7 @@ class UIDialog {
     checkbox.setState(checked);    
 
     this.container.addSubview(checkbox)
-    this.inputs[id] = checkbox
+    this.views[id] = checkbox
     return checkbox
   }
 
@@ -74,7 +59,7 @@ class UIDialog {
     }
     
     this.container.addSubview(textBox)
-    this.inputs[id] = textBox
+    this.views[id] = textBox
 
     return textBox  
   }
@@ -91,7 +76,7 @@ class UIDialog {
     }
     
     this.container.addSubview(input)
-    this.inputs[id] = input
+    this.views[id] = input
 
     return input  
   }
@@ -105,7 +90,7 @@ class UIDialog {
     v.selectItemAtIndex(selectItem)
 
     this.container.addSubview(v)
-    this.inputs[id] = v
+    this.views[id] = v
     return v
   } 
 
@@ -136,7 +121,7 @@ class UIDialog {
       group.btns.push(btn)
     }
     
-    this.inputs[id] = group
+    this.views[id] = group
     return group
   } 
 
@@ -149,7 +134,7 @@ class UIDialog {
     btn.setCOSJSTargetFunction(func)
 
     this.container.addSubview(btn)
-    this.inputs[id] = btn
+    this.views[id] = btn
     return btn
 
   }
@@ -171,16 +156,43 @@ class UIDialog {
   }
 
 
+  finish(){
+    this.window = null
+  }
+
+}
+
+class UIDialog extends UIAbstractWindow {    
+
+  static setUp(context){
+    UIDialog_iconImage = NSImage.alloc().initByReferencingFile(context.plugin.urlForResourceNamed("icon.png").path())
+  }  
+
+  constructor(title,rect,okButtonTitle,description='') { 
+    var window = NSAlert.alloc().init()
+    window.setIcon(UIDialog_iconImage)
+    window.setMessageText(title)
+    if(description!=''){
+        window.setInformativeText(description)
+    }
+    if(undefined!=okButtonTitle){
+      window.addButtonWithTitle(okButtonTitle)
+    }
+    window.addButtonWithTitle("Cancel")
+
+    super(window, rect)
+
+    window.setAccessoryView(this.container)    
+    this.userClickedOK = false    
+  }
+  
+
   run(){
-    if (this.alert.runModal() == '1000') {
+    if (this.window.runModal() == '1000') {
         this.userClickedOK  = true           
     }
 
     return this.userClickedOK
-  }
-
-  finish(){
-    this.alert = null
   }
 
 }

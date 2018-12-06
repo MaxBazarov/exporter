@@ -1,30 +1,74 @@
 @import "constants.js"
 @import "exporter/exporter.js"
-@import "lib/uidialog.js";
+@import "lib/uidialog.js"
+@import "lib/uipanel.js"
+@import "lib/timeout.js"
 @import "lib/utils.js"
+
 
 const Settings = require('sketch/settings')   
 const UI = require('sketch/ui')  
 
-async function exportHTML(currentPath,doc,exportOptions,context){
-  
-   // export HTML
-   new Exporter(currentPath, doc, doc.currentPage(), exportOptions, context);
-   exporter.exportArtboards();
- 
- 
-   // open HTML in browser
-   const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
-   if(!dontOpenBrowser){
-     const openPath = currentPath+"/"+exporter.docName+"/"  
-     const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
-     
-     if(openResult.result){
-     }else{
-       UI.alert('Can not open HTML in browser', openResult.output)
-     }
-   }
+let exportInfo = {
+  timeout : undefined,
+  panel: undefined
 }
+
+function finishPanel() {
+  //if( exportInfo.panel!=undefined ) exportInfo.panel.finish()
+  if( exportInfo.timeout!=undefined ) {
+    exportInfo.timeout.cancel() // fibers takes care of keeping coscript around
+    exportInfo.timeout = undefined
+  }
+  log("finishPanel: done")
+}
+
+function exportHTML(currentPath,doc,exportOptions,context){  
+  let panel = new UIPanel()
+  exportInfo.panel = panel
+  panel.addLabel("Exporting...")
+  panel.addButton("cancel","Stop",finishPanel)
+  panel.show() 
+  
+  new Exporter(currentPath, doc, doc.currentPage(), exportOptions, context);
+   // export HTML
+  log("RUN")
+  coscript.setShouldKeepAround(true)
+
+  exportInfo.timeout = coscript.scheduleWithInterval_jsFunction(1,function() {
+
+    // Exporting...
+    exporter.exportArtboards();
+    log("exportHTML: exported")
+
+    // open HTML in browser
+    
+    const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
+    if(!dontOpenBrowser){
+      const openPath = currentPath+"/"+exporter.docName+"/"  
+      const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
+      
+      if(openResult.result){
+      }else{
+        UI.alert('Can not open HTML in browser', openResult.output)
+      }      
+    }      
+    log("exportHTML: opened HTML")
+    
+
+    // close all
+    //panel.finish()
+    log("exportHTML: closed panel")
+    coscript.setShouldKeepAround(false)
+    log("exportHTML: setShouldKeepAround: false")
+  })
+
+  exportInfo.panel.finish()
+  //clearTimeout()
+  //log("exportHTML: done")
+  
+}
+
 
 
 function runExporter(context,exportOptions=null) {    
@@ -44,6 +88,7 @@ function runExporter(context,exportOptions=null) {
     currentPath = ""
   }
 
+
   if(!isCmdExportToHTML){
     const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 500, 130),"Export")
 
@@ -51,7 +96,7 @@ function runExporter(context,exportOptions=null) {
     dialog.addButton("ss","Select Folder",function(){
       const newPath = Utils.askSavePath(currentPath)
       if (newPath != null) {
-        dialog.inputs['path'].setStringValue(newPath)
+        dialog.views['path'].setStringValue(newPath)
       }
       return
     })
@@ -60,7 +105,7 @@ function runExporter(context,exportOptions=null) {
 
     while(true){
       if(!dialog.run()) return
-      currentPath = dialog.inputs['path'].stringValue()+""
+      currentPath = dialog.views['path'].stringValue()+""
       if(currentPath=="") continue
       break
     }
@@ -68,9 +113,12 @@ function runExporter(context,exportOptions=null) {
     dialog.finish()
 
     Settings.setDocumentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL,currentPath)     
-    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.inputs['open'].state() != 1)    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.views['open'].state() != 1)    
   }
-      
+  
+ 
+  log("START")
   exportHTML(currentPath,doc,exportOptions,context)
+  log("END")  
  
 };

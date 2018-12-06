@@ -31,7 +31,7 @@ var onRun = function(context) {
 
 
   if(dialog.run()){
-    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_ANNOTATIONS, dialog.inputs['annotations'].stringValue()+"")
+    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_ANNOTATIONS, dialog.views['annotations'].stringValue()+"")
   }
   dialog.finish()
 

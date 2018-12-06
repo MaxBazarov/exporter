@@ -150,21 +150,21 @@ class Publisher {
 		
 	  
 		if(dialog.run()){			
-			this.login = dialog.inputs['login'].stringValue()+""
+			this.login = dialog.views['login'].stringValue()+""
 			Settings.setSettingForKey(SettingKeys.PLUGIN_PUBLISH_LOGIN,this.login )    
 
-			this.siteRoot = dialog.inputs['siteRoot'].stringValue()+""
+			this.siteRoot = dialog.views['siteRoot'].stringValue()+""
 			Settings.setSettingForKey(SettingKeys.PLUGIN_PUBLISH_SITEROOT,this.siteRoot )    
 
-			this.remoteFolder = dialog.inputs['remoteFolder'].stringValue()+""
+			this.remoteFolder = dialog.views['remoteFolder'].stringValue()+""
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER,this.remoteFolder )    
 
-			this.doCompress = dialog.inputs['doCompress'].state() == 1
+			this.doCompress = dialog.views['doCompress'].state() == 1
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS,this.doCompress)    	
 
 
 			// save new version into document settings
-			ver =  dialog.inputs['version'].stringValue()+""
+			ver =  dialog.views['version'].stringValue()+""
 			this.ver = parseInt(ver)+""
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION, (parseInt(ver)+1)+"")
 

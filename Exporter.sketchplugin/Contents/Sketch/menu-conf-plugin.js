@@ -48,15 +48,15 @@ var onRun = function(context) {
   */
   
   if(dialog.run()){
-    Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.inputs['position'].indexOfSelectedItem())    
-    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.inputs['retina'].state() != 1) 
+    Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.views['position'].indexOfSelectedItem())    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.views['retina'].state() != 1) 
     /*Temporary disable, it's too experimental
-    Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.inputs['comments'].stringValue()+"")*/
-    Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.inputs['googleCode'].stringValue()+"")  
-    Settings.setSettingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH, dialog.inputs['compressPath'].stringValue()+"")    
-    Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.inputs['hidenav'].state() != 1)     
-    Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS, dialog.inputs['disableHotspots'].state() != 1)     
-    Settings.setSettingForKey(SettingKeys.PLUGIN_SAVE_JSON, dialog.inputs['savejson'].state() == 1)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")*/
+    Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.views['googleCode'].stringValue()+"")  
+    Settings.setSettingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH, dialog.views['compressPath'].stringValue()+"")    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.views['hidenav'].state() != 1)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS, dialog.views['disableHotspots'].state() != 1)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_SAVE_JSON, dialog.views['savejson'].state() == 1)     
   }
   dialog.finish()
 
