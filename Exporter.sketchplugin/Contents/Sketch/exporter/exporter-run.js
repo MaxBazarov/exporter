@@ -14,32 +14,38 @@ let exportInfo = {
   panel: undefined
 }
 
-function finishPanel() {
-  //if( exportInfo.panel!=undefined ) exportInfo.panel.finish()
+function closePanel() {
+  if( exportInfo.panel!=undefined ){
+    exportInfo.panel.finish()
+    exportInfo.panel = undefined
+  }
   if( exportInfo.timeout!=undefined ) {
     exportInfo.timeout.cancel() // fibers takes care of keeping coscript around
     exportInfo.timeout = undefined
   }
-  log("finishPanel: done")
+  coscript.setShouldKeepAround(false)  
+}
+
+function panelSwitchFinished(){
+  exportInfo.panel.addButton("cancel","  Ok   ",function(){
+      closePanel()
+    })
 }
 
 function exportHTML(currentPath,doc,exportOptions,context){  
-  let panel = new UIPanel()
-  exportInfo.panel = panel
-  panel.addLabel("Exporting...")
-  panel.addButton("cancel","Stop",finishPanel)
+  let panel = new UIPanel("Exporting to HTML")
+  exportInfo.panel = panel 
+  panel.addLabel("Please wait") 
   panel.show() 
   
   new Exporter(currentPath, doc, doc.currentPage(), exportOptions, context);
-   // export HTML
-  log("RUN")
+   // export HTML  
   coscript.setShouldKeepAround(true)
 
   exportInfo.timeout = coscript.scheduleWithInterval_jsFunction(1,function() {
 
     // Exporting...
     exporter.exportArtboards();
-    log("exportHTML: exported")
 
     // open HTML in browser
     
@@ -53,20 +59,13 @@ function exportHTML(currentPath,doc,exportOptions,context){
         UI.alert('Can not open HTML in browser', openResult.output)
       }      
     }      
-    log("exportHTML: opened HTML")
-    
 
-    // close all
-    //panel.finish()
-    log("exportHTML: closed panel")
-    coscript.setShouldKeepAround(false)
-    log("exportHTML: setShouldKeepAround: false")
+    // 
+    //panelSwitchFinished()
+    closePanel()
+    UI.message('HTML exported.')
   })
-
-  exportInfo.panel.finish()
-  //clearTimeout()
-  //log("exportHTML: done")
-  
+    
 }
 
 
@@ -117,8 +116,6 @@ function runExporter(context,exportOptions=null) {
   }
   
  
-  log("START")
   exportHTML(currentPath,doc,exportOptions,context)
-  log("END")  
  
 };

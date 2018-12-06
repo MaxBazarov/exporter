@@ -336,7 +336,6 @@ class Exporter {
 
     // Collect artboards and prepare caches
     this.artboardGroups = this.getArtboardGroups(this.context);
-    this.log('artboardGroups: '+this.artboardGroups.length);
     
     // Collect all layers
     this.buildSymbolDict()
@@ -380,7 +379,6 @@ class Exporter {
   }  
 
   prepareOutputFolder(selectedPath) {
-    this.log("prepareOutputFolder()");
     let error;
     const fileManager = NSFileManager.defaultManager();
 

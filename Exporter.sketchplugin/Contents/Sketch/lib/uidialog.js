@@ -97,6 +97,9 @@ class UIAbstractWindow {
 
   addRadioButtons(id,label,selectItem, options, width=100){
     if(label!='') this.addLabel(label,15)
+    
+    // pre-select the first item
+    if(selectItem<0) selectItem = 0
 
     let radioTargetFunction = (sender) => {
       sender.myGroup.selectedIndex = sender.myIndex
@@ -104,7 +107,7 @@ class UIAbstractWindow {
 
     let group = {
       btns:[],
-      selectedIndex:-1
+      selectedIndex:selectItem
     }
     for(var item of options){
       const index = group.btns.length
