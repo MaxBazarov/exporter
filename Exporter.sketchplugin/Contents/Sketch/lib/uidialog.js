@@ -109,6 +109,37 @@ class UIDialog {
     return v
   } 
 
+
+  addRadioButtons(id,label,selectItem, options, width=100){
+    if(label!='') this.addLabel(label,15)
+
+    let radioTargetFunction = (sender) => {
+      sender.myGroup.selectedIndex = sender.myIndex
+    };
+
+    let group = {
+      btns:[],
+      selectedIndex:-1
+    }
+    for(var item of options){
+      const index = group.btns.length
+
+      const btn = NSButton.alloc().initWithFrame(this.getNewFrame(18,width))
+      btn.setButtonType(NSRadioButton)
+      btn.setTitle(item)
+      btn.setState(index!=selectItem ? NSOffState : NSOnState)
+      btn.myGroup = group
+      btn.myIndex = index
+      btn.setCOSJSTargetFunction(sender => radioTargetFunction(sender));
+
+      this.container.addSubview(btn)
+      group.btns.push(btn)
+    }
+    
+    this.inputs[id] = group
+    return group
+  } 
+
   addButton(id,label,func,width=100){
       // create OK button
     var btn = NSButton.alloc().initWithFrame(this.getNewFrame(20,width)); 
