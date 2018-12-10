@@ -244,15 +244,15 @@ class ViewerPage {
         for(var link of links) {
             var title, href, target;
             if(link.page != null) {			
-                title = story.pages[link.page].title;
+                // title = story.pages[link.page].title;
                 href = 'javascript:viewer.goTo(' + link.page + ')';
                 target = null;
             } else if(link.action != null && link.action == 'back') {
-                title = "Go Back";
+                //title = "Go Back";
                 href = 'javascript:viewer.goBack()';
                 target = null;
             } else if(link.url != null){
-                title = link.url;
+                //title = link.url;
                 href = link.url;
                 target = link.target!=null?link.target:null;						
             }
@@ -262,7 +262,7 @@ class ViewerPage {
                 coords: link.rect.join(','),
                 href: href,
                 alt: title,
-                title: title,
+                //title: title,
                 target: target
             }).appendTo(map);
         } 
