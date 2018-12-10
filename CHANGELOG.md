@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 4.3.1 (10 Dec 2018)
+- Removed hotspot alt/title/hint
+- Moved Exporting process to async process to don't freeze UI  (done partially)
+
 ##  Version 4.3.0 (4 Dec 2018)
 - Added ability to enable page auto-transition (https://github.com/MaxBazarov/exporter/raw/master/tests/PageTransition.sketch)
 - Excluded artboards with "External URL" enabled from exporting
