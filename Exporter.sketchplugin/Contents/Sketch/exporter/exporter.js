@@ -50,6 +50,8 @@ class Exporter {
     this.pagesDict = []
     this.pageIDsDict = []
 
+    this.errors = []
+
     // init global variable
     exporter = this
   }
@@ -101,6 +103,7 @@ class Exporter {
 
   logError(error){
     log("[ ERROR ] "+error)
+    this.errors.push(error)
   }
 
   stopWithError(error){

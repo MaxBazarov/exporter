@@ -2,7 +2,6 @@
 @import "exporter/exporter.js"
 @import "lib/uidialog.js"
 @import "lib/uipanel.js"
-@import "lib/timeout.js"
 @import "lib/utils.js"
 
 
@@ -63,7 +62,13 @@ function exportHTML(currentPath,doc,exportOptions,context){
     // 
     //panelSwitchFinished()
     closePanel()
-    UI.message('HTML exported.')
+
+    // show final message
+    if(exporter.errors.length>0){
+      UI.alert('HTML exported with errors',exporter.errors.join("\n\n"))
+    }else{
+      UI.message('HTML exported.')
+    }
   })
     
 }
