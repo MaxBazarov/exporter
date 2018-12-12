@@ -34,7 +34,7 @@ function panelSwitchFinished(){
 function exportHTML(currentPath,doc,exportOptions,context){  
   let panel = new UIPanel("Exporting to HTML")
   exportInfo.panel = panel 
-  panel.addLabel("Please wait") 
+  panel.addLabel("Please wait...") 
   panel.show() 
   
   new Exporter(currentPath, doc, doc.currentPage(), exportOptions, context);
@@ -97,8 +97,8 @@ function runExporter(context,exportOptions=null) {
     const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 500, 130),"Export")
 
     dialog.addTextInput("path","Destination Folder",currentPath,'e.g. ~/HTML',450)  
-    dialog.addButton("ss","Select Folder",function(){
-      const newPath = Utils.askSavePath(currentPath)
+    dialog.addButton("select","Select Folder",function(){
+      const newPath = Utils.askPath(currentPath)
       if (newPath != null) {
         dialog.views['path'].setStringValue(newPath)
       }

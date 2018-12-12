@@ -23,10 +23,10 @@ Rectangle.prototype.copyToRect = function(){
 
 class Utils {
 
-  static askSavePath(currentPath=null) {
+  static askPath(currentPath=null,buttonName="Select") {
     let panel = NSOpenPanel.openPanel()
     panel.setTitle("Choose a location...")
-    panel.setPrompt("Export")
+    panel.setPrompt(buttonName)
     panel.setCanChooseDirectories(true)
     panel.setCanChooseFiles(false)
     panel.setAllowsMultipleSelection(false)
