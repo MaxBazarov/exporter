@@ -42,7 +42,8 @@ class Exporter {
 
     this.prepareOutputFolder(selectedPath);
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
-    this.enabledJSON =this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+    this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+    this.disableFixedLayers = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
     this.jsStory = '';
 
     this.exportOptions = exportOptions

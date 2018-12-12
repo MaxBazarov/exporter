@@ -14,9 +14,9 @@ class UIAbstractWindow {
     this.rect = intRect
   }
 
-  getNewFrame(height = 25,width=-1){
+  getNewFrame(height = 25,width=-1,yinc=-1){
     var frame = NSMakeRect(0, this.y - height, width==-1?NSWidth(this.rect)-10:width,height)
-    this.y-=height+10
+    this.y-=height+(yinc>=0?yinc:10)
     return frame
   }
 
@@ -33,10 +33,10 @@ class UIAbstractWindow {
     return label
   }
 
-  addCheckbox(id,label,checked,height = 25){
+  addCheckbox(id,label,checked,height = 18){
     checked = (checked == false) ? NSOffState : NSOnState;    
     
-    const checkbox = NSButton.alloc().initWithFrame(this.getNewFrame(height));
+    const checkbox = NSButton.alloc().initWithFrame(this.getNewFrame(height,-1,6));
     checkbox.setButtonType(NSSwitchButton);
     checkbox.setBezelStyle(0);
     checkbox.setTitle(label);
@@ -145,7 +145,7 @@ class UIAbstractWindow {
   addHint(label,height = 30){
     this.y += 3
 
-    const hint = NSTextField.alloc().initWithFrame(this.getNewFrame(height));
+    const hint = NSTextField.alloc().initWithFrame(this.getNewFrame(height,-1,3));
     hint.setStringValue(label);
     //label.setFont(NSFont.systemFontOfSize(fontSize));
     hint.setBezeled(false);

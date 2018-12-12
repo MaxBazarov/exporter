@@ -44,6 +44,7 @@ var SettingKeys = {
   
   DOC_EXPORTING_URL: "docExportingURL",
   DOC_PUBLISH_COMPRESS: "docPublishCompress",
+  DOC_DISABLE_FIXED_LAYERS: "docDisablFixedLayers",
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
   DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
