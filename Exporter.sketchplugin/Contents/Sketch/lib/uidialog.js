@@ -191,11 +191,7 @@ class UIDialog extends UIAbstractWindow {
   
 
   run(){
-    if (this.window.runModal() == '1000') {
-        this.userClickedOK  = true           
-    }
-
-    return this.userClickedOK
+    return this.window.runModal() == '1000'
   }
 
 }
