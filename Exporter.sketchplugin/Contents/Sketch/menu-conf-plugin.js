@@ -12,9 +12,11 @@ var onRun = function(context) {
   UIDialog.setUp(context);
 
   let position = Settings.settingForKey(SettingKeys.PLUGIN_POSITION)
-  if(position==undefined || position=="") position = Constants.POSITION_DEFAULT
+  if(position==undefined || position=="") position = 0
 
-  
+  let sortRule = Settings.settingForKey(SettingKeys.PLUGIN_SORT_RULE)
+  if(sortRule==undefined || sortRule=="") position = 0
+
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
@@ -30,10 +32,13 @@ var onRun = function(context) {
 
 
   //
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 360),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 380),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("Specify how artboard will be aligned in browser page")
+
+  dialog.addComboBox("sortRule","Artboards Sort Order", sortRule,Constants.SORT_RULE_OPTIONS,250)
+  dialog.addHint("Specify how artboards will sorted in HTML story.")
 
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
@@ -49,6 +54,7 @@ var onRun = function(context) {
   
   if(dialog.run()){
     Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.views['position'].indexOfSelectedItem())    
+    Settings.setSettingForKey(SettingKeys.PLUGIN_SORT_RULE, dialog.views['sortRule'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.views['retina'].state() != 1) 
     /*Temporary disable, it's too experimental
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")*/

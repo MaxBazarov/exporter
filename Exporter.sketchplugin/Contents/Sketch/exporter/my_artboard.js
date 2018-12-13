@@ -10,7 +10,7 @@ class MyArtboard extends MyLayer {
     static getArtboardGroupsInPage(page, context, includeNone = true) {
         const artboardsSrc = page.artboards();
         const artboards = [];
-      
+
         artboardsSrc.forEach(function(artboard){
             if( !artboard.isKindOfClass(MSSymbolMaster)){
               artboards.push(artboard);

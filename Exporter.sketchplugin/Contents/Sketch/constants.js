@@ -7,7 +7,11 @@ var Constants = {
   IMAGES_DIRECTORY: "images/",
   VIEWER_DIRECTORY: "viewer/",
   RESOURCES_DIRECTORY: "resources/",
-  PLUGIN_IDENTIFIER: "com.cloudblue.sketch.exporter",
+  PLUGIN_IDENTIFIER: "com.cloudblue.sketch.exporter",  
+  SORT_RULE_X:0,    
+  SORT_RULE_SKETCH:1,
+  SORT_RULE_REVERSIVE_SKETCH:2,
+  SORT_RULE_OPTIONS: ["Left-to-right","Sketch default","Reversive Sketch default"],
   POSITION_DEFAULT:0,
   POSITION_TOP:1,
   POSITION_CENTER:2,
@@ -31,6 +35,7 @@ var SettingKeys = {
   PLUGIN_GOOGLE_CODE: "googleCode",
   PLUGIN_EXPORT_MODE: "exportMode",
   PLUGIN_HIDE_NAV: "hideNavigation",    
+  PLUGIN_SORT_RULE: "pluginSortRule",    
   PLUGIN_DISABLE_HOTSPOTS: "pluginDisableHotspots",    
   PLUGIN_SAVE_JSON: "pluginSaveJSON",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
@@ -48,6 +53,7 @@ var SettingKeys = {
   DOC_PUBLISH_VERSION: "mockupsVersion",
   DOC_PUBLISH_REMOTE_FOLDER: "remoteFolder",
   DOC_CUSTOM_HIDE_NAV: "docCustomHideNavigation",
+  DOC_CUSTOM_SORT_RULE: "docCustomSortRule", // How to sort artboards
   DOC_BACK_COLOR: "docBackColor",
 
   LAYER_ANNOTATIONS: "layerAnnotations",   

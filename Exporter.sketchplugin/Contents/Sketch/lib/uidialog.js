@@ -85,7 +85,7 @@ class UIAbstractWindow {
   addComboBox(id,label,selectItem, options, width=100){
     if(label!='') this.addLabel(label,15)
 
-    const v = NSPopUpButton.alloc().initWithFrame(this.getNewFrame(20,width));    
+    const v = NSPopUpButton.alloc().initWithFrame(this.getNewFrame(23,width));    
     v.addItemsWithTitles(options)
     v.selectItemAtIndex(selectItem)
 

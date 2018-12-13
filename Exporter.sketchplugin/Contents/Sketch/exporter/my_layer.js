@@ -51,7 +51,14 @@ class MyLayer {
         if(myParent!=undefined) this.constrains = this._calculateConstrains()
         this.tempOverrides = undefined        
         
-        if(nlayer.isFixedToViewport() && !exporter.disableFixedLayers) this.addSelfAsFixedLayerToArtboad()    
+        if(!exporter.disableFixedLayers){
+            if(nlayer.isFixedToViewport()){
+                this.addSelfAsFixedLayerToArtboad()    
+            }
+        }/*else if(this.name=='Layer'){
+                this.isFloat = true
+            }
+        }*/
         
     }
 

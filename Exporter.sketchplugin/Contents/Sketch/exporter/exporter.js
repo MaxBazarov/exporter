@@ -41,9 +41,8 @@ class Exporter {
     // @workaround for Sketch 52
 
     this.prepareOutputFolder(selectedPath);
-    this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
-    this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
-    this.disableFixedLayers = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
+
+    this._readSettings()
     this.jsStory = '';
 
     this.exportOptions = exportOptions
@@ -55,6 +54,17 @@ class Exporter {
 
     // init global variable
     exporter = this
+  }
+
+  _readSettings() {
+    this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
+    this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+    this.disableFixedLayers = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
+
+    let pluginSortRule = this.Settings.settingForKey(SettingKeys.PLUGIN_SORT_RULE)
+    if(undefined==pluginSortRule) pluginSortRule = Constants.SORT_RULE_X
+    const docCustomSortRule = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_CUSTOM_SORT_RULE)
+    this.sortRule = undefined==docCustomSortRule || docCustomSortRule<0 ? pluginSortRule : docCustomSortRule
   }
 
   
@@ -225,14 +235,21 @@ class Exporter {
         if(page.name().indexOf("*")==0){
           return
         }
-        const artBoards = MyArtboard.getArtboardGroupsInPage(page, context, false)
+        let artBoards = MyArtboard.getArtboardGroupsInPage(page, context, false)
         if(!artBoards.length) return
-        artBoards.sort((
-          function(a, b){
-            return a[0].artboard.absoluteRect().x()-b[0].artboard.absoluteRect().x()
-        }))
+        
+        if(Constants.SORT_RULE_X == this.sortRule){
+          artBoards.sort((
+            function(a, b){
+              return a[0].artboard.absoluteRect().x()-b[0].artboard.absoluteRect().x()
+          }))
+        }else  if(Constants.SORT_RULE_REVERSIVE_SKETCH == this.sortRule){
+          artBoards = artBoards.reverse()
+        }else{
+        }
+
         artboardGroups.push.apply(artboardGroups,artBoards);
-      })
+      },this)
     }else if (this.exportOptions.mode==Constants.EXPORT_MODE_CURRENT_PAGE){      
       artboardGroups.push.apply(artboardGroups, MyArtboard.getArtboardGroupsInPage(this.exportOptions.currentPage, context, false));
     }else if (this.exportOptions.mode==Constants.EXPORT_MODE_SELECTED_ARTBOARDS){
