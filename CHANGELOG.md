@@ -1,5 +1,11 @@
 # Change Log
 
+##  Version 4.4.0 (13 Dec 2018)
+- New plugin global and document local setting to select artboard sorting rule
+- Show Exporting errors after the completion
+- Ability to disable fixed layers in plugin settings
+- Minor improvements
+
 ##  Version 4.3.1 (10 Dec 2018)
 - Removed hotspot alt/title/hint
 - Moved Exporting process to async process to don't freeze UI  (done partially)
