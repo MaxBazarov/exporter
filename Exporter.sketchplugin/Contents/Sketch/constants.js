@@ -41,13 +41,14 @@ var SettingKeys = {
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
   PLUGIN_COMPRESS_TOOL_PATH: "pluginCompressPath",
+  PLUGIN_EXPORTING_URL: "pluginExportingURL", 
 
   ARTBOARD_OVERLAY: "artboardOverlay",
   ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
   ARTBOARD_TRANS_TO_NEXT_SECS: "artboardTransNextSecs",
   
-  DOC_EXPORTING_URL: "docExportingURL",
+  DOC_EXPORTING_URL: "docExportingURL", // legacy, replaced by PLUGIN_EXPORTING_URL
   DOC_PUBLISH_COMPRESS: "docPublishCompress",
   DOC_DISABLE_FIXED_LAYERS: "docDisablFixedLayers",
   DOC_PUBLISH_VERSION: "mockupsVersion",

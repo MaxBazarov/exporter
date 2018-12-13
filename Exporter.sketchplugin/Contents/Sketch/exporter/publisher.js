@@ -211,8 +211,7 @@ class Publisher {
 		Utils.deleteFile(targetPath)
 	    
 	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/"+scriptName
-		let error = MOPointer.alloc().init();
-		)
+		let error = MOPointer.alloc().init()
 	    
 	    if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
 			this.UI.alert('Can`t copy script', error.value().localizedDescription())

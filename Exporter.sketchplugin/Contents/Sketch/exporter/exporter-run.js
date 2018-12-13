@@ -87,9 +87,12 @@ function runExporter(context,exportOptions=null) {
   const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
 
   // ask for output path
-  let currentPath = Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
+  let currentPath = Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)
   if(currentPath==null){
-    currentPath = ""
+    // check legacy settings
+    currentPath = Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)
+    if(currentPath==null)    
+        currentPath = ''
   }
 
 
@@ -108,15 +111,17 @@ function runExporter(context,exportOptions=null) {
 
 
     while(true){
-      if(!dialog.run()) return
-      currentPath = dialog.views['path'].stringValue()+""
-      if(currentPath=="") continue
-      break
+        const result = dialog.run()        
+        if(!result) return
+
+        currentPath = dialog.views['path'].stringValue()+""
+        if(currentPath=="") continue
+        break
     }
 
     dialog.finish()
 
-    Settings.setDocumentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL,currentPath)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORTING_URL,currentPath)     
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.views['open'].state() != 1)    
   }
   
