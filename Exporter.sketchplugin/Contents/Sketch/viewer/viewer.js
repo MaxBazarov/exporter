@@ -226,7 +226,10 @@ function createViewer(story, files) {
 			}else{
 				this.currentPageOverlay = false;
 			}
-			this.prevPageIndex = this.currentPage;		
+            this.prevPageIndex = this.currentPage;		
+                        
+			if(!newPage.disableAutoScroll)
+				window.scrollTo(0,0)            
 			
 			this.refresh_adjust_content_layer(index);	
 			this.refresh_hide_last_image(index)	
@@ -239,9 +242,6 @@ function createViewer(story, files) {
 			if(story.pages[index].type!="overlay"){
 				this.lastRegularPage = index;				
 			}
-
-			if(!newPage.disableAutoScroll)
-				window.scrollTo(0,0)
 
 			if(newPage.transNextSecs!=undefined){				
 				this._setupTransNext(newPage.transNextSecs)
