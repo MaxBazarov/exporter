@@ -57,7 +57,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   <!--/load indicator-->
   `;
   s += ' <div id="container">\n';
-  s += ' <div id="content">\n';
+  s += ' <div id="content" class="contentLinksVisible">\n';
   /*
   s += ' <div id="fixed_top"></div><div id="fixed_top_back" class="hidden"></div>\n';
   s += ' <div id="fixed_left"></div><div id="fixed_left_back" class="hidden"></div>\n'; 

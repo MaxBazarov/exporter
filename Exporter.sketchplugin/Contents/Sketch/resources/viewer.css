@@ -297,6 +297,22 @@ area {
 
 /*** MAPS ***/
 
+.linksDiv {
+	width:100%;
+	position: relative;
+}
+
+.linkDiv {
+	position: absolute;
+	cursor: pointer;	
+	opacity: 0.6;
+	background-color: rgb(154, 220, 255);
+}
+
+.contentLinksVisible .linkDiv {
+	opacity: 0.6;
+}
+
 .map {
     z-index: 9;	
     position: absolute;

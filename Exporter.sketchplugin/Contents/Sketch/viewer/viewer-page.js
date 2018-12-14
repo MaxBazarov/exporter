@@ -3,15 +3,6 @@
 
 class ViewerPage {
 
-    /*------------------------------- PUBLIC -----------------------------*/
-    createAreaMaps(parentDiv){
-        let map = this._createSingleMapWithAreas(this.links,'map' + this.index,this.type)
-        map.appendTo(parentDiv)
-        for(var panel of this.fixedPanels){       
-            map = this._createSingleMapWithAreas(panel.links,'map' + this.index+"_"+panel.index,this.type)
-            map.appendTo(parentDiv)
-        }
-    }
 
     hide(){
         const fixedZs = {
@@ -114,22 +105,19 @@ class ViewerPage {
         // create main content image      
         {
             var isOverlay = this.type==="overlay";
-            var contentOverlay = $('#content-overlay');		
-            
+            var contentOverlay = $('#content-overlay');		            
             imageDiv.appendTo(isOverlay?contentOverlay:content);	
             
             // create map div
-            var mapDiv = $("<div>",{
-                class:"map",
+            var linksDiv = $("<div>",{
+                id:"div_links_"+this.index,
+                class:"linksDiv",
             }).attr('width', this.width).attr('height', this.height)
-            mapDiv.appendTo(imageDiv)
+            linksDiv.appendTo(imageDiv)
+            this.linksDiv = linksDiv
+
+            this._createMainMap()
     
-            // create image
-            var mapImage = $("<img>",{
-                id: "map_image_"+this.index,
-                src: "resources/1.png",            
-            }).attr('width', this.width).attr('height', this.height)
-            mapImage.appendTo(mapDiv)
         }
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
@@ -157,31 +145,30 @@ class ViewerPage {
 
     _enableMainHotSpots(){
         // init main area hotspots
+        /*
         this._initImgMap($("#map_image_"+this.index), this,"#map"+this.index)
+        */
     }
 
     _enablePanelFixedHotSpots(panel){
+        /*
         // init or hide fixed are hotsposts
         var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
         this._initImgMap(img,panel,"#map"+this.index+"_"+panel.index)
+        */
     }
 
     enableHotSpots(){
-        // init main area hotspots
-        //this._initImgMap($("#map_image_"+this.index), this)
-        this._enableMainHotSpots()
-            
-        // init or hide fixed are hotsposts        
-        for(var panel of this.fixedPanels){
-            this._enablePanelFixedHotSpots(panel)
-            /*var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
-            this._initImgMap(img,panel)            */
-        }
-        // save current highlightLinks mode to able to check it on future showing 
-        this.highlightLinks = viewer.highlightLinks
+
+        if(viewer.highlightLinks)
+            $('#content').addClass("contentLinksVisible")
+        else
+            $('#content').removeClass("contentLinksVisible")
+ 
     }
 
     _initImgMap(img,sizesFrom,mapName){    
+        /*
         img.attr('usemap',mapName).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
     
         // 0=non-transparent  1.0=fully transparent
@@ -200,6 +187,7 @@ class ViewerPage {
     
 
     _hidePanelMap(panel){
+        /*
         const img = panel.fixedMapImg
         
         if(img==undefined) return
@@ -207,9 +195,12 @@ class ViewerPage {
             img.addClass('hidden');
         else
             img.parent().addClass('hidden');
+
+        */
     }
     
     _showPanelMap(panel){
+        /*
         let img = panel.fixedMapImg
         if(img==undefined){
             img = this._createPanelMap(panel)
@@ -219,9 +210,11 @@ class ViewerPage {
             else
                 img.parent().removeClass('hidden');
         }
+        */
     }
 
     _createPanelMap(panel){
+        /*
         // create Map for fixed panel
         panel.fixedMapImg = $("<img>",{
             id:"map_img_fixed_"+this.index+"_"+panel.index,
@@ -230,18 +223,20 @@ class ViewerPage {
         panel.fixedMapImg.appendTo(panel.imageDiv);   
         this._enablePanelFixedHotSpots(panel)     
         return panel.fixedMapImg
+        */
+    }
+
+    _createMainMap(){
+        // create links
+        this._createSingleMapWithAreas(this) 
     }
 
 
-    _createSingleMapWithAreas(links,name,type){
-
-        var map = $('<map/>', {
-            id: name,
-            type: type,
-            name: name
-        });
-
-        for(var link of links) {
+    // panel: ref to panel or thi
+    _createSingleMapWithAreas(panel){
+        var linksDiv = this.linksDiv
+        
+        for(var link of this.links) {
             var title, href, target;
             if(link.page != null) {			
                 // title = story.pages[link.page].title;
@@ -256,7 +251,15 @@ class ViewerPage {
                 href = link.url;
                 target = link.target!=null?link.target:null;						
             }
+
+            var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "
+
+            var linkDiv = $("<div>",{
+                class:"linkDiv",
+            }).attr('style', style)
+            linkDiv.appendTo(linksDiv)
             
+            /*
             $('<area/>', {
                 shape: 'rect',
                 coords: link.rect.join(','),
@@ -265,7 +268,7 @@ class ViewerPage {
                 //title: title,
                 target: target
             }).appendTo(map);
+            */
         } 
-        return map
     }
 }
