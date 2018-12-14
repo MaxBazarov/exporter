@@ -14,7 +14,7 @@ class Publisher {
 		this.ver = ''
 		this.remoteFolder = ''
 		
-		this.allMockupsdDir = this.Settings.documentSettingForKey(doc,SettingKeys.DOC_EXPORTING_URL)		
+		this.allMockupsdDir = this.Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)		
 		this.compressToolPath = this.Settings.settingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH)		
 	}
 
