@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 4.4.1 (15 Dec 2018)
+- Bugfixing
+
 ##  Version 4.4.0 (13 Dec 2018)
 - New plugin global and document local setting to select artboard sorting rule
 - Show Exporting errors after the completion
