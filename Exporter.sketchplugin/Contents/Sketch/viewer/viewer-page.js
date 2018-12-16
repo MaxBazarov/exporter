@@ -48,11 +48,6 @@ class ViewerPage {
             panel.imageDiv.css("z-index",fixedZs[panel.type])
             //this._showPanelMap(panel)                             
         }
-
-        if(this.highlightLinks==undefined || this.highlightLinks != viewer.highlightLinks){
-            this.enableHotSpots()
-        }
-
         this.imageDiv.removeClass('hidden');        
 
     }
@@ -92,14 +87,19 @@ class ViewerPage {
                 style:style
             });
             //panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
-            panelDiv.appendTo(content);
+            panelDiv.appendTo(imageDiv);
             panel.imageDiv = panelDiv
 
+            // create link div
+            panel.linksDiv = $("<div>",{                
+                class:"linksDiv",
+            }).attr('width', panel.width).attr('height', panel.height)
+            panel.linksDiv.appendTo(panel.imageDiv)            
+            this._createLinks(panel)
+
+            // add image itseld
             panel.imageObj = this._loadSingleImage(panel.isFloat?panel:this,'img_'+panel.index+"_")     
             panel.imageObj.appendTo(panelDiv);
-            
-            this._createPanelMap(panel)
-
         }
         
         // create main content image      
@@ -108,7 +108,7 @@ class ViewerPage {
             var contentOverlay = $('#content-overlay');		            
             imageDiv.appendTo(isOverlay?contentOverlay:content);	
             
-            // create map div
+            // create link div
             var linksDiv = $("<div>",{
                 id:"div_links_"+this.index,
                 class:"linksDiv",
@@ -116,7 +116,7 @@ class ViewerPage {
             linksDiv.appendTo(imageDiv)
             this.linksDiv = linksDiv
 
-            this._createMainMap()
+            this._createLinks(this)
     
         }
         var img = this._loadSingleImage(this,'img_')		 
@@ -156,15 +156,6 @@ class ViewerPage {
         var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
         this._initImgMap(img,panel,"#map"+this.index+"_"+panel.index)
         */
-    }
-
-    enableHotSpots(){
-
-        if(viewer.highlightLinks)
-            $('#content').addClass("contentLinksVisible")
-        else
-            $('#content').removeClass("contentLinksVisible")
- 
     }
 
     _initImgMap(img,sizesFrom,mapName){    
@@ -213,7 +204,8 @@ class ViewerPage {
         */
     }
 
-    _createPanelMap(panel){
+    _createPanelLink(panel){
+        this._createLinks(panel) 
         /*
         // create Map for fixed panel
         panel.fixedMapImg = $("<img>",{
@@ -226,17 +218,17 @@ class ViewerPage {
         */
     }
 
-    _createMainMap(){
+    _createMainLinks(){
         // create links
-        this._createSingleMapWithAreas(this) 
+        this._createLinks(this) 
     }
 
 
-    // panel: ref to panel or thi
-    _createSingleMapWithAreas(panel){
-        var linksDiv = this.linksDiv
+    // panel: ref to panel or this
+    _createLinks(panel){
+        var linksDiv = panel.linksDiv
         
-        for(var link of this.links) {
+        for(var link of panel.links) {
             var title, href, target;
             if(link.page != null) {			
                 // title = story.pages[link.page].title;
@@ -254,21 +246,17 @@ class ViewerPage {
 
             var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "
 
+            var a = $("<a>",{
+                href:href,
+                target: target
+            })
+            a.appendTo(linksDiv)
+
             var linkDiv = $("<div>",{
                 class:"linkDiv",
             }).attr('style', style)
-            linkDiv.appendTo(linksDiv)
+            linkDiv.appendTo(a)
             
-            /*
-            $('<area/>', {
-                shape: 'rect',
-                coords: link.rect.join(','),
-                href: href,
-                alt: title,
-                //title: title,
-                target: target
-            }).appendTo(map);
-            */
         } 
     }
 }

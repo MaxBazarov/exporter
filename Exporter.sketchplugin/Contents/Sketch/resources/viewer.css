@@ -299,28 +299,29 @@ area {
 
 .linksDiv {
 	width:100%;
-	position: relative;
+    position: relative;    
 }
 
 .linkDiv {
 	position: absolute;
 	cursor: pointer;	
-	opacity: 0.6;
-	background-color: rgb(154, 220, 255);
+	opacity: 0;
+    background-color:#FFC400;
+    pointer-events: auto;
+}
+
+.linkDiv:hover {
+    opacity: 0.2;
 }
 
 .contentLinksVisible .linkDiv {
-	opacity: 0.6;
+	opacity: 0.4;
 }
 
 .map {
     z-index: 9;	
     position: absolute;
 }
-.fixedMapDiv{
-	pointer-events: auto;
-}
-
 /*** FIXED PANELS ***/
 
 .fixedPanel{

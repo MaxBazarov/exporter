@@ -82,7 +82,7 @@ function createViewer(story, files) {
 		
 		initialize: function() {
             this.addHotkeys();
-			this.createImageMaps();            
+			//this.createImageMaps();            
 			this.initializeHighDensitySupport();			
 		},
 		initializeHighDensitySupport: function() {
@@ -469,7 +469,11 @@ function createViewer(story, files) {
 			this.highlightLinks = !this.highlightLinks;
 			this.refresh_update_links_toggler(this.currentPage);
 			var page = story.pages[this.currentPage]
-			page.enableHotSpots()		
+            
+           if(this.highlightLinks)
+                 $('#content').addClass("contentLinksVisible")
+            else
+               $('#content').removeClass("contentLinksVisible")        
 		},
 		showHints : function(){
 			var text = story.pages[this.currentPage].annotations;
