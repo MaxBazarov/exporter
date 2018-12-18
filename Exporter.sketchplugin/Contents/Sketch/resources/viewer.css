@@ -1,6 +1,39 @@
 .image_div {
     margin: 0 auto;		
+    /*position: absolute;*/
 }
+
+/*** MAPS ***/
+
+.linksDiv {
+	width:100%;
+    position: absolute;    
+    overflow:hidden;
+}
+
+.linkDiv {
+	position: absolute;
+	cursor: pointer;	
+    opacity: 0;
+    transition: opacity 0.5s;
+    background-color:#FFC400;
+    pointer-events: auto;
+}
+
+.linkDiv:hover {
+    opacity: 0.2;
+    transition: opacity 0.5s;
+}
+
+.contentLinksVisible .linkDiv {
+    opacity: 0.4;
+    transition: opacity 0.5s;
+}
+
+.map {
+    z-index: 9;	
+    position: absolute;
+}s
 
 #content-overlay {
 	z-index: 50;
@@ -295,33 +328,6 @@ area {
     cursor: hand;
 }
 
-/*** MAPS ***/
-
-.linksDiv {
-	width:100%;
-    position: relative;    
-}
-
-.linkDiv {
-	position: absolute;
-	cursor: pointer;	
-	opacity: 0;
-    background-color:#FFC400;
-    pointer-events: auto;
-}
-
-.linkDiv:hover {
-    opacity: 0.2;
-}
-
-.contentLinksVisible .linkDiv {
-	opacity: 0.4;
-}
-
-.map {
-    z-index: 9;	
-    position: absolute;
-}
 /*** FIXED PANELS ***/
 
 .fixedPanel{

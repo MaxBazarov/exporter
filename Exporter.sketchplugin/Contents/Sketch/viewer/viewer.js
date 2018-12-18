@@ -47,7 +47,7 @@ async function preloadAllPageImages(){
 	for(var page of story.pages){
 		if(page.imageObj==undefined){
 			page.loadImages()
-			page.hide()
+			page.hide(true)
 		}
 	}	
 }
@@ -229,11 +229,12 @@ function createViewer(story, files) {
             this.prevPageIndex = this.currentPage;		
                         
 			if(!newPage.disableAutoScroll)
-				window.scrollTo(0,0)            
+			    window.scrollTo(0,0)            
 			
-			this.refresh_adjust_content_layer(index);	
-			this.refresh_hide_last_image(index)	
-			newPage.show()			
+            this.refresh_adjust_content_layer(index);	            
+            //this.refresh_hide_last_image(index)           
+            //newPage.show()
+            this.switchImages( this.currentPage>=0?story.pages[this.currentPage]:null,newPage)
 			this.refresh_switch_overlay_layer(index);	
 			this.refresh_update_navbar(index);			
 			if(refreshURL) this.refresh_url(index)			
@@ -247,7 +248,30 @@ function createViewer(story, files) {
 				this._setupTransNext(newPage.transNextSecs)
 			}
 								
-		},
+        },
+        
+     
+        switchImages :function(oldPage,newPage){
+            if(oldPage){      
+                //oldPage.imageDiv.css("opacity",0)
+                //newPage.imageDiv.css("opacity",100)
+
+                oldPage.hide()
+                newPage.show()                
+                //newPage.imageObj.fadeIn(400)
+                ///oldPage.imageObj.fadeOut(400)
+                
+                /*newPage.imageDiv.css("opacity",0)
+                newPage.show()
+                newPage.imageDiv.animate({opacity:1},500).queue(function(){                                        
+                });
+                oldPage.imageDiv.animate({opacity:0},500).queue(function(){
+                    $(this).hide();
+                });*/
+            }else{
+                newPage.show()
+            }
+        },
 
 		_setupTransNext: function(secs){	
 			// deactivate all waiting transitions
@@ -267,9 +291,9 @@ function createViewer(story, files) {
 		// Deactivate all waiting transitions
 		_resetTransQueue: function(){	
 			for(var trans of this.transQueue){
-				trans.active = false	
-			}
-			console.log("RESET ALL transitions")
+                trans.active = false	
+                console.log("RESET transition")
+			}			
 		},
 
 		refresh_update_navbar: function(pageIndex) {
@@ -318,7 +342,7 @@ function createViewer(story, files) {
 			var contentOverlay = $('#content-overlay');		
 			var isOverlay = page.type==="overlay";
 
-			// hide last regular page to show a new regular after ovelay
+			// hide last regular page to show a new regular after overlay
 			if(!isOverlay && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
 				if(lastPageImg.length){
@@ -342,6 +366,7 @@ function createViewer(story, files) {
 
 
 		refresh_adjust_content_layer: function(pageIndex){
+            
 			var page = story.pages[pageIndex];
 
 			if(page.type=="overlay") return;
@@ -361,7 +386,7 @@ function createViewer(story, files) {
 			contentShadow.width(page.width);		
 			contentShadow.height(page.height);
 			contentOverlay.width(page.width);		
-			//contentOverlay.height(page.height)
+            //contentOverlay.height(page.height)            
 
 		},
 
@@ -419,11 +444,11 @@ function createViewer(story, files) {
 		},
 
 		clear_context: function(){
-			this.clear_context_hide_all_images()
+			//this.clear_context_hide_all_images()
 
 			this.prevPageIndex = -1
 			this.lastRegularPage = -1
-			this.currentPage = -1
+			//this.currentPage = -1
 			this.currentPageOverlay = false
 			this.prevPageOverlayIndex = -1	
 			this.backStack = []
