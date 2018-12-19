@@ -1,12 +1,13 @@
 {
-  "name": "Exporter Beta",
+  "name": "Exporter",
   "description": "Generates a HTML clickable prototype",
   "author" : "Maxim Bazarov and Alexey Kalenyuk",
   "homepage": "https://github.com/MaxBazarov/exporter",  
-  "identifier" : "com.cloudblue.sketch.exporter.beta",
+  "identifier" : "com.cloudblue.sketch.exporter",
+  "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "5.0.beta",
+  "version" : "4.4.1",
   "icon": "icon.png",
   "commands" : [   
     {
@@ -65,7 +66,7 @@
     }
   ],
   "menu": {
-    "title": "✈️ Exporter Beta",
+    "title": "✈️ Exporter",
     "items": [
       "exportToHTML",      
       "exportToHTMLAdv",      
