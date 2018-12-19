@@ -3,31 +3,9 @@
 
 class ViewerPage {
 
-    /*------------------------------- PUBLIC -----------------------------*/
-    createAreaMaps(parentDiv){
-        let map = this._createSingleMapWithAreas(this.links,'map' + this.index,this.type)
-        map.appendTo(parentDiv)
-        for(var panel of this.fixedPanels){       
-            map = this._createSingleMapWithAreas(panel.links,'map' + this.index+"_"+panel.index,this.type)
-            map.appendTo(parentDiv)
-        }
-    }
 
-    hide(){
-        const fixedZs = {
-            'float':0,            
-            'top':0,
-            'left':0
-        }
-                
-        for(var panel of this.fixedPanels){       
-            panel.imageObj.addClass("hidden")
-            //if(panel.isFloat) panel.imageObj.addClass("hidden")
-            panel.imageDiv.css("box-shadow","none")  
-            panel.imageDiv.css("z-index",fixedZs[panel.type])
-            //this._hidePanelMap(panel)
-        }
-        this.imageDiv.addClass('hidden');
+    hide(preloadhide=false){     
+        this.imageDiv.addClass("hidden")
     }
     
 
@@ -36,7 +14,7 @@ class ViewerPage {
         var isOverlay = this.type==="overlay";			
         if(isOverlay){
             var contentOverlay = $('#content-overlay');		
-            contentOverlay.width(this.width);
+            //contentOverlay.width(this.width);
         }
 
         if(!this.imageObj){        
@@ -44,26 +22,7 @@ class ViewerPage {
             this.loadImages()						
         }            
 
-        const fixedZs = {
-            'float':13,            
-            'top':14,
-            'left':12
-        }
-                
-        for(var panel of this.fixedPanels){
-            panel.imageObj.removeClass("hidden")
-            //if(panel.isFloat) panel.imageObj.removeClass("hidden")
-            panel.imageDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")                
-            panel.imageDiv.css("z-index",fixedZs[panel.type])
-            //this._showPanelMap(panel)                             
-        }
-
-        if(this.highlightLinks==undefined || this.highlightLinks != viewer.highlightLinks){
-            this.enableHotSpots()
-        }
-
-        this.imageDiv.removeClass('hidden');        
-
+       this.imageDiv.removeClass("hidden")
     }
 
     loadImages(force=false){
@@ -71,14 +30,18 @@ class ViewerPage {
         if(!force && this.imageObj!=undefined){     
             return pagerMarkImageAsLoaded()
         }
+
+        const enableLinks = true
+        var isOverlay = this.type==="overlay";
         
-        var content = $('#content'); 
+        var content = $('#content')        
         var imageDiv = $('<div>',{
-            class:"image_div",
+            class:"image_div", 
             id:"div_"+this.index,
-            style:"height: "+this.height+"px; width: "+this.width+"px;"    
+            //style:"width: "+this.width+"px;"
+            style:"height: "+this.height+"px; width: "+this.width+"px;"
         });
-        this.imageDiv = imageDiv    
+        this.imageDiv = imageDiv
     
 
         // create fixed panel images        
@@ -94,6 +57,10 @@ class ViewerPage {
             }else if(panel.constrains.right){
                 style+="margin-left:"+panel.x+"px;"
             }
+            //
+
+            if(panel.shadow!=undefined)
+                style+="box-shadow:"+panel.shadow+";"
             // create Div for fixed panel
             var panelDiv = $("<div>",{
                 id:"fixed_"+this.index+"_"+panel.index,
@@ -101,41 +68,45 @@ class ViewerPage {
                 style:style
             });
             //panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
-            panelDiv.appendTo(content);
+            panelDiv.appendTo(imageDiv);
             panel.imageDiv = panelDiv
 
+            // create link div
+            panel.linksDiv = $("<div>",{                
+                class:"linksDiv",
+                style:"height: "+panel.height+"px; width: "+panel.width+"px;"
+            })
+            panel.linksDiv.appendTo(panel.imageDiv)            
+            this._createLinks(panel)
+
+            // add image itself
             panel.imageObj = this._loadSingleImage(panel.isFloat?panel:this,'img_'+panel.index+"_")     
             panel.imageObj.appendTo(panelDiv);
-            
-            this._createPanelMap(panel)
-
         }
         
         // create main content image      
         {
             var isOverlay = this.type==="overlay";
-            var contentOverlay = $('#content-overlay');		
-            
+            var contentOverlay = $('#content-overlay');		            
             imageDiv.appendTo(isOverlay?contentOverlay:content);	
             
-            // create map div
-            var mapDiv = $("<div>",{
-                class:"map",
-            }).attr('width', this.width).attr('height', this.height)
-            mapDiv.appendTo(imageDiv)
-    
-            // create image
-            var mapImage = $("<img>",{
-                id: "map_image_"+this.index,
-                src: "resources/1.png",            
-            }).attr('width', this.width).attr('height', this.height)
-            mapImage.appendTo(mapDiv)
+            // create link div
+            if(enableLinks){
+                var linksDiv = $("<div>",{
+                    id:"div_links_"+this.index,
+                    class:"linksDiv", 
+                    style:"height: "+this.height+"px; width: "+this.width+"px;"                   
+                })
+                linksDiv.appendTo(imageDiv)
+                this.linksDiv = linksDiv
+
+                this._createLinks(this)
+            }
         }
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
         img.appendTo(imageDiv)
 
-        this._enableMainHotSpots()
     }   
 
     /*------------------------------- INTERNAL METHODS -----------------------------*/
@@ -145,6 +116,7 @@ class ViewerPage {
 
         var img = $('<img/>', {
             id : idPrefix+this.index,
+            class: "pageImage",
             src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),		
         }).attr('width', sizeSrc.width).attr('height', sizeSrc.height);
 
@@ -153,95 +125,12 @@ class ViewerPage {
         });
         return img;
     } 
-
-
-    _enableMainHotSpots(){
-        // init main area hotspots
-        this._initImgMap($("#map_image_"+this.index), this,"#map"+this.index)
-    }
-
-    _enablePanelFixedHotSpots(panel){
-        // init or hide fixed are hotsposts
-        var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
-        this._initImgMap(img,panel,"#map"+this.index+"_"+panel.index)
-    }
-
-    enableHotSpots(){
-        // init main area hotspots
-        //this._initImgMap($("#map_image_"+this.index), this)
-        this._enableMainHotSpots()
-            
-        // init or hide fixed are hotsposts        
-        for(var panel of this.fixedPanels){
-            this._enablePanelFixedHotSpots(panel)
-            /*var img = $("#map_img_fixed_"+this.index + "_"+panel.index)     
-            this._initImgMap(img,panel)            */
-        }
-        // save current highlightLinks mode to able to check it on future showing 
-        this.highlightLinks = viewer.highlightLinks
-    }
-
-    _initImgMap(img,sizesFrom,mapName){    
-        img.attr('usemap',mapName).attr('width', sizesFrom.width).attr('height', sizesFrom.height)
-    
-        // 0=non-transparent  1.0=fully transparent
-        let transp = 0
-        if(viewer.highlightLinks) transp = 0.4
-        else if(!story.disableHotspots) transp = 0.2
-    
-        img.maphilight({
-            alwaysOn: viewer.highlightLinks,
-            stroke: false,
-            fillColor: 'FFC400',
-            fillOpacity: transp,
-            wrapClass: "fixedMapDiv"
-        });	    
-    }
-    
-
-    _hidePanelMap(panel){
-        const img = panel.fixedMapImg
+ 
+    // panel: ref to panel or this
+    _createLinks(panel){
+        var linksDiv = panel.linksDiv
         
-        if(img==undefined) return
-        if(img.parent().attr("id")==panel.imageDiv.attr("id"))
-            img.addClass('hidden');
-        else
-            img.parent().addClass('hidden');
-    }
-    
-    _showPanelMap(panel){
-        let img = panel.fixedMapImg
-        if(img==undefined){
-            img = this._createPanelMap(panel)
-        }else{
-            if(img.parent().attr("id")==panel.imageDiv.attr("id"))
-                img.removeClass('hidden');
-            else
-                img.parent().removeClass('hidden');
-        }
-    }
-
-    _createPanelMap(panel){
-        // create Map for fixed panel
-        panel.fixedMapImg = $("<img>",{
-            id:"map_img_fixed_"+this.index+"_"+panel.index,
-            src:"resources/1.png"
-        });
-        panel.fixedMapImg.appendTo(panel.imageDiv);   
-        this._enablePanelFixedHotSpots(panel)     
-        return panel.fixedMapImg
-    }
-
-
-    _createSingleMapWithAreas(links,name,type){
-
-        var map = $('<map/>', {
-            id: name,
-            type: type,
-            name: name
-        });
-
-        for(var link of links) {
+        for(var link of panel.links) {
             var title, href, target;
             if(link.page != null) {			
                 // title = story.pages[link.page].title;
@@ -256,16 +145,21 @@ class ViewerPage {
                 href = link.url;
                 target = link.target!=null?link.target:null;						
             }
-            
-            $('<area/>', {
-                shape: 'rect',
-                coords: link.rect.join(','),
-                href: href,
-                alt: title,
-                //title: title,
+
+            var a = $("<a>",{
+                href:href,
                 target: target
-            }).appendTo(map);
+            })
+            a.appendTo(linksDiv)
+
+            var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "
+            var linkDiv = $("<div>",{
+                class:"linkDiv"+(story.disableHotspots?"":" linkDivHighlight"),
+            }).attr('style', style)
+            linkDiv.appendTo(a)
+
+            link.div = linkDiv
+            
         } 
-        return map
     }
 }

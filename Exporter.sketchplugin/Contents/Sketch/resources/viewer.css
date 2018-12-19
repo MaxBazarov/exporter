@@ -1,8 +1,45 @@
 .image_div {
     margin: 0 auto;		
+    /*position: absolute;*/
 }
 
-#content-overlay {
+.image_div img{
+    -webkit-transform:translate3d(0,0,0);
+}
+
+/*** MAPS ***/
+
+.linksDiv {
+	width:100%;
+    position: absolute; 
+    z-index:2;
+}
+
+.linkDiv {
+	position: absolute;
+	cursor: pointer;	
+    opacity: 0;
+    transition: opacity 0.5s;
+    background-color:#FFC400;
+    pointer-events: auto;
+}
+
+.linkDivHighlight:hover {
+    opacity: 0.2;
+    transition: opacity 0.5s;
+}
+
+.contentLinksVisible .linkDiv {
+    opacity: 0.4;
+    transition: opacity 0.5s;
+}
+
+.map {
+    z-index: 9;	
+    position: absolute;
+}
+
+.contentOverlay {
 	z-index: 50;
 	position: fixed;
 	overflow: auto;
@@ -14,7 +51,7 @@
 	height: 100vh;
 	display: grid;
 	margin: auto;
-    align-items: center;    	
+    align-items: center; 
 }
 
 #content-shadow.shadow {
@@ -25,11 +62,12 @@
 	background-color: transparent;
 }
 
-
+/*
 #content-overlay>div {
 	margin-top: 50px auto 50px;
 	margin-bottom: 50px auto 50px;
 }
+*/
 
 #gallery {
 	display: flex;
@@ -293,16 +331,6 @@ hr {
 
 area {
     cursor: hand;
-}
-
-/*** MAPS ***/
-
-.map {
-    z-index: 9;	
-    position: absolute;
-}
-.fixedMapDiv{
-	pointer-events: auto;
 }
 
 /*** FIXED PANELS ***/

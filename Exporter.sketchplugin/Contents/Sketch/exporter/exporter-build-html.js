@@ -58,15 +58,9 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   `;
   s += ' <div id="container">\n';
   s += ' <div id="content">\n';
-  /*
-  s += ' <div id="fixed_top"></div><div id="fixed_top_back" class="hidden"></div>\n';
-  s += ' <div id="fixed_left"></div><div id="fixed_left_back" class="hidden"></div>\n'; 
-  s += ' <div id="map_fixed_left" class="fixed_map"><img id="map_img_fixed_left" src="resources/1.png"/></div>\n';
-  s += ' <div id="map_fixed_top" class="fixed_map"><img id="map_img_fixed_top" src="resources/1.png"/></div>\n';
-  */
   s += ' </div>\n'; 
   s += ' <div id="content-shadow" class="hidden"></div>\n';
-  s += ' <div id="content-overlay" class="hidden"></div>\n';
+  s += ' <div id="content-overlay" class="contentOverlay hidden"></div>\n';
   if(commentsURL!=''){
     s += ' <div id="commenting" class="hidden">\n';
     s += '  <h1>EasyPageComments example page</h1>\n';
