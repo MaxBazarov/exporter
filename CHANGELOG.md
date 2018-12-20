@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 4.5.0 (20 Dec 2018)
+- Totally redesigned hotspots engine (moved from imagemap+jquery to plain DIVs)
+
 ##  Version 4.4.1 (15 Dec 2018)
 - Bugfixing
 

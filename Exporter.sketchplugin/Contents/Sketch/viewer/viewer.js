@@ -228,12 +228,11 @@ function createViewer(story, files) {
 			}
             this.prevPageIndex = this.currentPage;		
                         
-			if(!newPage.disableAutoScroll)
-			    window.scrollTo(0,0)            
 			
-            this.refresh_adjust_content_layer(index);	            
-            this.refresh_hide_last_image(index)           
-            newPage.show()            
+            newPage.show()                      
+            this.refresh_adjust_content_layer(index);	  
+            
+            this.refresh_hide_last_image(index)                       
 			this.refresh_switch_overlay_layer(index);	
 			this.refresh_update_navbar(index);			
 			if(refreshURL) this.refresh_url(index)			
@@ -245,7 +244,11 @@ function createViewer(story, files) {
 
 			if(newPage.transNextSecs!=undefined){				
 				this._setupTransNext(newPage.transNextSecs)
-			}
+            }
+            
+            if(!newPage.disableAutoScroll){
+               window.scrollTo(0,0)       
+            }                 
 								
         },
         
