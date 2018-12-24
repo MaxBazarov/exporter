@@ -55,10 +55,20 @@ class MyLayer {
             if(nlayer.isFixedToViewport()){
                 this.addSelfAsFixedLayerToArtboad()    
             }
-        }/*else if(this.name=='Layer'){
-                this.isFloat = true
+        }
+
+         // check special internal properties
+         if(""==exporter.backColor){            
+            while(true){
+                if(this.name.indexOf(Constants.INT_LAYER_NAME_BACKCOLOR)==0) break
+                let fills =  this.slayer.style.fills
+                if(undefined==fills) break
+                fills =  fills.filter(function(el){return el.enabled})
+                if(0==fills.length) break
+                exporter.backColor = fills[0].color                
+                break
             }
-        }*/
+        }   
         
     }
 

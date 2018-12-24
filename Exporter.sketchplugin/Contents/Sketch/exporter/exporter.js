@@ -65,6 +65,10 @@ class Exporter {
     if(undefined==pluginSortRule) pluginSortRule = Constants.SORT_RULE_X
     const docCustomSortRule = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_CUSTOM_SORT_RULE)
     this.sortRule = undefined==docCustomSortRule || docCustomSortRule<0 ? pluginSortRule : docCustomSortRule
+
+    let backColor = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_BACK_COLOR)
+    if(undefined==backColor) backColor = ""
+    this.backColor = backColor
   }
 
   
@@ -212,11 +216,10 @@ class Exporter {
     if(commentsURL==undefined) commentsURL = ''
     let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
     if(googleCode==undefined) googleCode = ''
-    let backColor = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_BACK_COLOR)
-    if(backColor==undefined || ""==backColor) backColor = Constants.DEF_BACK_COLOR
+    if(""==this.backColor) this.backColor = Constants.DEF_BACK_COLOR
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,backColor);
+    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,this.backColor);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     Utils.writeToFile(s, filePath);
