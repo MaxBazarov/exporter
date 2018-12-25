@@ -1,11 +1,10 @@
-### Compress PNG files
-Integrate with https://pngquant.org cmd-line tool to compress PNG files (3-10x!)
-
-### Auto transition to other artboard after delay
+# Auto transition to other artboard after delay
 New artboard setting:  
 **Transition to artboard**  
-[ To Artboard Selector] [ Delay in Seconds ]
+[ To Artboard Selector]
 
-### Fix/improve artboards sorting
+# Open HTML in special window with webpage inside (not in a standalone browser)
 
-### Open HTML in special window with webpage inside (not in a standalone browser)
+# Add check for Sketch-compatible version
+
+
