@@ -7,4 +7,7 @@ New artboard setting:
 
 ### Add check for Sketch-compatible version
 
+### Mark layer as a standalone (but embedded in the main page) with ID
+To enable some post-exporting manipulations
 
+### On-hover page changing
