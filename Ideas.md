@@ -11,3 +11,6 @@ New artboard setting:
 To enable some post-exporting manipulations
 
 ### On-hover page changing
+
+### Mass-operation for artboards and layers
+Example: Setup Auto-transition for many artboard at once
