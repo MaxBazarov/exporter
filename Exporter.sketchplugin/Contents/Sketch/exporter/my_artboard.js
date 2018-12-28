@@ -163,7 +163,7 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                const fileNamePostfix = !l.isFloat?"":('-'+l.fixedIndex)                
+                const fileNamePostfix = !(l.isFloat||l.isSplit)?"":('-'+l.fixedIndex)                
 
                 const rec = {
                     constrains:l.constrains,
@@ -174,7 +174,9 @@ class MyArtboard extends MyLayer {
                     type:type,
                     index:l.fixedIndex,
                     isFloat: l.isFloat,
-                    links: this._buildHotspots(l.hotspots),
+                    isSplit: l.isSplit,
+                    divID: l.layerDivID!=undefined?l.layerDivID:"",
+                    links: this._buildHotspots(l.hotspots),                    
                     image:Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix+'.png')
                 }                
                 if (exporter.retinaImages)
@@ -320,11 +322,12 @@ class MyArtboard extends MyLayer {
             let orgShadows = layer.slayer.style.shadows
             layer.slayer.style.shadows = []            
             
-            // for float fixed layer we need to generate its own image files
-            if(layer.isFloat){
+            // for split and  float fixed layer we need to generate its own image files
+            if(layer.isFloat || layer.isSplit){
                 //this._exportImage2('1, 2',layer.parent.slayer)         
                 for(var scale of scales){                                         
                     this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"-"+layer.fixedIndex)                    
+                    //this._exportImage(scale,layer,"-"+layer.fixedIndex)                    
                 }                 
             }
 
@@ -336,8 +339,8 @@ class MyArtboard extends MyLayer {
     _switchFixedLayers(hide){         
         const show = !hide
         for(var layer of this.fixedLayers){
-            // we need to hide/show only float panels
-            if(layer.isFloat){
+            // we need to hide/show only split and  float panels
+            if(layer.isFloat || layer.isSplit){
                 layer.slayer.hidden = hide
             }
 

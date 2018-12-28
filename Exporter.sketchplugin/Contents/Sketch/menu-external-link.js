@@ -8,7 +8,7 @@ var onRun = function(context) {
   const document = sketch.fromNative(context.document)
   var selection = document.selectedLayers
 
-  // We need at least one symbol
+  // We need at least one layer
   //--------------------------------------------------------------------
   if(selection.length==0){
     UI.alert("alert","Select at least one layer.")

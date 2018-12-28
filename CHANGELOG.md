@@ -1,9 +1,15 @@
 # Change Log
 
+##  Version 4.6.0 (28 Dec 2018)
+New features:
+- Added Configure Layer command to specify layer <div> ID. It can be possible if you want to do some custom JS-based manipulations.
+Fixed bugs:
+- Expotrer detects @MainBackground@ in wrong way
+
+
 ##  Version 4.5.1 (24 Dec 2018)
 If some layer name contain @MainBackground@ substring then it's fill color will be used as browser page background (in case of unspecified Custom Background Color setting in Configure Document dialog). 
 It can be useful if you have many Sketch files which are using a common background symbol and don't want to define Custom Background Color in the every Sketch file.
-
 
 ##  Version 4.5.0 (20 Dec 2018)
 - Totally redesigned hotspots engine (moved from imagemap+jquery to plain DIVs)

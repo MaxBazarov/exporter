@@ -18,7 +18,8 @@ var Constants = {
   EXPORT_MODE_SELECTED_ARTBOARDS:0,
   EXPORT_MODE_CURRENT_PAGE:1,
   DEF_BACK_COLOR: "#646464",
-  INT_LAYER_NAME_BACKCOLOR : "@MainBackground@"
+  INT_LAYER_NAME_BACKCOLOR : "@MainBackground@",
+  INT_LAYER_NAME_SPLIT: "@Split@"
 };
 
 var PublishKeys = {
@@ -58,7 +59,8 @@ var SettingKeys = {
   DOC_CUSTOM_SORT_RULE: "docCustomSortRule", // How to sort artboards
   DOC_BACK_COLOR: "docBackColor",
 
-  LAYER_ANNOTATIONS: "layerAnnotations",   
+  LAYER_ANNOTATIONS: "layerAnnotations",
+  LAYER_DIV_ID: 'layerDivID',
   LAYER_EXTERNAL_LINK: "externalLink",  
   LAYER_EXTERNAL_LINK_BLANKWIN: "openLinkInNewWindow"
 };

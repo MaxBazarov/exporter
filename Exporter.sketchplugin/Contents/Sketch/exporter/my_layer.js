@@ -52,7 +52,12 @@ class MyLayer {
         this.tempOverrides = undefined        
         
         if(!exporter.disableFixedLayers){
-            if(nlayer.isFixedToViewport()){
+            var layerDivID = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_DIV_ID)
+            if(layerDivID!=undefined && layerDivID!=''){
+                this.layerDivID = layerDivID
+            }
+
+            if(nlayer.isFixedToViewport() || this.layerDivID!=undefined){
                 this.addSelfAsFixedLayerToArtboad()    
             }
         }
@@ -60,7 +65,7 @@ class MyLayer {
          // check special internal properties
          if(""==exporter.backColor){            
             while(true){
-                if(this.name.indexOf(Constants.INT_LAYER_NAME_BACKCOLOR)==0) break
+                if(this.name.indexOf(Constants.INT_LAYER_NAME_BACKCOLOR)<0) break
                 let fills =  this.slayer.style.fills
                 if(undefined==fills) break
                 fills =  fills.filter(function(el){return el.enabled})
@@ -95,7 +100,10 @@ class MyLayer {
      
         // Dirty code to detect a type of layer with fixed position
         let type = "";
-        if (0==this.frame.x && this.frame.width < this.frame.height) {
+
+        if(this.layerDivID!=undefined){
+            type = 'split'
+        }else if (0==this.frame.x && this.frame.width < this.frame.height) {
             type = "left";
         }
         // handle the only one top-pinnded layers for now
@@ -108,6 +116,8 @@ class MyLayer {
         } 
         this.fixedType = type
         this.isFloat = type=='float'
+        this.isSplit = type=='split'
+        
     }
 
 }

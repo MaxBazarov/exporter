@@ -47,12 +47,12 @@ class ViewerPage {
         // create fixed panel images        
         for(var panel of this.fixedPanels){
             let style="height: "+panel.height+"px; width: "+panel.width+"px; " 
-            if(panel.constrains.top){
+            if(panel.constrains.top || panel.isSplit){
                 style+="top:"+panel.y+"px;"
             }else if(panel.constrains.bottom){
                 style+="bottom:"+(this.height - panel.y- panel.height)+"px;"
             }
-            if(panel.constrains.left){
+            if(panel.constrains.left  || panel.isSplit){
                 style+="margin-left:"+panel.x+"px;"
             }else if(panel.constrains.right){
                 style+="margin-left:"+panel.x+"px;"
@@ -61,10 +61,24 @@ class ViewerPage {
 
             if(panel.shadow!=undefined)
                 style+="box-shadow:"+panel.shadow+";"
-            // create Div for fixed panel
+            
+                // create Div for fixed panel
+            var cssClass = ""
+            if(panel.isFloat){
+                cssClass = 'fixedPanelFloat'
+            }else if(panel.isSplit){
+                cssClass = 'splitPanel'
+            }else if(panel.type="top"){
+                cssClass = 'fixedPanel fixedPanelTop'
+            }else if(panel.type="left"){
+                cssClass = 'fixedPanel'
+            }
+
+            var divID = panel.divID!=''?panel.divID:("fixed_"+this.index+"_"+panel.index)
+
             var panelDiv = $("<div>",{
-                id:"fixed_"+this.index+"_"+panel.index,
-                class:" "+(panel.isFloat?'fixedPanelFloat ':'fixedPanel ')+("top"==panel.type?'fixedPanelTop ':''),
+                id:divID,
+                class:cssClass,
                 style:style
             });
             //panelDiv.css("box-shadow",panel.shadow!=undefined?panel.shadow:"none")     
@@ -80,7 +94,7 @@ class ViewerPage {
             this._createLinks(panel)
 
             // add image itself
-            panel.imageObj = this._loadSingleImage(panel.isFloat?panel:this,'img_'+panel.index+"_")     
+            panel.imageObj = this._loadSingleImage(panel.isFloat || panel.isSplit?panel:this,'img_'+panel.index+"_")     
             panel.imageObj.appendTo(panelDiv);
         }
         
