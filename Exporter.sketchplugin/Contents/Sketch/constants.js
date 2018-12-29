@@ -19,7 +19,11 @@ var Constants = {
   EXPORT_MODE_CURRENT_PAGE:1,
   DEF_BACK_COLOR: "#646464",
   INT_LAYER_NAME_BACKCOLOR : "@MainBackground@",
-  INT_LAYER_NAME_SPLIT: "@Split@"
+  INT_LAYER_NAME_SPLIT: "@Split@",
+  ARTBOARD_TYPE_REGULAR: 0,
+  ARTBOARD_TYPE_MODAL: 1,
+  ARTBOARD_TYPE_EXTERNAL_URL: 2,
+  ARTBOARD_TYPE_OVERLAY: 3
 };
 
 var PublishKeys = {
@@ -45,8 +49,10 @@ var SettingKeys = {
   PLUGIN_COMPRESS_TOOL_PATH: "pluginCompressPath",
   PLUGIN_EXPORTING_URL: "pluginExportingURL", 
 
-  ARTBOARD_OVERLAY: "artboardOverlay",
-  ARTBOARD_OVERLAY_SHADOW: "artboardOverlayShadow",
+  ARTBOARD_TYPE: "artboardType",
+
+  LEGACY_ARTBOARD_MODAL: "artboardOverlay", //legacy, replaced by ARTBOARD_TYPE
+  ARTBOARD_MODAL_SHADOW: "artboardOverlayShadow",
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
   ARTBOARD_TRANS_TO_NEXT_SECS: "artboardTransNextSecs",
   

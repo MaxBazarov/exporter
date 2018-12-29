@@ -88,7 +88,7 @@ class MyLayer {
             width: (resizingConstraint & ResizingConstraint.WIDTH) === ResizingConstraint.WIDTH
         }
         return res        
-    }
+    }    
 
     addSelfAsFixedLayerToArtboad(){         
         this.isFixed = true
@@ -117,7 +117,24 @@ class MyLayer {
         this.fixedType = type
         this.isFloat = type=='float'
         this.isSplit = type=='split'
-        
+                
+    }
+
+    getShadowAsStyleStr(){
+        if(this.slayer.style==undefined ||  this.slayer.style.shadows==undefined || this.slayer.style.length==0) return ""
+
+        let shadowsStyle=""
+        for(var shadow of this.slayer.style.shadows){
+            if(!shadow.enabled) continue
+            if(shadowsStyle!="") shadowsStyle+=","
+            shadowsStyle += shadow.x + "px "
+            shadowsStyle += shadow.y + "px "
+            shadowsStyle += shadow.blur + "px "
+            shadowsStyle += shadow.spread + " "
+            shadowsStyle += shadow.color + " "
+        }
+
+        return shadowsStyle
     }
 
 }

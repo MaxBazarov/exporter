@@ -38,7 +38,7 @@
     position: absolute;
 }
 
-.contentOverlay {
+.contentModal {
 	z-index: 50;
 	position: fixed;
 	overflow: auto;
@@ -62,7 +62,7 @@
 }
 
 /*
-#content-overlay>div {
+#content-modal>div {
 	margin-top: 50px auto 50px;
 	margin-bottom: 50px auto 50px;
 }

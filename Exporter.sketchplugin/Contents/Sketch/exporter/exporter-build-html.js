@@ -60,7 +60,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   s += ' <div id="content">\n';
   s += ' </div>\n'; 
   s += ' <div id="content-shadow" class="hidden"></div>\n';
-  s += ' <div id="content-overlay" class="contentOverlay hidden"></div>\n';
+  s += ' <div id="content-modal" class="contentModal hidden"></div>\n';
   if(commentsURL!=''){
     s += ' <div id="commenting" class="hidden">\n';
     s += '  <h1>EasyPageComments example page</h1>\n';

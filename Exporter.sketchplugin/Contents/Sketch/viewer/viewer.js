@@ -72,8 +72,8 @@ function createViewer(story, files) {
 		prevPageIndex: -1,
 		lastRegularPage: -1,
 		currentPage : -1,
-		currentPageOverlay : false,
-		prevPageOverlayIndex : -1,
+		currentPageModal : false,
+		prevPageModalIndex : -1,
 		backStack: [],
 		urlLastIndex: -1,
 		files: files,
@@ -149,16 +149,16 @@ function createViewer(story, files) {
 			}
 			return this.pageHashes;
 		},
-		getOverlayFirstParentPageIndex: function(overlayIndex){
+		getModalFirstParentPageIndex: function(modalIndex){
 			var page = null;
 			var link = null;
 			for(var i=story.pages.length-1; i>=0 ;i --) {
 				page = story.pages[i];
-				if(page.type==='overlay') continue;
+				if(page.type==='modal') continue;
 				for(var li = 0; li < page.links.length; li ++) {
 					link = page.links[li];
-					if(link.page!=null && link.page==overlayIndex){
-						// return the page index which has link to overlay
+					if(link.page!=null && link.page==modalIndex){
+						// return the page index which has link to modal
 						return i;
 					}
 				}
@@ -203,28 +203,28 @@ function createViewer(story, files) {
 
 			var index = this.getPageIndex(page);
 
-			if(!this.currentPageOverlay && this.currentPage>=0){
+			if(!this.currentPageModal && this.currentPage>=0){
 				this.backStack.push(this.currentPage);
 			}
 
-			this.currentPageOverlay = false;
-			this.prevPageOverlayIndex = -1;
+			this.currentPageModal = false;
+			this.prevPageModalIndex = -1;
 			
 			if(index <0 ||  index == this.currentPage || index >= story.pages.length) return;
 
 			var newPage = story.pages[index];
-			if(newPage.type==="overlay"){
-				// no any page to overlay, need to find something
+			if(newPage.type==="modal"){
+				// no any page to modal, need to find something
 				if(this.currentPage==-1){
-					parentIndex = this.getOverlayFirstParentPageIndex(index);					
+					parentIndex = this.getModalFirstParentPageIndex(index);					
 					this.goTo(parentIndex);
-					this.prevPageOverlayIndex = parentIndex;
+					this.prevPageModalIndex = parentIndex;
 				}else{
-					this.prevPageOverlayIndex = this.currentPage;
+					this.prevPageModalIndex = this.currentPage;
 				}
-				this.currentPageOverlay = true;			
+				this.currentPageModal = true;			
 			}else{
-				this.currentPageOverlay = false;
+				this.currentPageModal = false;
 			}
             this.prevPageIndex = this.currentPage;		
                         
@@ -233,12 +233,12 @@ function createViewer(story, files) {
             this.refresh_adjust_content_layer(index);	  
             
             this.refresh_hide_last_image(index)                       
-			this.refresh_switch_overlay_layer(index);	
+			this.refresh_switch_modal_layer(index);	
 			this.refresh_update_navbar(index);			
 			if(refreshURL) this.refresh_url(index)			
 
 			this.currentPage = index;
-			if(story.pages[index].type!="overlay"){
+			if(story.pages[index].type!="modal"){
 				this.lastRegularPage = index;				
 			}
 
@@ -319,11 +319,11 @@ function createViewer(story, files) {
 		
 			var page = story.pages[pageIndex];
 			var content = $('#content');
-			var contentOverlay = $('#content-overlay');		
-			var isOverlay = page.type==="overlay";
+			var contentModal = $('#content-modal');		
+			var isModal = page.type==="modal";
 
-			// hide last regular page to show a new regular after overlay
-			if(!isOverlay && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
+			// hide last regular page to show a new regular after modal
+			if(!isModal && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
 				var lastPageImg = $('#img_'+this.lastRegularPage);
 				if(lastPageImg.length){
 					story.pages[this.lastRegularPage].hide()
@@ -332,9 +332,9 @@ function createViewer(story, files) {
 				}
 			}
 
-			// hide last overlay 
-			var prevPageWasOverlay = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="overlay";
-			if(prevPageWasOverlay){
+			// hide last modal 
+			var prevPageWasModal = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="modal";
+			if(prevPageWasModal){
 				var prevImg = $('#img_'+this.prevPageIndex);
 				if(prevImg.length){
 					story.pages[this.prevPageIndex].hide()
@@ -349,57 +349,57 @@ function createViewer(story, files) {
             
 			var page = story.pages[pageIndex];
 
-			if(page.type=="overlay") return;
+			if(page.type=="modal") return;
 
 			var contentShadow = $('#content-shadow');
-			var contentOverlay = $('#content-overlay');
+			var contentModal = $('#content-modal');
 			var content = $('#content');
 
-			var prevPageWasOverlay = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="overlay";
-			if(prevPageWasOverlay){
+			var prevPageWasModal = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="modal";
+			if(prevPageWasModal){
 				contentShadow.addClass('hidden');
-				contentOverlay.addClass('hidden');
+				contentModal.addClass('hidden');
 			}
 
 			//content.width(page.width);		
 			//content.height(page.height);
 			contentShadow.width(page.width);		
 			contentShadow.height(page.height);
-			//contentOverlay.width(page.width);		
-            //contentOverlay.height(page.height)            
+			//contentModal.width(page.width);		
+            //contentModal.height(page.height)            
 
 		},
 
-		refresh_switch_overlay_layer: function(pageIndex){
+		refresh_switch_modal_layer: function(pageIndex){
 			var page = story.pages[pageIndex];
 			var lastMainPage = story.pages[this.lastRegularPage];
 			
-			if(page.type!="overlay") return;
+			if(page.type!="modal") return;
 
-			var isOverlayShadow = page.overlayShadow==1;	
-			var contentOverlay = $('#content-overlay');		
+			var isModalShadow = page.modalShadow==1;	
+			var contentModal = $('#content-modal');		
 			var contentShadow = $('#content-shadow');				
 			
-			if(isOverlayShadow){				
+			if(isModalShadow){				
 				contentShadow.removeClass('no-shadow');
 				contentShadow.addClass('shadow');
 				contentShadow.removeClass('hidden');
 			}else{
-				contentOverlay.addClass('hidden');								
+				contentModal.addClass('hidden');								
 			}
-			contentOverlay.removeClass('hidden');			
+			contentModal.removeClass('hidden');			
 		},
 	
  
 		clear_context_hide_all_images: function(){
 			var page = story.pages[this.currentPage];
 			var content = $('#content');
-			var contentOverlay = $('#content-overlay');		
+			var contentModal = $('#content-modal');		
 			var contentShadow = $('#content-shadow');
-			var isOverlay = page.type==="overlay";
+			var isModal = page.type==="modal";
 
 			contentShadow.addClass('hidden');
-			contentOverlay.addClass('hidden');
+			contentModal.addClass('hidden');
 						
 			// hide last regular page
 			if(this.lastRegularPage>=0){
@@ -411,12 +411,12 @@ function createViewer(story, files) {
 				//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 			}
 
-			// hide current overlay 
-			if(isOverlay){
-				var overlayImg = $('#img_'+this.currentPage);
-				if(overlayImg.length){
+			// hide current modal 
+			if(isModal){
+				var modalImg = $('#img_'+this.currentPage);
+				if(modalImg.length){
 					story.pages[this.currentPage].hide()
-					//pagerHideImg(overlayImg);
+					//pagerHideImg(modalImg);
 				}
 				//pageSwitchFixedPanels(story.pages[this.currentPage],show=false);
 			}
@@ -429,8 +429,8 @@ function createViewer(story, files) {
 			this.prevPageIndex = -1
 			this.lastRegularPage = -1
 			//this.currentPage = -1
-			this.currentPageOverlay = false
-			this.prevPageOverlayIndex = -1	
+			this.currentPageModal = false
+			this.prevPageModalIndex = -1	
 			this.backStack = []
 		},
 
@@ -445,8 +445,8 @@ function createViewer(story, files) {
 				gallery.toogle()
 				return
 			}
-			// If the current page is overlay then close it and go to the last non-overlay page
-			if(this.currentPageOverlay){
+			// If the current page is modal then close it and go to the last non-modal page
+			if(this.currentPageModal){
 				viewer.goBack()
 				return
 			}

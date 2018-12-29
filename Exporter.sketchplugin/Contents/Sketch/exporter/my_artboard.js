@@ -44,21 +44,27 @@ class MyArtboard extends MyLayer {
         exporter.pageIDsDict[this.objectID] = this
         
         // init Artboard own things
-        this.isOverlay =
-            exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY) == 1
+        this.artboardType = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_TYPE)
+        if(undefined == this.artboardType || '' == this.artboardType){
+            if(exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LEGACY_ARTBOARD_MODAL)==1){
+                this.artboardType = Constants.ARTBOARD_TYPE_MODAL // use legacy setting
+            }else
+                this.artboardType = Constants.ARTBOARD_TYPE_REGULAR // set default 0 value
+        }
+
+        this.isModal = Constants.ARTBOARD_TYPE_MODAL == this.artboardType
         this.externalArtboardURL =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_EXTERNAL_LINK)
         if(this.externalArtboardURL!=undefined && ''==this.externalArtboardURL) 
             this.externalArtboardURL = undefined
-        this.isOverlayShadow =
-            this.isOverlay && exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_SHADOW) == 1
+        this.isModalShadow =
+            this.isModal && exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_MODAL_SHADOW) == 1
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
         this.transNextSecs = 
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS)
         if(undefined != this.transNextSecs && '' == this.transNextSecs)
             this.transNextSecs = undefined
-
         
     }
 
@@ -116,11 +122,18 @@ class MyArtboard extends MyLayer {
             js += "'disableAutoScroll': " + (this.disableAutoScroll ? 'true' : 'false') + ",\n";
         }
 
-        if (this.isOverlay) {
-            js += "'type': 'overlay',\n";
-            js += "'overlayShadow': " + (this.isOverlayShadow ? 1 : 0) + ",\n";
+        if (this.isModal) {
+            js += "'type': 'modal',\n";
+            js += "'modalShadow': " + (this.isModalShadow ? 1 : 0) + ",\n";
         } else if (this.externalArtboardURL!=undefined && this.externalArtboardURL!=''){
             js += "'type': 'external',\n";
+        } else if (Constants.ARTBOARD_TYPE_OVERLAY == this.artboardType){
+            js += "'type': 'overlay',\n";
+            // try to find a shadow
+            const shadowStr = this._getOverlayShadow()
+            if(shadowStr!=""){
+                js += "'overlayShadow':'"+shadowStr+"',\n"
+            }
         } else {
             js += "'type': 'regular',\n";
         }
@@ -137,6 +150,27 @@ class MyArtboard extends MyLayer {
         exporter.jsStory += js;
     }
 
+
+    _getOverlayShadow(){
+        return this._findLayersShadow(this.childs)
+    }   
+
+    _findLayersShadow(layers){
+        let shadowsStyle  = ""
+        for(var l of layers){            
+            shadowsStyle = this._findLayerShadow(l)
+            if(shadowsStyle!=='') return shadowsStyle
+        }
+        return ""
+    }
+
+    _findLayerShadow(l){
+        let shadowsStyle = l.getShadowAsStyleStr()
+        if(shadowsStyle!=='') return shadowsStyle
+
+        return this._findLayersShadow(l.childs)
+    }
+    
 
     _pushFixedLayersIntoJSStory() {
         let recs = []
@@ -183,16 +217,7 @@ class MyArtboard extends MyLayer {
                     rec.image2x = Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix +'@2x.png', false)
                 
                 // setup shadow
-                let shadowsStyle=""
-                for(var shadow of l.slayer.style.shadows){
-                    if(!shadow.enabled) continue
-                    if(shadowsStyle!="") shadowsStyle+=","
-                    shadowsStyle += shadow.x + "px "
-                    shadowsStyle += shadow.y + "px "
-                    shadowsStyle += shadow.blur + "px "
-                    shadowsStyle += shadow.spread + " "
-                    shadowsStyle += shadow.color + " "
-                }
+                let shadowsStyle = l.getShadowAsStyleStr()
                 if(shadowsStyle!="")
                     rec.shadow = shadowsStyle                  
                 recs.push(rec)
@@ -203,6 +228,8 @@ class MyArtboard extends MyLayer {
 
         return js
     }
+
+
 
     _buildHotspots(srcHotspots) {        
         let newHotspots = []

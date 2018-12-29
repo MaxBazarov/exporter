@@ -10,11 +10,11 @@ class ViewerPage {
     
 
     show(){
-        // prepare overlay div
-        var isOverlay = this.type==="overlay";			
-        if(isOverlay){
-            var contentOverlay = $('#content-overlay');		
-            //contentOverlay.width(this.width);
+        // prepare modal div
+        var isModal = this.type==="modal";			
+        if(isModal){
+            var contentModal = $('#content-modal');		
+            //contentModal.width(this.width);
         }
 
         if(!this.imageObj){        
@@ -25,6 +25,20 @@ class ViewerPage {
        this.imageDiv.removeClass("hidden")
     }
 
+    showAsOverlayIn(newParentPage,posX,posY){
+        // Show overlay on the new position
+        const div = this.imageDiv
+
+        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){        
+            newParentPage.imageDiv.append(div)
+            div.css('top',posY+"px")        
+            div.css('margin-left',posX+"px")
+            this.show()
+        }else{
+            this.hide()
+        }       
+    }
+
     loadImages(force=false){
         /// check if already loaded images for this page
         if(!force && this.imageObj!=undefined){     
@@ -32,14 +46,16 @@ class ViewerPage {
         }
 
         const enableLinks = true
-        var isOverlay = this.type==="overlay";
+        var isModal = this.type==="modal";
         
         var content = $('#content')        
+        var cssStyle = "height: "+this.height+"px; width: "+this.width+"px;"
+        if(this.overlayShadow!=undefined)
+            cssStyle+="box-shadow:"+this.overlayShadow+";"
         var imageDiv = $('<div>',{
-            class:"image_div", 
+            class:('overlay'==this.type)?"splitPanel":"image_div", 
             id:"div_"+this.index,
-            //style:"width: "+this.width+"px;"
-            style:"height: "+this.height+"px; width: "+this.width+"px;"
+            style:cssStyle
         });
         this.imageDiv = imageDiv
     
@@ -100,9 +116,9 @@ class ViewerPage {
         
         // create main content image      
         {
-            var isOverlay = this.type==="overlay";
-            var contentOverlay = $('#content-overlay');		            
-            imageDiv.appendTo(isOverlay?contentOverlay:content);	
+            var isModal = this.type==="modal";
+            var contentModal = $('#content-modal');		            
+            imageDiv.appendTo(isModal?contentModal:content);	
             
             // create link div
             if(enableLinks){
@@ -145,6 +161,48 @@ class ViewerPage {
         var linksDiv = panel.linksDiv
         
         for(var link of panel.links) {
+            var a = $("<a>",{
+                href:"#",
+                link_url: link.url,    
+                link_page: link.page ,    
+                link_action: link.action ,    
+                linkPosX:  link.rect.x,
+                linkPosY:  link.rect.y+link.rect.height,
+                target: link.target
+            })
+
+            var func = function(){
+                var link_url = $( this ).attr("link_url")
+                var link_page = $( this ).attr("link_page")
+                var link_action = $( this ).attr("link_action")
+
+                if(link_page != null) {			
+                    // title = story.pages[link.page].title;
+                    var currentPage = story.pages[viewer.currentPage]
+                    var newPageIndex = viewer.getPageIndex(parseInt(link_page))
+                    var newPage = story.pages[newPageIndex];
+
+                    if('overlay'==newPage.type){
+                        var linkPosX = $( this ).attr("linkPosX")
+                        var linkPosY = $( this ).attr("linkPosY")                        
+                        newPage.showAsOverlayIn(currentPage,linkPosX,linkPosY)
+                    }else{
+                        viewer.goTo(parseInt(link_page))
+                    }
+                } else if(link_action != null && link_action== 'back') {
+                    //title = "Go Back";
+                    viewer.goBack()
+                } else if(link_url != null){
+                    //title = link.url;
+                    document.location = link_url
+                    //target = link.target!=null?link.target:null;		
+                }
+                return false
+
+
+            }
+            a.click(func)
+/*
             var title, href, target;
             if(link.page != null) {			
                 // title = story.pages[link.page].title;
@@ -164,6 +222,8 @@ class ViewerPage {
                 href:href,
                 target: target
             })
+
+*/            
             a.appendTo(linksDiv)
 
             var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "
