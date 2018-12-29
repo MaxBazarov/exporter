@@ -137,6 +137,21 @@ class MyLayer {
         return shadowsStyle
     }
 
+
+    clearRefsBeforeJSON(){
+        // need to cleanup temp object to allow dump it into JSON
+        // but keep nlayer because Exporter.exportImage() needs it
+        this.symbolMaster = undefined
+        this.tempOverrides = undefined
+        this.slayer = undefined
+        //l.nlayer = undefined
+        this.customLink = undefined
+
+        for(var l of this.childs){
+            l.clearRefsBeforeJSON()
+        }
+    }
+
 }
 
 class MyLayerCollector {

@@ -72,7 +72,6 @@ class MyArtboard extends MyLayer {
         this._exportImages()
         this._findFixedPanelHotspots()
         this._pushIntoJSStory(this.pageIndex)
-        this._cleanUpAfterExport()
     }
 
 
@@ -339,10 +338,6 @@ class MyArtboard extends MyLayer {
 
     _exportFixedLayersToImages(scales){
         for(var layer of this.fixedLayers){               
-            // re-init Sketch Layer  (it was cleared before to help JSON procedure)
-            if(layer.slayer==undefined)
-               layer.slayer = Sketch.fromNative(layer.nlayer)
-
             layer.calculateFixedType()         
 
             // temporary disable fixed panel shadows
@@ -385,12 +380,5 @@ class MyArtboard extends MyLayer {
        }
     }
 
-    // do some cleanup after exporting
-    _cleanUpAfterExport(){
-        for(var layer of this.fixedLayers){
-            // clear ref to Sketch layer to don't break future JSON-encoding of layers
-            layer.slayer = undefined 
-       }
-    }
 
 }

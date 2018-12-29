@@ -89,22 +89,7 @@ class MyLayerResizer {
 
         exporter.logLayer(prefix+"- frame="+l.frame+ " topOffset: "+topOffset + " absoluteRect="+layer.absoluteRect() )
           
-        this._resizeLayers(prefix,l.childs,topOffset,lostOverrides)
-        
-        this._clearRefsBeforeJSON(l)
-       
-    }
-
-    _clearRefsBeforeJSON(l){
-        if(!exporter.enabledJSON) return
-
-         // need to cleanup temp object to allow dump it into JSON
-        // but keep nlayer because Exporter.exportImage() needs it
-        l.symbolMaster = undefined
-        l.tempOverrides = undefined
-        l.slayer = undefined
-        //l.nlayer = undefined
-        l.customLink = undefined
+        this._resizeLayers(prefix,l.childs,topOffset,lostOverrides)               
     }
 
     _processLayerLinks(l,prefix,lostOverrides){

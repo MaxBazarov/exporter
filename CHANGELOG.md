@@ -1,5 +1,11 @@
 # Change Log
 
+##  Version 5.0.0 (30 Dec 2018)
+New features:
+- Added ability to define any artboard as "Overlay" 
+Fixed bugs:
+- Crashes with "layer.slayer.style is undefined" if Export to JSON enabled
+
 ##  Version 4.6.0 (28 Dec 2018)
 New features:
 - Added Configure Layer command to specify layer <div> ID. It can be possible if you want to do some custom JS-based manipulations.

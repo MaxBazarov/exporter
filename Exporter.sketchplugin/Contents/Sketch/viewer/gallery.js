@@ -24,23 +24,22 @@ function createGallery() {
             };
         },
         loadPages: function(){
-            var pageIndex=0
-            story.pages.forEach(function(page){
-                this.loadOnePage(page,pageIndex++);
+            viewer.userStoryPages.forEach(function(page){
+                this.loadOnePage(page);
             },this);
         },
         selectPage: function(index){
             gallery.hide();            
             viewer.goToPage(index);
         },
-        loadOnePage: function(page,pageIndex){
+        loadOnePage: function(page){
             var imageURI = story.hasRetina && viewer.isHighDensityDisplay() ? page.image2x : page.image;	
             
             var width = 300;
             var height = Math.round(page.height / (page.width / width));
 
             var div = $('<div/>', {
-                id : pageIndex,
+                id : page.index,
                 class: "gallery-div",                             
             });
             div.click(function(e){                
@@ -49,7 +48,7 @@ function createGallery() {
             div.appendTo($('#gallery'));
 
             var img = $('<img/>', {
-                id : "img_gallery_"+pageIndex,
+                id : "img_gallery_"+ page.index,
                 class: "gallery-image",
                 alt: page.title,
 				src : encodeURIComponent(viewer.files) + '/previews/' + encodeURIComponent(imageURI),

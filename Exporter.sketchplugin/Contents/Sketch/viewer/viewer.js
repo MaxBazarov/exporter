@@ -76,13 +76,14 @@ function createViewer(story, files) {
 		prevPageModalIndex : -1,
 		backStack: [],
 		urlLastIndex: -1,
-		files: files,
+        files: files,
+        userStoryPages: [],
 
 		transQueue : [],
 		
 		initialize: function() {
             this.addHotkeys();
-			//this.createImageMaps();            
+			this.buildUserStory();            
 			this.initializeHighDensitySupport();			
 		},
 		initializeHighDensitySupport: function() {
@@ -98,16 +99,16 @@ function createViewer(story, files) {
 		isHighDensityDisplay: function() {
 			return (this.hdMediaQuery && this.hdMediaQuery.matches || (window.devicePixelRatio && window.devicePixelRatio > 1));
         },		
-        createImageMaps: function() {
-			var div = $('<div/>', {
-				'class': '',
-				'id' : 'divMaps'
-			});
-			div.appendTo('body');
-
+        buildUserStory: function() {
+            this.userStoryPages = []
 			for(var page of story.pages){
-				page.createAreaMaps(div)
-			}			
+				if('regular'==page.type || 'modal'==page.type){
+                    page.userIndex = this.userStoryPages.length
+                    this.userStoryPages.push(page)
+                }else{
+                    page.userIndex = -1
+                }
+            }	
 		},
 		addHotkeys: function() {
 			var v = this;
@@ -124,7 +125,8 @@ function createViewer(story, files) {
 				gallery.toogle();
 			});
 			$(document).bind('keydown', 's', function() {
-				v.goToPage(0);
+                var first = v.getFirstUserPage()
+                if(first && first.index!=v.currentPage) v.goToPage( first.index );
 			});			
 			$(document).keydown(function(event) {
 				var ch = event.which
@@ -279,19 +281,22 @@ function createViewer(story, files) {
 		refresh_update_navbar: function(pageIndex) {
 			var page = story.pages[pageIndex];
 			var VERSION_INJECT="";
+            
+            var prevPage = this.getPreviousUserPage(page)
+            var nextPage = this.getNextUserPage(page)
+
+			$('#nav .title').html((page.userIndex+1) + '/' + this.userStoryPages.length + ' - ' + page.title + VERSION_INJECT);
+			$('#nav-left-prev').toggleClass('disabled', !prevPage)
+			$('#nav-left-next').toggleClass('disabled', !nextPage)			
 			
-			$('#nav .title').html((pageIndex+1) + '/' + story.pages.length + ' - ' + page.title + VERSION_INJECT);
-			$('#nav-left-prev').toggleClass('disabled', !this.hasPrevious(pageIndex));
-			$('#nav-left-next').toggleClass('disabled', !this.hasNext(pageIndex));			
-			
-			if(this.hasPrevious(pageIndex)) {
-				$('#nav-left-prev a').attr('title', story.pages[pageIndex - 1].title);
+			if(prevPage) {
+				$('#nav-left-prev a').attr('title', prevPage.title);
 			} else {
 				$('#nav-left-prev a').removeAttr('title');
 			}
 			
-			if(this.hasNext(pageIndex)) {
-				$('#nav-left-next a').attr('title', story.pages[pageIndex + 1].title);
+			if(nextPage) {
+				$('#nav-left-next a').attr('title', nextPage.title);
 			} else {
 				$('#nav-left-next a').removeAttr('title');
 			}
@@ -453,22 +458,28 @@ function createViewer(story, files) {
 		},
 
 		next : function() {
-			if (this.hasNext(this.currentPage)){
-				const index = this.currentPage + 1;				
-				this.goToPage(index);
-			}
+            var page = this.getNextUserPage( story.pages[this.currentPage] )
+            if(!page) return
+			this.goToPage(page.index);	
 		},
 		previous : function() {
-			if (this.hasPrevious(this.currentPage)){
-				const index = this.currentPage - 1;				
-				this.goToPage(index);
-			}
+            var page = this.getPreviousUserPage( story.pages[this.currentPage] )
+            if(!page) return
+			this.goToPage(page.index);	
+        },
+        getFirstUserPage : function() {           
+            var first = this.userStoryPages[0]
+            return first?first:null
 		},
-		hasNext : function(pageIndex) {
-			return pageIndex < story.pages.length - 1;
+		getNextUserPage : function(page) {
+            var nextUserIndex = page.userIndex + 1
+            if(nextUserIndex>=this.userStoryPages.length) return null
+            return this.userStoryPages[ nextUserIndex ] 
 		},
-		hasPrevious : function(pageIndex) {
-			return pageIndex > 0;
+		getPreviousUserPage : function(page) {
+            var prevUserIndex = page.userIndex - 1
+            if(prevUserIndex<0) return null
+            return this.userStoryPages[ prevUserIndex ] 
 		},
 		toggleLinks : function() {
 			this.highlightLinks = !this.highlightLinks;
