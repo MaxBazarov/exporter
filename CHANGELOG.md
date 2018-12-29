@@ -2,7 +2,7 @@
 
 ##  Version 5.0.0 (30 Dec 2018)
 New features:
-- Added ability to define any artboard as "Overlay" 
+- Added ability to define any artboard as "Overlay" / Pictures: [One](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay1.png), [Two](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay2.png), [Three](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay3.png)
 Fixed bugs:
 - Crashes with "layer.slayer.style is undefined" if Export to JSON enabled
 
