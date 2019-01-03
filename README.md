@@ -6,9 +6,9 @@ Exporter Features:
 - Single HTML file with links highlighting
 - Show artboard as an overlay over a previous artboard / Pictures: [One](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay1.png), [Two](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay2.png), [Three](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay3.png)
 - Show artboard as a modal over a previous artboard  / [Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Link-ModalArtboard.png), [Example](https://github.com/MaxBazarov/exporter/raw/master/tests/Link-ModalArtboard.sketch)
+- Support for layers with fixed position (left,top and float panels) / [Example](https://github.com/MaxBazarov/exporter/tree/master/tests/FixedLayers)
 - Support for Sketch-native links (including Back links, cross-page links, links inside Symbols and overrided hotspot links)
 - Support for external links / [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint2)
-- Limited support for layers with fixed position (left,top and float panels) / [Example](https://github.com/MaxBazarov/exporter/tree/master/tests/FixeLayers)
 - Skips pages and artboards with * prefix 
 - Ability to insert Google counter
 - Ability to hide navigation controls and hotspot highlighting
@@ -18,8 +18,8 @@ Viewer features:
 - Async pre-loading of document pages
 
 Publisher features:
-- Increase version counter and inject it into HTML
-- Compress page images by using [pngquant](https://pngquant.org) tool
+- Increasing of version counter and injecting it into HTML
+- Compressing pages using [pngquant](https://pngquant.org) tool
 - Publishing to external site by SFTP
 
 [Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
