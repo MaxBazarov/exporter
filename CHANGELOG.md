@@ -14,8 +14,7 @@ Fixed bugs:
 New features:
 - Added Configure Layer command to specify layer <div> ID. It can be possible if you want to do some custom JS-based manipulations.
 Fixed bugs:
-- Expotrer detects @MainBackground@ in wrong way
-
+- Expoter detects @MainBackground@ in wrong way
 
 ##  Version 4.5.1 (24 Dec 2018)
 If some layer name contain @MainBackground@ substring then it's fill color will be used as browser page background (in case of unspecified Custom Background Color setting in Configure Document dialog). 
