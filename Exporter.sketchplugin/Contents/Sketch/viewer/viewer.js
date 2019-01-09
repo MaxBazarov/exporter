@@ -550,7 +550,12 @@ $(document).ready(function() {
 	if(!!('ontouchstart' in window) || !!('onmsgesturechange' in window)) {
 		$('body').removeClass('screen');
 	}
-	
+    
+    
+    var defPageIndex = viewer.getPageIndex(pageName);
+    var defPage =  story.pages[defPageIndex];
+    defPage.isDefault = true
+
 	viewer.goTo(pageName);
 	preloadAllPageImages();
 	

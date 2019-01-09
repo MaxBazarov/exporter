@@ -22,7 +22,7 @@ class ViewerPage {
             this.loadImages()						
         }            
 
-       this.imageDiv.removeClass("hidden")
+        this.imageDiv.removeClass("hidden")
     }
 
     showAsOverlayIn(newParentPage,posX,posY){
@@ -111,7 +111,8 @@ class ViewerPage {
 
             // add image itself
             panel.imageObj = this._loadSingleImage(panel.isFloat || panel.isSplit?panel:this,'img_'+panel.index+"_")     
-            panel.imageObj.appendTo(panelDiv);
+            panel.imageObj.appendTo(panelDiv);            
+            if(!this.isDefault) panel.imageObj.css("webkit-transform","translate3d(0,0,0)")
         }
         
         // create main content image      
@@ -136,6 +137,7 @@ class ViewerPage {
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
         img.appendTo(imageDiv)
+        if(!this.isDefault) imageDiv.css("webkit-transform","translate3d(0,0,0)")
 
     }   
 

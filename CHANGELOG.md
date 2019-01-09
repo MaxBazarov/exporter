@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.0.1 (9 Jan 2018)
+Fixed bugs:
+- The default page doesn't show images in full size
+
 ##  Version 5.0.0 (30 Dec 2018)
 New features:
 - Added ability to define any artboard as "Overlay" / Pictures: [One](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay1.png), [Two](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay2.png), [Three](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/FixedLayers/Overlay3.png)

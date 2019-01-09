@@ -2,8 +2,8 @@
     margin: 0 auto;		
 }
 
-.image_div img{
-    -webkit-transform:translate3d(0,0,0);
+.image_div img{    
+    /*-webkit-transform:translate3d(0,0,0);*/
 }
 
 /*** MAPS ***/
