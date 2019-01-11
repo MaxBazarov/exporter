@@ -25,7 +25,12 @@ class ViewerPage {
         this.imageDiv.removeClass("hidden")
     }
 
-    showAsOverlayIn(newParentPage,posX,posY){
+    showAsOverlayIn(newParentPage,linkIndex,posX,posY){
+
+        if( !this.imageDiv ){
+            this.loadImages()
+        }
+
         // Show overlay on the new position
         const div = this.imageDiv
 
@@ -34,8 +39,12 @@ class ViewerPage {
             div.css('top',posY+"px")        
             div.css('margin-left',posX+"px")
             this.show()
+
+            var extURL = '/l/'+linkIndex
+            viewer.refresh_url(newParentPage.index,extURL)
         }else{
             this.hide()
+            viewer.refresh_url(newParentPage.index)
         }       
     }
 
@@ -165,6 +174,7 @@ class ViewerPage {
         for(var link of panel.links) {
             var a = $("<a>",{
                 href:"#",
+                linkIndex: link.index,
                 link_url: link.url,    
                 link_page: link.page ,    
                 link_action: link.action ,    
@@ -186,8 +196,9 @@ class ViewerPage {
 
                     if('overlay'==newPage.type){
                         var linkPosX = $( this ).attr("linkPosX")
-                        var linkPosY = $( this ).attr("linkPosY")                        
-                        newPage.showAsOverlayIn(currentPage,linkPosX,linkPosY)
+                        var linkPosY = $( this ).attr("linkPosY")        
+                        var linkIndex = $( this ).attr("linkIndex")                        
+                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY)
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }
@@ -204,28 +215,6 @@ class ViewerPage {
 
             }
             a.click(func)
-/*
-            var title, href, target;
-            if(link.page != null) {			
-                // title = story.pages[link.page].title;
-                href = 'javascript:viewer.goTo(' + link.page + ')';
-                target = null;
-            } else if(link.action != null && link.action == 'back') {
-                //title = "Go Back";
-                href = 'javascript:viewer.goBack()';
-                target = null;
-            } else if(link.url != null){
-                //title = link.url;
-                href = link.url;
-                target = link.target!=null?link.target:null;						
-            }
-
-            var a = $("<a>",{
-                href:href,
-                target: target
-            })
-
-*/            
             a.appendTo(linksDiv)
 
             var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "

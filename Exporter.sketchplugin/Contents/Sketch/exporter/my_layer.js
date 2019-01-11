@@ -63,8 +63,10 @@ class MyLayer {
         }
 
          // check special internal properties
+         log('BACKOLOR check='+(""==exporter.backColor))
          if(""==exporter.backColor){            
             while(true){
+                log('BACKOLOR name='+this.name)
                 if(this.name.indexOf(Constants.INT_LAYER_NAME_BACKCOLOR)<0) break
                 let fills =  this.slayer.style.fills
                 if(undefined==fills) break

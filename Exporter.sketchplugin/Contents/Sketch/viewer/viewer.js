@@ -2,6 +2,10 @@
 // =============================== PRELOAD IMAGES =========================
 var pagerLoadingTotal=0
 
+function getQuery(uri,q) {
+    return (uri.match(new RegExp('[?&]' + q + '=([^&]+)')) || [, null])[1];
+}
+
 function doTransNext(){
 	// get oldest transition
 	const trans = viewer.transQueue[0]
@@ -75,7 +79,8 @@ function createViewer(story, files) {
 		currentPageModal : false,
 		prevPageModalIndex : -1,
 		backStack: [],
-		urlLastIndex: -1,
+        urlLastIndex: -1,
+        handleURLRefresh : true,
         files: files,
         userStoryPages: [],
 
@@ -168,21 +173,17 @@ function createViewer(story, files) {
 			// return first prototype page
 			return 0;
 		},
-		getPageIndex: function(page) {
+		getPageIndex: function(page,defIndex=0) {
 			var index;
 
 			if (typeof page === "number") {
 				index = page;
 			} else if (page === "") {
-				index = 0;
+				index = defIndex;
 			} else {
 				index = this.getPageHashes()[page];
 				if (index==undefined) {
-					var pageNumber = parseInt(page);
-					if (isNaN(pageNumber))
-						index = 0;
-					else
-						index = pageNumber - 1;
+					index = defIndex;
 				}
 			}
 			return index;
@@ -201,8 +202,8 @@ function createViewer(story, files) {
 		},
 		goTo : function(page,refreshURL=true) {
 			// We don't need any waiting page transitions anymore
-			this._resetTransQueue()
-
+            this._resetTransQueue()
+            
 			var index = this.getPageIndex(page);
 
 			if(!this.currentPageModal && this.currentPage>=0){
@@ -237,7 +238,7 @@ function createViewer(story, files) {
             this.refresh_hide_last_image(index)                       
 			this.refresh_switch_modal_layer(index);	
 			this.refresh_update_navbar(index);			
-			if(refreshURL) this.refresh_url(index)			
+			if(refreshURL)this.refresh_url(index)			
 
 			this.currentPage = index;
 			if(story.pages[index].type!="modal"){
@@ -253,8 +254,6 @@ function createViewer(story, files) {
             }                 
 								
         },
-        
-
 		_setupTransNext: function(secs){	
 			// deactivate all waiting transitions
 			for(var trans of this.transQueue){
@@ -269,7 +268,6 @@ function createViewer(story, files) {
 			console.log("ADD NEW transition")
 			setTimeout(doTransNext,secs*1000)
 		},
-
 		// Deactivate all waiting transitions
 		_resetTransQueue: function(){	
 			for(var trans of this.transQueue){
@@ -277,7 +275,6 @@ function createViewer(story, files) {
                 console.log("RESET transition")
 			}			
 		},
-
 		refresh_update_navbar: function(pageIndex) {
 			var page = story.pages[pageIndex];
 			var VERSION_INJECT="";
@@ -305,21 +302,11 @@ function createViewer(story, files) {
 
 			this.refresh_update_links_toggler(pageIndex);			
 		},
-
-		refresh_url: function(pageIndex) {
-			var page = story.pages[pageIndex];
-			this.urlLastIndex = pageIndex
-			$(document).attr('title', story.title + ': ' + page.title)			
-			location.hash = '#' + encodeURIComponent(this.getPageHash(pageIndex))			
-		},
-		
 		refresh_update_links_toggler: function(pageIndex) {
 			var page = story.pages[pageIndex];
 			$('#nav-right-links').toggleClass('active', this.highlightLinks);
 			$('#nav-right-links').toggleClass('disabled', page.links.length == 0);
 		},
-		
-
 		refresh_hide_last_image: function(pageIndex){
 		
 			var page = story.pages[pageIndex];
@@ -348,8 +335,6 @@ function createViewer(story, files) {
 			}
 			
 		},
-
-
 		refresh_adjust_content_layer: function(pageIndex){
             
 			var page = story.pages[pageIndex];
@@ -394,7 +379,78 @@ function createViewer(story, files) {
 			}
 			contentModal.removeClass('hidden');			
 		},
-	
+    
+        refresh_url: function(pageIndex,extURL=null) {
+            this.handleURLRefresh = false
+
+			var page = story.pages[pageIndex];
+			this.urlLastIndex = pageIndex
+            $(document).attr('title', story.title + ': ' + page.title)
+
+            if(null==extURL) extURL = ''
+
+            location.hash = '#' 
+                + encodeURIComponent(this.getPageHash(pageIndex))
+                + extURL
+
+		},
+        
+        _parseLocationHash : function(){
+            var result = {
+                reset_url : false
+            }
+            var hash = location.hash;
+            
+            if(hash == null || hash.length == 0){
+                hash = '#'
+                result.reset_url = true
+                
+            }else if(hash.indexOf('/')>0){
+                // read additonal parameters
+                var args = hash.split('/')
+                // check for link to click
+                if(args[1]=='l'){
+                    result.linkIndex = args[2]                                    
+                }
+                hash = hash.substring(0,hash.indexOf('/'))
+                hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
+            }
+
+            result.hash = hash
+            return result
+        },
+
+        handleNewLocation : function(initial){
+            var hashInfo = this._parseLocationHash()	
+        
+            var pageName = hashInfo.hash.substring(1)
+            var pageIndex = this.getPageIndex(pageName,null);
+            if(null==pageIndex){
+                // get the default page
+                pageIndex = 0
+                hashInfo.reset_url = true
+            }
+
+            if(!initial && this.urlLastIndex==pageIndex){
+                return
+            }
+
+            var page =  story.pages[pageIndex];            
+
+            if(initial)
+                page.isDefault = true
+            else
+                this.clear_context();
+            
+            this.goTo(pageIndex,hashInfo.reset_url);
+            
+            if(hashInfo.linkIndex!=null){
+                var link = page.getLinkByIndex(hashInfo.linkIndex)
+                //hashInfo.overlay.page.showAsOverlayIn(page,hashInfo.overlay.posX,hashInfo.overlay.posY)
+            }
+
+            if(!initial) this.urlLastIndex = pageIndex
+        },
  
 		clear_context_hide_all_images: function(){
 			var page = story.pages[this.currentPage];
@@ -443,7 +499,6 @@ function createViewer(story, files) {
 			reloadAllPageImages()
 			story.pages[this.currentPage].show()
 		},
-
 		onKeyEscape: function(){
 			// If gallery is enabled then close it
 			if(gallery.isVisible()){
@@ -456,8 +511,7 @@ function createViewer(story, files) {
 				return
 			}
 		},
-
-		next : function() {
+		next: function() {
             var page = this.getNextUserPage( story.pages[this.currentPage] )
             if(!page) return
 			this.goToPage(page.index);	
@@ -536,43 +590,21 @@ function addRemoveClass(mode, el, cls) {
 
 
 $(document).ready(function() {
-	var hash = location.hash;
-	if(hash == null || hash.length == 0)
-		hash = '#';
-	hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
-	
-	
-	var pageName = decodeURIComponent(hash.substring(1));
-
-	viewer.initialize();
-	gallery.initialize();
+    viewer.initialize();
+    gallery.initialize();		
 	
 	if(!!('ontouchstart' in window) || !!('onmsgesturechange' in window)) {
 		$('body').removeClass('screen');
 	}
     
-    
-    var defPageIndex = viewer.getPageIndex(pageName);
-    var defPage =  story.pages[defPageIndex];
-    defPage.isDefault = true
+    viewer.handleNewLocation(true)
 
-	viewer.goTo(pageName);
 	preloadAllPageImages();
 	
 	$(window).hashchange(function(e) {
-		var hash = location.hash;
-		if(hash == null || hash.length == 0)
-			hash = '#';
-		hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
-		
-		var page = decodeURIComponent(hash.substring(1));
-		var pageIndex = viewer.getPageIndex(page);
-		if(viewer.urlLastIndex==pageIndex){
-			return
-		}
-		viewer.clear_context();
-		viewer.goTo(page,false);
-		viewer.urlLastIndex= pageIndex
+        if(viewer.handleURLRefresh)
+            viewer.handleNewLocation(false)       
+        viewer.handleURLRefresh = true
 	});
-	$(window).hashchange();
+	//$(window).hashchange();
 });

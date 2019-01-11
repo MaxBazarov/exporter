@@ -28,6 +28,8 @@ class MyArtboard extends MyLayer {
 
         this.fixedLayers = [] // list of layers which are configured as fixed
 
+        this.nextLinkIndex = 0 // we need it to generate uniq id of the every link
+
         // check if the page name is unique in document
         if(this.name in exporter.pagesDict){
             // we need to find a new name                        
@@ -261,6 +263,7 @@ class MyArtboard extends MyLayer {
                 exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
             }
 
+            newHotspot.index = this.nextLinkIndex++
             newHotspots.push(newHotspot)
 
         }
