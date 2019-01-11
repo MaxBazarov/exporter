@@ -25,6 +25,18 @@ class ViewerPage {
         this.imageDiv.removeClass("hidden")
     }
 
+    showOverlayByLinkIndex(linkIndex){
+        linkIndex = parseInt(linkIndex,10)
+
+        var link = this._getLinkByIndex(linkIndex)
+        if(!link){
+            console.log('Error: can not find link to overlay by index="'+linkIndex+'"')
+            return false
+        }
+
+        link.a.click()    
+    }
+
     showAsOverlayIn(newParentPage,linkIndex,posX,posY){
 
         if( !this.imageDiv ){
@@ -40,7 +52,7 @@ class ViewerPage {
             div.css('margin-left',posX+"px")
             this.show()
 
-            var extURL = '/l/'+linkIndex
+            var extURL = '/o/'+linkIndex
             viewer.refresh_url(newParentPage.index,extURL)
         }else{
             this.hide()
@@ -151,6 +163,24 @@ class ViewerPage {
     }   
 
     /*------------------------------- INTERNAL METHODS -----------------------------*/
+    _getLinkByIndex(index){
+        var link = this._getLinkByIndexInLinks(index,this.links)
+        if(link!=null) return link
+        for(var panel of this.fixedPanels){
+            link = this._getLinkByIndexInLinks(index,panel.links)
+            if(link!=null) return link
+        }
+        return null
+    }
+
+    _getLinkByIndexInLinks(index,links){
+        var found = links.find(function(el){
+            return el.index==index
+        })
+        return found!=undefined?found:null
+    }
+
+
     _loadSingleImage(sizeSrc,idPrefix){
         var hasRetinaImages = story.hasRetina
         var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? sizeSrc.image2x : sizeSrc.image;	
@@ -211,11 +241,11 @@ class ViewerPage {
                     //target = link.target!=null?link.target:null;		
                 }
                 return false
-
-
             }
             a.click(func)
             a.appendTo(linksDiv)
+
+            link.a = a
 
             var style="left: "+ link.rect.x+"px; top:"+link.rect.y+"px; width: "+ link.rect.width+"px; height:"+link.rect.height+"px; "
             var linkDiv = $("<div>",{

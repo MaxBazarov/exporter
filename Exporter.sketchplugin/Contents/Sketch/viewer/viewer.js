@@ -409,8 +409,8 @@ function createViewer(story, files) {
                 // read additonal parameters
                 var args = hash.split('/')
                 // check for link to click
-                if(args[1]=='l'){
-                    result.linkIndex = args[2]                                    
+                if(args[1]=='o'){
+                    result.overlayLinkIndex = args[2]                                    
                 }
                 hash = hash.substring(0,hash.indexOf('/'))
                 hash = '#' + hash.replace( /^[^#]*#?(.*)$/, '$1' );
@@ -444,8 +444,8 @@ function createViewer(story, files) {
             
             this.goTo(pageIndex,hashInfo.reset_url);
             
-            if(hashInfo.linkIndex!=null){
-                var link = page.getLinkByIndex(hashInfo.linkIndex)
+            if(hashInfo.overlayLinkIndex!=null){
+                page.showOverlayByLinkIndex(hashInfo.overlayLinkIndex)
                 //hashInfo.overlay.page.showAsOverlayIn(page,hashInfo.overlay.posX,hashInfo.overlay.posY)
             }
 

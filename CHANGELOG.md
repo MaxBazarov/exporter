@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.1.0 (11 Jan 2018)
+New features:
+- Added URLs for overlay arboards (user can bookmark a page with visible overlay)
+
 ##  Version 5.0.1 (9 Jan 2018)
 Fixed bugs:
 - The default page doesn't show images in full size
