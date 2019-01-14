@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.2.0 (14 Jan 2018)
+- Fuzy logic for top/left fixed panel detection replaced by the new Layer Setting — Overlay Mode
+
 ##  Version 5.1.0 (11 Jan 2018)
 New features:
 - Added URLs for overlay arboards (user can bookmark a page with visible overlay)

@@ -334,7 +334,7 @@ area {
 
 /*** FIXED PANELS ***/
 
-.splitPanel{
+.divPanel{
 	position: absolute;
 	z-index: 3;	
 }

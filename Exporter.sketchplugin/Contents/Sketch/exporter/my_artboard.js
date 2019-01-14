@@ -198,7 +198,7 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                const fileNamePostfix = !(l.isFloat||l.isSplit)?"":('-'+l.fixedIndex)                
+                const fileNamePostfix = !(l.isFloat||l.isFixedDiv)?"":('-'+l.fixedIndex)                
 
                 const rec = {
                     constrains:l.constrains,
@@ -209,7 +209,7 @@ class MyArtboard extends MyLayer {
                     type:type,
                     index:l.fixedIndex,
                     isFloat: l.isFloat,
-                    isSplit: l.isSplit,
+                    isFixedDiv: l.isFixedDiv,
                     divID: l.layerDivID!=undefined?l.layerDivID:"",
                     links: this._buildHotspots(l.hotspots),                    
                     image:Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix+'.png')
@@ -347,8 +347,8 @@ class MyArtboard extends MyLayer {
             let orgShadows = layer.slayer.style.shadows
             layer.slayer.style.shadows = []            
             
-            // for split and  float fixed layer we need to generate its own image files
-            if(layer.isFloat || layer.isSplit){
+            // for div and  float fixed layer we need to generate its own image files
+            if(layer.isFloat || layer.isFixedDiv){
                 //this._exportImage2('1, 2',layer.parent.slayer)         
                 for(var scale of scales){                                         
                     this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"-"+layer.fixedIndex)                    
@@ -364,8 +364,8 @@ class MyArtboard extends MyLayer {
     _switchFixedLayers(hide){         
         const show = !hide
         for(var layer of this.fixedLayers){
-            // we need to hide/show only split and  float panels
-            if(layer.isFloat || layer.isSplit){
+            // we need to hide/show only div and  float panels
+            if(layer.isFloat || layer.isFixedDiv){
                 layer.slayer.hidden = hide
             }
 

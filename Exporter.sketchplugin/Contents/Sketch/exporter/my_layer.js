@@ -52,18 +52,16 @@ class MyLayer {
         this.tempOverrides = undefined        
         
         if(!exporter.disableFixedLayers){
-            var layerDivID = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_DIV_ID)
-            if(layerDivID!=undefined && layerDivID!=''){
-                this.layerDivID = layerDivID
-            }
-
-            if(nlayer.isFixedToViewport() || this.layerDivID!=undefined){
-                this.addSelfAsFixedLayerToArtboad()    
+            var overlayType = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_OVERLAY_TYPE)
+            if(undefined==overlayType || ''==overlayType)
+                overlayType = Constants.LAYER_OVERLAY_DEFAULT
+            
+            if(nlayer.isFixedToViewport() || overlayType!=Constants.LAYER_OVERLAY_DEFAULT){
+                this.addSelfAsFixedLayerToArtboad(overlayType)    
             }
         }
 
          // check special internal properties
-         log('BACKOLOR check='+(""==exporter.backColor))
          if(""==exporter.backColor){            
             while(true){
                 log('BACKOLOR name='+this.name)
@@ -92,33 +90,39 @@ class MyLayer {
         return res        
     }    
 
-    addSelfAsFixedLayerToArtboad(){         
+    addSelfAsFixedLayerToArtboad(overlayType){         
+
+        if(Constants.LAYER_OVERLAY_DIV==overlayType){
+            var layerDivID = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_DIV_ID)
+            if(layerDivID!=undefined && layerDivID!=''){
+                this.layerDivID = layerDivID
+            }else{
+                // No Div ID = No div overlay
+                return
+            }
+        }
+        
         this.isFixed = true
+        this.overlayType = overlayType
         this.fixedIndex = this.artboard.fixedLayers.length
         this.artboard.fixedLayers.push(this)
     }
 
-    calculateFixedType(){              
-     
-        // Dirty code to detect a type of layer with fixed position
+    calculateFixedType(){     
         let type = "";
 
-        if(this.layerDivID!=undefined){
-            type = 'split'
-        }else if (0==this.frame.x && this.frame.width < this.frame.height) {
-            type = "left";
-        }
-        // handle the only one top-pinnded layers for now
-        else if (0==this.frame.y && this.frame.width > this.frame.height) {
-            type = "top";
-        }
-        // ok, it will a float panel
-        else{
+        if(Constants.LAYER_OVERLAY_DIV==this.overlayType){
+            type = 'div'
+        }else if(Constants.LAYER_OVERLAY_TRANSP_TOP==this.overlayType){
+           type = "top";      
+        }else if(Constants.LAYER_OVERLAY_TRANSP_LEFT==this.overlayType){
+            type = "left";      
+        }else	
             type = "float"
-        } 
+
         this.fixedType = type
         this.isFloat = type=='float'
-        this.isSplit = type=='split'
+        this.isFixedDiv = type=='div'
                 
     }
 
