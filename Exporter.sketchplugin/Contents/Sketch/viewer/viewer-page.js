@@ -3,9 +3,13 @@
 
 class ViewerPage {
 
-
     hide(preloadhide=false){     
         this.imageDiv.addClass("hidden")
+
+        if(this.currentOverlay){
+            this.currentOverlay.hide()
+            this.currentOverlay = undefined
+        }
     }
     
 
@@ -46,15 +50,28 @@ class ViewerPage {
         // Show overlay on the new position
         const div = this.imageDiv
 
-        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){        
+        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') 
+            || div.hasClass('hidden')
+            || (newParentPage.currentOverlay && newParentPage.currentOverlayLinkIndex!=linkIndex)
+        ){        
+            
+            // hide currently visible overlay
+            if(newParentPage.currentOverlay!=undefined){
+                newParentPage.currentOverlay.hide()
+                newParentPage.currentOverlay = undefined
+            }
+            newParentPage.currentOverlay = this
+            newParentPage.currentOverlayLinkIndex = linkIndex
+
             newParentPage.imageDiv.append(div)
             div.css('top',posY+"px")        
             div.css('margin-left',posX+"px")
-            this.show()
+            this.show()            
 
             var extURL = '/o/'+linkIndex
             viewer.refresh_url(newParentPage.index,extURL)
         }else{
+            newParentPage.currentOverlay = undefined
             this.hide()
             viewer.refresh_url(newParentPage.index)
         }       
@@ -105,7 +122,7 @@ class ViewerPage {
                 cssClass = 'fixedPanelFloat'
             }else if(panel.isFixedDiv){
                 cssClass = 'divPanel'
-            }else if("top" ==panel.type){
+            }else if("top" == panel.type){
                 cssClass = 'fixedPanel fixedPanelTop'
             }else if("left" == panel.type){
                 cssClass = 'fixedPanel'
