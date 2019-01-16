@@ -72,7 +72,7 @@ function reloadAllPageImages(){
 
 function createViewer(story, files) {
 	return {
-		highlightLinks: story.highlightLinks,
+        highlightLinks: story.highlightLinks,
 		prevPageIndex: -1,
 		lastRegularPage: -1,
 		currentPage : -1,
@@ -210,23 +210,36 @@ function createViewer(story, files) {
 				this.backStack.push(this.currentPage);
 			}
 
+            var oldcurrentPageModal  = this.currentPageModal
 			this.currentPageModal = false;
 			this.prevPageModalIndex = -1;
 			
 			if(index <0 ||  index == this.currentPage || index >= story.pages.length) return;
 
 			var newPage = story.pages[index];
-			if(newPage.type==="modal"){
+			if(newPage.type==="modal"){                
+                // hide parent page links hightlighting
+                this._updateLinksState(false, $('#content'))
+
 				// no any page to modal, need to find something
 				if(this.currentPage==-1){
 					parentIndex = this.getModalFirstParentPageIndex(index);					
-					this.goTo(parentIndex);
+					this.goTo(parentIndex,false);
 					this.prevPageModalIndex = parentIndex;
 				}else{
 					this.prevPageModalIndex = this.currentPage;
 				}
-				this.currentPageModal = true;			
+                this.currentPageModal = true;	            
+                
+                // redraw modal links hightlighting
+                this._updateLinksState()
 			}else{
+                if(oldcurrentPageModal){
+                    // hide modal page links hightlighting
+                    this._updateLinksState(false, $('#content-modal'))
+                    this._updateLinksState(undefined,$('#content'))
+                }
+
 				this.currentPageModal = false;
 			}
             this.prevPageIndex = this.currentPage;		
@@ -489,7 +502,7 @@ function createViewer(story, files) {
 
 			this.prevPageIndex = -1
 			this.lastRegularPage = -1
-			//this.currentPage = -1
+			this.currentPage = -1
 			this.currentPageModal = false
 			this.prevPageModalIndex = -1	
 			this.backStack = []
@@ -507,7 +520,11 @@ function createViewer(story, files) {
 			}
 			// If the current page is modal then close it and go to the last non-modal page
 			if(this.currentPageModal){
-				viewer.goBack()
+                if(this.prevPageModalIndex>=0){
+                    viewer.goTo(this.prevPageModalIndex)
+                }else{
+                    viewer.goBack()
+                }
 				return
 			}
 		},
@@ -536,15 +553,25 @@ function createViewer(story, files) {
             return this.userStoryPages[ prevUserIndex ] 
 		},
 		toggleLinks : function() {
-			this.highlightLinks = !this.highlightLinks;
-			this.refresh_update_links_toggler(this.currentPage);
-			var page = story.pages[this.currentPage]
-            
-           if(this.highlightLinks)
-                 $('#content').addClass("contentLinksVisible")
+            this.highlightLinks = !this.highlightLinks
+            this.refresh_update_links_toggler(this.currentPage)
+            this._updateLinksState()
+        },
+        _updateLinksState : function(showLinks = undefined, div = undefined){
+            if(undefined == div){
+                if(this.currentPageModal){
+                    div = $('#content-modal')
+                }else{
+                    div = $('#content')
+                }
+            }
+            if(undefined == showLinks) showLinks = this.highlightLinks
+            if(showLinks)
+                div.addClass("contentLinksVisible")
             else
-               $('#content').removeClass("contentLinksVisible")        
-		},
+                div.removeClass("contentLinksVisible")        
+        },
+                
 		showHints : function(){
 			var text = story.pages[this.currentPage].annotations;
 			if(text==undefined) return;
