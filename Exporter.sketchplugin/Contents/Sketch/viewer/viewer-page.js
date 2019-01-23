@@ -84,12 +84,12 @@ class ViewerPage {
         // create fixed panel images        
         for(var panel of this.fixedPanels){
             let style="height: "+panel.height+"px; width: "+panel.width+"px; " 
-            if(panel.constrains.top || panel.isFixedDiv){
+            if(panel.constrains.top || panel.isFixedDiv || (!panel.constrains.top && !panel.constrains.bottom)){
                 style+="top:"+panel.y+"px;"
             }else if(panel.constrains.bottom){
                 style+="bottom:"+(this.height - panel.y- panel.height)+"px;"
             }
-            if(panel.constrains.left  || panel.isFixedDiv){
+            if(panel.constrains.left  || panel.isFixedDiv || (!panel.constrains.left  && !panel.constrains.right)){
                 style+="margin-left:"+panel.x+"px;"
             }else if(panel.constrains.right){
                 style+="margin-left:"+panel.x+"px;"
@@ -158,8 +158,7 @@ class ViewerPage {
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
         img.appendTo(imageDiv)
-        if(!this.isDefault) imageDiv.css("webkit-transform","translate3d(0,0,0)")
-
+        //if(!this.isDefault) imageDiv.css("webkit-transform","translate3d(0,0,0)")
     }   
 
     /*------------------------------- INTERNAL METHODS -----------------------------*/
