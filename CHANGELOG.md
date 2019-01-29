@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.2.3 (29 Jan 2018)
+- Fixed bugs
+
 ##  Version 5.2.2 (23 Jan 2018)
 - Fixed bugs
 - Added default left+top constrain for float layers

@@ -203,6 +203,8 @@ class ViewerPage {
         for(var link of panel.links) {
             var a = $("<a>",{
                 href:"#",
+                pageIndex: this.index,
+                pageType: this.type,
                 linkIndex: link.index,
                 link_url: link.url,    
                 link_page: link.page ,    
@@ -216,6 +218,11 @@ class ViewerPage {
                 var link_url = $( this ).attr("link_url")
                 var link_page = $( this ).attr("link_page")
                 var link_action = $( this ).attr("link_action")
+
+                if('overlay'==$(this).attr("pageType")){
+                    var page =  story.pages[ $(this).attr("pageIndex") ]
+                    page.hide()
+                }
 
                 if(link_page != null) {			
                     // title = story.pages[link.page].title;
