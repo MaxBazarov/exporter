@@ -52,7 +52,7 @@ var onRun = function (context) {
     dialog.addHint("The artboard will be scrolled on top after showing")
 
     dialog.addTextInput("transNextSecs", "Delay for autotranstion to next screen (Secs)", transNextSecs, '', 60)
-    dialog.addHint("Go to the next page auto the delay (0..60 secs)")
+    dialog.addHint("Go to the next page auto the delay (0.001 - 60 secs)")
 
     //
     while (true) {
@@ -62,11 +62,11 @@ var onRun = function (context) {
         // OK clicked
         // read data
         transNextSecs = dialog.views['transNextSecs'].stringValue() + ""
-
-        // check data
-        if (transNextSecs != '' && isNaN(transNextSecs)) {
+ 
+        // check data        
+        if (transNextSecs != '' && isNaN(parseFloat(transNextSecs))) {
             continue
-        }
+        }   
 
         // save data
         Settings.setLayerSettingForKey(artboard,SettingKeys.ARTBOARD_TYPE, dialog.views['artboardType'].indexOfSelectedItem())    

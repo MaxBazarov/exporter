@@ -258,8 +258,8 @@ function createViewer(story, files) {
 				this.lastRegularPage = index;				
 			}
 
-			if(newPage.transNextSecs!=undefined){				
-				this._setupTransNext(newPage.transNextSecs)
+			if(newPage.transNextMsecs!=undefined){				
+				this._setupTransNext(newPage.transNextMsecs)
             }
             
             if(!newPage.disableAutoScroll){
@@ -267,7 +267,7 @@ function createViewer(story, files) {
             }                 
 								
         },
-		_setupTransNext: function(secs){	
+		_setupTransNext: function(msecs){	
 			// deactivate all waiting transitions
 			for(var trans of this.transQueue){
 				trans.active = false	
@@ -279,7 +279,7 @@ function createViewer(story, files) {
 			})
 			// set timer in milisecs
 			console.log("ADD NEW transition")
-			setTimeout(doTransNext,secs*1000)
+			setTimeout(doTransNext,msecs)
 		},
 		// Deactivate all waiting transitions
 		_resetTransQueue: function(){	

@@ -116,7 +116,7 @@ class MyArtboard extends MyLayer {
             '"title": "' + Utils.quoteString(mainName) + '",\n';
 
         if( this.transNextSecs!=undefined ){
-            js += "'transNextSecs': " + parseInt(this.transNextSecs) + ",\n";
+            js += "'transNextMsecs': " + parseFloat(this.transNextSecs)*1000 + ",\n";
         }
 
         if (this.disableAutoScroll) {
