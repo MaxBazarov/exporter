@@ -1,3 +1,5 @@
+### Handle fixed layer inside a fixed layer case correctly (probably just ignore nested fixed layers)
+
 ### Show hotspots on click outside of any hotpot
 
 ### Add page transition effects
