@@ -28,6 +28,7 @@ class MyLayer {
         this.symbolMaster = undefined
         this.slayer = Sketch.fromNative(nlayer)
         this.artboard = myParent ? myParent.artboard : this
+        this.isParentFixed = myParent && (myParent.isFixed || myParent.isParentFixed)
     
         // define type    
         this.isArtboard = false
@@ -51,7 +52,7 @@ class MyLayer {
         if(myParent!=undefined) this.constrains = this._calculateConstrains()
         this.tempOverrides = undefined        
         
-        if(!exporter.disableFixedLayers){
+        if(!exporter.disableFixedLayers && !this.isParentFixed){
             var overlayType = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_OVERLAY_TYPE)
             if(undefined==overlayType || ''==overlayType)
                 overlayType = Constants.LAYER_OVERLAY_DEFAULT
