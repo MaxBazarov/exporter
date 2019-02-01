@@ -146,14 +146,16 @@ class Exporter {
     let error = MOPointer.alloc().init();
     if (!fileManager.fileExistsAtPath(filePath)) {
       if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(filePath, false, null, error)) {
-        log(error.value().localizedDescription());
+        this.logError("prepareFilePath(): Can't create directory '"+filePath+"'. Error: "+error.value().localizedDescription());
+        return undefined
       }
     }
 
     error = MOPointer.alloc().init();
     if (fileManager.fileExistsAtPath(targetPath)) {
       if (!fileManager.removeItemAtPath_error(targetPath, error)) {
-        log(error.value().localizedDescription());
+        this.logError("prepareFilePath(): Can't remove old directory '"+targetPath+"'. Error: "+error.value().localizedDescription());
+        return undefined
       }
     }
     return targetPath;
@@ -163,12 +165,16 @@ class Exporter {
   copyStatic(resFolder) {    
     const fileManager = NSFileManager.defaultManager();
     const targetPath = this.prepareFilePath(this._outputPath,resFolder);
+    if(undefined==targetPath) return false
     
     const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path();
     let error = MOPointer.alloc().init();
     if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
       log(error.value().localizedDescription());
+      return this.logError("copyStatic(): Can't copy to directory '"+targetPath+"'. Error: "+error.value().localizedDescription());
     }
+
+    return true
   }
 
   generateJSStoryBegin(){
@@ -222,7 +228,10 @@ class Exporter {
     const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,this.backColor);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
+    if(undefined==filePath) return false
+
     Utils.writeToFile(s, filePath);
+    return true
   }
 
 
@@ -380,8 +389,8 @@ class Exporter {
     this.filterArtboards()
 
     // Copy static files
-    this.copyStatic("resources");
-    this.copyStatic("viewer");
+    if(!this.copyStatic("resources")) return false
+    if(!this.copyStatic("viewer")) return false
 
     // Build main HTML file
     this.createMainHTML();
