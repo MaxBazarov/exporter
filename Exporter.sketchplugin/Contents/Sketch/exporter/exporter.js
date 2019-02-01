@@ -145,7 +145,7 @@ class Exporter {
 
     let error = MOPointer.alloc().init();
     if (!fileManager.fileExistsAtPath(filePath)) {
-      if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(filePath, false, null, error)) {
+      if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(filePath, true, null, error)) {
         this.logError("prepareFilePath(): Can't create directory '"+filePath+"'. Error: "+error.value().localizedDescription());
         return undefined
       }
@@ -158,7 +158,7 @@ class Exporter {
         return undefined
       }
     }
-    return targetPath;
+    return targetPath
   }
 
 
@@ -190,12 +190,13 @@ class Exporter {
     '"pages": [\n';
   }
 
-
+  // result: full path to file OR undefined
   createJSStoryFile(){
     const fileName = 'story.js';
     return this.prepareFilePath(this._outputPath + "/" + Constants.VIEWER_DIRECTORY,fileName);
   }
 
+  // result: true OR false
   generateJSStoryEnd(){
     this.jsStory += 
      '   ]\n,'+
@@ -206,7 +207,12 @@ class Exporter {
     '}\n';
 
     const pathStoryJS = this.createJSStoryFile();
+    log('generateJSStoryEnd: '+pathStoryJS)
+    if(undefined==pathStoryJS) return false
+
     Utils.writeToFile(this.jsStory, pathStoryJS);
+
+    return true
   }
 
   createMainHTML(){
@@ -349,7 +355,10 @@ class Exporter {
     '}\n';
 
     const pathStoryJS = this.createViewerFile('story.js')
+    if(undefined==pathStoryJS) return false
+
     Utils.writeToFile(this.jsStory, pathStoryJS)
+    return true
   }
 
   saveToJSON(){
@@ -393,7 +402,7 @@ class Exporter {
     if(!this.copyStatic("viewer")) return false
 
     // Build main HTML file
-    this.createMainHTML();
+    if(!this.createMainHTML()) return false
 
     // Build Story.js with hotspots  
     this.generateJSStoryBegin();
@@ -402,7 +411,7 @@ class Exporter {
     // Export every artboard into PNG image
     this.exportArtboardImagesAndDef()
 
-    this.generateJSStoryEnd();
+    if(!this.generateJSStoryEnd()) return false
 
     // Build image small previews for Gallery
     this.buildPreviews()
@@ -412,6 +421,7 @@ class Exporter {
 
     log("exportArtboards: done!")
 
+    return true
   }  
 
   prepareOutputFolder(selectedPath) {

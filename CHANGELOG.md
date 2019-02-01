@@ -1,29 +1,30 @@
 # Change Log
 
-## Version in development
+##  Version 5.3.1 (1 Feb 2019)
 - Fixed issue with nested fixed layers
+- Nowu user can specify unexistent folder as Destination Folder
 
-##  Version 5.3.0 (30 Jan 2018)
+##  Version 5.3.0 (30 Jan 2019)
 - Added ability to setup autotransiton time less than 1 second (in form of 0.001)
 
-##  Version 5.2.3 (29 Jan 2018)
+##  Version 5.2.3 (29 Jan 2019)
 - Fixed bugs
 
-##  Version 5.2.2 (23 Jan 2018)
+##  Version 5.2.2 (23 Jan 2019)
 - Fixed bugs
 - Added default left+top constrain for float layers
 
-##  Version 5.2.1 (16 Jan 2018)
+##  Version 5.2.1 (16 Jan 2019)
 - Fixed bugs
 
-##  Version 5.2.0 (14 Jan 2018)
+##  Version 5.2.0 (14 Jan 2019)
 - Fuzy logic for top/left fixed panel detection replaced by the new Layer Setting — Overlay Mode
 
-##  Version 5.1.0 (11 Jan 2018)
+##  Version 5.1.0 (11 Jan 2019)
 New features:
 - Added URLs for overlay arboards (user can bookmark a page with visible overlay)
 
-##  Version 5.0.1 (9 Jan 2018)
+##  Version 5.0.1 (9 Jan 2019)
 Fixed bugs:
 - The default page doesn't show images in full size
 

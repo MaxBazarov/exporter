@@ -44,20 +44,20 @@ function exportHTML(currentPath,doc,exportOptions,context){
   exportInfo.timeout = coscript.scheduleWithInterval_jsFunction(1,function() {
 
     // Exporting...
-    exporter.exportArtboards();
-
-    // open HTML in browser
-    
-    const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
-    if(!dontOpenBrowser){
-      const openPath = currentPath+"/"+exporter.docName+"/"  
-      const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
-      
-      if(openResult.result){
-      }else{
-        UI.alert('Can not open HTML in browser', openResult.output)
-      }      
-    }      
+    let exportedOk = exporter.exportArtboards()
+    if(exportedOk){
+        // open HTML in browser 
+        const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
+        if(!dontOpenBrowser){
+            const openPath = currentPath+"/"+exporter.docName+"/"  
+            const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
+            
+            if(openResult.result){
+            }else{
+                UI.alert('Can not open HTML in browser', openResult.output)
+            }      
+        } 
+    }     
 
     // 
     //panelSwitchFinished()
@@ -65,7 +65,7 @@ function exportHTML(currentPath,doc,exportOptions,context){
 
     // show final message
     if(exporter.errors.length>0){
-      UI.alert('HTML exported with errors',exporter.errors.join("\n\n"))
+      UI.alert('Export failed with errors',exporter.errors.join("\n\n"))
     }else{
       UI.message('HTML exported.')
     }
