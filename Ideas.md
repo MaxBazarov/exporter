@@ -1,3 +1,7 @@
+### Show hotspots on click outside of any hotpot
+
+### Add page transition effects
+
 ### Auto transition to other artboard after delay
 New artboard setting:  
 **Transition to artboard**  
