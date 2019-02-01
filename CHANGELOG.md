@@ -1,5 +1,8 @@
 # Change Log
 
+## Version in development
+- Fixed issue with nested fixed layers
+
 ##  Version 5.3.0 (30 Jan 2018)
 - Added ability to setup autotransiton time less than 1 second (in form of 0.001)
 
