@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.3.2 (7 Feb 2019)
+- Changed way to open HTML in browser
+
 ##  Version 5.3.1 (1 Feb 2019)
 - Fixed issue with nested fixed layers
 - Nowu user can specify unexistent folder as Destination Folder
