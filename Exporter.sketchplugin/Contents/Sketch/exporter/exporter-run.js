@@ -49,13 +49,16 @@ function exportHTML(currentPath,doc,exportOptions,context){
         // open HTML in browser 
         const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER)==1
         if(!dontOpenBrowser){
-            const openPath = currentPath+"/"+exporter.docName+"/"  
-            const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
+            const openPath = currentPath+"/"+exporter.docName+"/"
+            const fullPath  = "" + openPath + (openPath.endsWith('/')?'':'/')+'index.html'
+            NSWorkspace.sharedWorkspace().openFile(fullPath);            
+            //log('open: '+fullPath)
+            /*const openResult = Utils.runCommand('/usr/bin/open', [openPath,openPath+'/index.html'])
             
             if(openResult.result){
             }else{
                 UI.alert('Can not open HTML in browser', openResult.output)
-            }      
+            }*/
         } 
     }     
 
