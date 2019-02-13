@@ -20,6 +20,10 @@ class UIAbstractWindow {
     return frame
   }
 
+  addSpace(){
+      this.getNewFrame(0)
+  }
+
   addLabel(text,height = 25) {    
     const label = NSTextField.alloc().initWithFrame(this.getNewFrame(height));
     label.setStringValue(text);   

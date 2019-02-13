@@ -45,11 +45,15 @@ var onRun = function (context) {
     dialog.addHint("Determines whether artboard will be shown as an overlay over a previous artboard.")
     */
 
-    dialog.addCheckbox("enable_shadow", "Show modal shadow", enabledModalShadow)
+    dialog.addCheckbox("enable_shadow", "Show modal dialog shadow", enabledModalShadow)
     dialog.addHint("Dim a previous artboard to set visual focus on an modal.")
+    
+    dialog.addSpace()
 
     dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
     dialog.addHint("The artboard will be scrolled on top after showing")
+
+    dialog.addSpace()
 
     dialog.addTextInput("transNextSecs", "Delay for autotranstion to next screen (Secs)", transNextSecs, '', 60)
     dialog.addHint("Go to the next page auto the delay (0.001 - 60 secs)")
