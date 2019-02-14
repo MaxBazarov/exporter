@@ -14,6 +14,14 @@ function enableTypeRelated(){
         Constants.ARTBOARD_TYPE_OVERLAY ==selectedIndex
     )    
 
+    dialog.enableControlByID('enableAutoScroll',
+        Constants.ARTBOARD_TYPE_REGULAR == selectedIndex || Constants.ARTBOARD_TYPE_MODAL == selectedIndex
+    )
+
+    dialog.enableControlByID('transNextSecs',
+        Constants.ARTBOARD_TYPE_EXTERNAL_URL != selectedIndex
+    )
+    
 }
 
 var onRun = function (context) {
@@ -64,27 +72,22 @@ var onRun = function (context) {
     }
 
     //
-    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 300, 280), "Save", "Configure exporting options for the selected artboard. ")
+    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 330, 340), "Save", "Configure exporting options for the selected artboard. ")
 
-    typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,["Regular page","Modal Dialog","External URL Page","Overlay"],250)
+    const typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,["Regular page","Modal Dialog","External URL Page","Overlay"],250)
     typeControl.setCOSJSTargetFunction(enableTypeRelated)
 
-    dialog.addCheckbox("enableShadow", "Show modal dialog or overlay shadow", enableShadow)
+    const enableShadowControl = dialog.addCheckbox("enableShadow", "Show modal dialog or overlay shadow", enableShadow)
     dialog.addHint("enableShadowHint","Dim a previous artboard to set visual focus on an modal.")
     
-    dialog.addComboBox("overlayByEvent","Show Overlay On", overlayByEvent,["Click","Mouse Over"],250)
-    dialog.addHint("overlayByEventHint","Setup how links to this overlay will be executed")
-    
+    const overlayByEventControl = dialog.addComboBox("overlayByEvent","Show Overlay On", overlayByEvent,["Click","Mouse Over"],250)
+    dialog.addHint("overlayByEventHint","Setup how links to this overlay will be executed") 
 
-    dialog.addSpace()
+    const enableAutoScrollControl = dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
+    dialog.addHint("enableAutoScrollHint","The artboard will be scrolled on top after showing")
 
-    dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
-    dialog.addHint("","The artboard will be scrolled on top after showing")
-
-    dialog.addSpace()
-
-    dialog.addTextInput("transNextSecs", "Delay for autotranstion to next screen (Secs)", transNextSecs, '', 60)
-    dialog.addHint("","Go to the next page auto the delay (0.001 - 60 secs)")
+    const transNextSecsControl = dialog.addTextInput("transNextSecs", "Delay for autotranstion to next screen (Secs)", transNextSecs, '', 60)
+    dialog.addHint("transNextSecsHint","Go to the next page auto the delay (0.001 - 60 secs)")
 
     enableTypeRelated()
     //
@@ -94,8 +97,8 @@ var onRun = function (context) {
 
         // OK clicked
         // read data
-        transNextSecs = dialog.views['transNextSecs'].stringValue() + ""
-        artboardType =  dialog.views['artboardType'].indexOfSelectedItem()
+        transNextSecs = transNextSecsControl.stringValue() + ""
+        artboardType =  typeControl.indexOfSelectedItem()
  
         // check data        
         if (transNextSecs != '' && isNaN(parseFloat(transNextSecs))) {
@@ -105,12 +108,14 @@ var onRun = function (context) {
         // save data
 
         Settings.setLayerSettingForKey(artboard,SettingKeys.ARTBOARD_TYPE, artboardType)    
-        if(Constants.ARTBOARD_TYPE_OVERLAY == artboardType)
-            Settings.setLayerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_BY_EVENT, dialog.views['overlayByEvent'].indexOfSelectedItem())    
-        if(Constants.ARTBOARD_TYPE_OVERLAY == artboardType || Constants.ARTBOARD_TYPE_MODAL == artboardType)
-            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_SHADOW, dialog.views['enableShadow'].state() == 1)
-        Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, dialog.views['enableAutoScroll'].state() != 1)
-        Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS, transNextSecs)
+        if(overlayByEventControl.isEnabled)
+            Settings.setLayerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_BY_EVENT, overlayByEventControl.indexOfSelectedItem())    
+        if(enableShadowControl.isEnabled) 
+            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_SHADOW, enableShadowControl.state() == 1)
+        if(enableAutoScrollControl.isEnabled)
+            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, enableAutoScrollControl.state() != 1)
+        if(transNextSecsControl.isEnabled)
+            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS, transNextSecs)
 
         break
 

@@ -27,7 +27,7 @@ class UIAbstractWindow {
 
   enableControlByID(id,enabled){
     var control = dialog.views[id]
-    control.enabled = enabled
+    control.enabled = enabled    
 
     this.enableTextByID(id+'Hint',enabled)
     this.enableTextByID(id+'Label',enabled)   
