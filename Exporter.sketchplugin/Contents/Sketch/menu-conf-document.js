@@ -31,14 +31,13 @@ var onRun = function(context) {
   const sortOptions = Constants.SORT_RULE_OPTIONS.slice()
   sortOptions.splice(0,0,"(Use plugin settings)")
   dialog.addComboBox("customSortRule","Artboards Sort Order", customSortRule,sortOptions,250)
-  dialog.addHint("Specify how artboards will sorted in HTML story.")
+  dialog.addHint("","Specify how artboards will sorted in HTML story.")
   
   dialog.addTextInput("backColor","Custom Background Color", backColor,'e.g. #FFFFFF')
-
-  dialog.addHint("Default color is "+Constants.DEF_BACK_COLOR,20)
+  dialog.addHint("","Default color is "+Constants.DEF_BACK_COLOR,20)
 
   dialog.addCheckbox("disableFixed","Disable Fixed Layers", disableFixed)
-  dialog.addHint("Fixed layers will be rendered as regular parts of an artboard.",30)
+  dialog.addHint("","Fixed layers will be rendered as regular parts of an artboard.",30)
 
   //
   if(dialog.run()){

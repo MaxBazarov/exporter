@@ -24,6 +24,8 @@ var Constants = {
   ARTBOARD_TYPE_MODAL: 1,
   ARTBOARD_TYPE_EXTERNAL_URL: 2,
   ARTBOARD_TYPE_OVERLAY: 3,
+  ARTBOARD_OVERLAY_BY_EVENT_CLICK: 0,
+  ARTBOARD_OVERLAY_BY_EVENT_MOUSEOVER: 1,
   LAYER_OVERLAY_DEFAULT: 0,
   LAYER_OVERLAY_TRANSP_TOP: 1,
   LAYER_OVERLAY_TRANSP_LEFT: 2,
@@ -56,9 +58,12 @@ var SettingKeys = {
   ARTBOARD_TYPE: "artboardType",
 
   LEGACY_ARTBOARD_MODAL: "artboardOverlay", //legacy, replaced by ARTBOARD_TYPE
-  ARTBOARD_MODAL_SHADOW: "artboardOverlayShadow",
+  LEGACY_ARTBOARD_MODAL_SHADOW: "artboardOverlayShadow", // replaced by  ARTBOARD_SHADOW, Outdated on 14 Frev 2018
+
+  ARTBOARD_SHADOW: "artboardShadow",
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
   ARTBOARD_TRANS_TO_NEXT_SECS: "artboardTransNextSecs",
+  ARTBOARD_OVERLAY_BY_EVENT: "artboardOverlayByEvent",
   
   DOC_EXPORTING_URL: "docExportingURL", // legacy, replaced by PLUGIN_EXPORTING_URL
   DOC_PUBLISH_COMPRESS: "docPublishCompress",

@@ -36,7 +36,7 @@ var onRun = function (context) {
     dialog.addComboBox("overlayType","Overlay Mode", overlayType,["Default (using \"Fix position\" setting)","Trasparent overlay with fixed position (TOP)","Trasparent overlay with fixed position (LEFT)","Standalone DIV inside a page"],300)
 
     dialog.addTextInput("layerDivID", "Layer <div> ID", layerDivID, 'MyLayer1')
-    dialog.addHint("This layer will be presented by standalone <div> with specified ID")
+    dialog.addHint("","This layer will be presented by standalone <div> with specified ID")
 
     dialog.addSpace()
 

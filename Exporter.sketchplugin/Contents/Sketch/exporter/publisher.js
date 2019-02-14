@@ -133,19 +133,19 @@ class Publisher {
 		const dialog = new UIDialog("Publish HTML",NSMakeRect(0, 0, 400, 340),"Publish","Generated HTML will be uploaded to external site by SFTP.")
 		
 		dialog.addTextInput("version","Version", ver,'1')  	  	
-		dialog.addHint("Exporter will publish two HTML sets - live and <version>")
+		dialog.addHint("versionHint","Exporter will publish two HTML sets - live and <version>")
 
 		dialog.addTextInput("remoteFolder","Remote Site Folder", remoteFolder,'myprojects/project1',350)  
-		dialog.addHint("Relative path on server")
+		dialog.addHint("remoteFolderHint","Relative path on server")
 
 		dialog.addCheckbox("doCompress","Compress Images", doCompress)
-  		dialog.addHint("Compress PNG imaged before publishing (see Plugin Settings)")
+  		dialog.addHint("doCompressHint","Compress PNG imaged before publishing (see Plugin Settings)")
 
 		dialog.addTextInput("login","SFTP Login", login,'html@mysite.com:/var/www/html/',350)  
-		dialog.addHint("SSH key should be uploaded to the site already")
+		dialog.addHint("loginHint","SSH key should be uploaded to the site already")
 
 		dialog.addTextInput("siteRoot","Site Root URL (Optional)", siteRoot,'http://mysite.com',350)  
-		dialog.addHint("Specify to open uploaded HTML in web browser automatically")
+		dialog.addHint("siteRootHint","Specify to open uploaded HTML in web browser automatically")
 
 		
 	  

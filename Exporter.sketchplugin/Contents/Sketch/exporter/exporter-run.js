@@ -34,7 +34,7 @@ function panelSwitchFinished(){
 function exportHTML(currentPath,doc,exportOptions,context){  
   let panel = new UIPanel("Exporting to HTML")
   exportInfo.panel = panel 
-  panel.addLabel("Please wait...") 
+  panel.addLabel("","Please wait...") 
   panel.show() 
   
   new Exporter(currentPath, doc, doc.currentPage(), exportOptions, context);

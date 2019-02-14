@@ -35,10 +35,10 @@ var onRun = function(context) {
   const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 380),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
-  dialog.addHint("Specify how artboard will be aligned in browser page")
+  dialog.addHint("","Specify how artboard will be aligned in browser page")
 
   dialog.addComboBox("sortRule","Artboards Sort Order", sortRule,Constants.SORT_RULE_OPTIONS,250)
-  dialog.addHint("Specify how artboards will sorted in HTML story.")
+  dialog.addHint("","Specify how artboards will sorted in HTML story.")
 
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)

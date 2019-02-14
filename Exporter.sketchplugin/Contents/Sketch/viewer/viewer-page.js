@@ -214,7 +214,18 @@ class ViewerPage {
                 target: link.target
             })
 
-            var func = function(){
+
+            var eventType = 0 // click
+
+            if('page' in link){
+                var newPageIndex = viewer.getPageIndex(parseInt(link.page))
+                var newPage = story.pages[newPageIndex];
+                if('overlay'==newPage.type){
+                    eventType = newPage.overlayByEvent
+                }
+            }
+
+            var func = function(event){
                 var link_url = $( this ).attr("link_url")
                 var link_page = $( this ).attr("link_page")
                 var link_action = $( this ).attr("link_action")
@@ -248,7 +259,13 @@ class ViewerPage {
                 }
                 return false
             }
-            a.click(func)
+            if(1==eventType){
+                a.mouseenter(func)
+                a.mouseleave(func)
+            }else{
+                a.click(func)
+            }
+            
             a.appendTo(linksDiv)
 
             link.a = a

@@ -14,6 +14,26 @@ class UIAbstractWindow {
     this.rect = intRect
   }
 
+  enableTextByID(id,enabled){
+    if(!(id in dialog.views)) return
+
+    var text = dialog.views[id]
+    if(!enabled)
+        text.textColor = NSColor.disabledControlTextColor()
+    else
+        text.textColor = NSColor.controlTextColor()
+  
+  }
+
+  enableControlByID(id,enabled){
+    var control = dialog.views[id]
+    control.enabled = enabled
+
+    this.enableTextByID(id+'Hint',enabled)
+    this.enableTextByID(id+'Label',enabled)   
+      
+  }
+
   getNewFrame(height = 25,width=-1,yinc=-1){
     var frame = NSMakeRect(0, this.y - height, width==-1?NSWidth(this.rect)-10:width,height)
     this.y-=height+(yinc>=0?yinc:10)
@@ -24,7 +44,7 @@ class UIAbstractWindow {
       this.getNewFrame(0)
   }
 
-  addLabel(text,height = 25) {    
+  addLabel(id,text,height = 25) {    
     const label = NSTextField.alloc().initWithFrame(this.getNewFrame(height));
     label.setStringValue(text);   
     label.setBezeled(false);
@@ -32,6 +52,8 @@ class UIAbstractWindow {
     label.setEditable(false);
     label.setSelectable(false);
     
+    if(''!=id) this.views[id] = label
+
     this.container.addSubview(label)
     this.y+=5
     return label
@@ -52,7 +74,7 @@ class UIAbstractWindow {
   }
 
   addTextBox(id,label,textValue,inlineHint="",height = 120){
-    if(label!='') this.addLabel(label,17)    
+    if(label!='') this.addLabel(id+"Label",label,17)    
 
     const textBox = NSTextField.alloc().initWithFrame(this.getNewFrame(height))
     textBox.setEditable(true)
@@ -69,7 +91,7 @@ class UIAbstractWindow {
   }
 
   addTextInput(id,label,textValue,inlineHint="", width=220){
-    if(label!='') this.addLabel(label,17)    
+    if(label!='') this.addLabel(id+"Label",label,17)    
 
     const input = NSTextField.alloc().initWithFrame(this.getNewFrame(20,width))
     input.setEditable(true)
@@ -87,7 +109,7 @@ class UIAbstractWindow {
 
 
   addComboBox(id,label,selectItem, options, width=100){
-    if(label!='') this.addLabel(label,15)
+    if(label!='') this.addLabel(id+"Label",label,15)
 
     const v = NSPopUpButton.alloc().initWithFrame(this.getNewFrame(23,width));    
     v.addItemsWithTitles(options)
@@ -100,7 +122,7 @@ class UIAbstractWindow {
 
 
   addRadioButtons(id,label,selectItem, options, width=100){
-    if(label!='') this.addLabel(label,15)
+    if(label!='') this.addLabel(id+"Label",label,15)
     
     // pre-select the first item
     if(selectItem<0) selectItem = 0
@@ -146,7 +168,7 @@ class UIAbstractWindow {
 
   }
 
-  addHint(label,height = 30){
+  addHint(id,label,height = 30){
     this.y += 3
 
     const hint = NSTextField.alloc().initWithFrame(this.getNewFrame(height,-1,3));
@@ -159,6 +181,7 @@ class UIAbstractWindow {
     hint.setFont(NSFont.systemFontOfSize(10))
 
     this.container.addSubview(hint)    
+    if(''!=id) this.views[id] = hint
     return hint
   }
 

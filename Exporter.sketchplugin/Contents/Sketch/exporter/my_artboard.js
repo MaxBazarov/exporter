@@ -59,14 +59,33 @@ class MyArtboard extends MyLayer {
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_EXTERNAL_LINK)
         if(this.externalArtboardURL!=undefined && ''==this.externalArtboardURL) 
             this.externalArtboardURL = undefined
-        this.isModalShadow =
-            this.isModal && exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_MODAL_SHADOW) == 1
+        
+        this.showShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_SHADOW)
+        log('1='+ this.showShadow )
+        if(undefined!=this.showShadow)
+            this.showShadow = this.showShadow == 1
+        else{
+            const legacyShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LEGACY_ARTBOARD_MODAL_SHADOW)
+            if(undefined!=legacyShadow &&  Constants.ARTBOARD_TYPE_MODAL == this.artboardType){
+                this.showShadow = legacyShadow
+                log('2='+ this.showShadow )
+            }else{
+                this.showShadow = true
+                log('3='+ this.showShadow )
+            }
+        }
+
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
         this.transNextSecs = 
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS)
         if(undefined != this.transNextSecs && '' == this.transNextSecs)
             this.transNextSecs = undefined
+
+        this.overlayByEvent = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_BY_EVENT)
+        if (this.overlayByEvent == undefined || this.overlayByEvent == "") {
+            this.overlayByEvent = 0
+        }
         
     }
 
@@ -125,16 +144,19 @@ class MyArtboard extends MyLayer {
 
         if (this.isModal) {
             js += "'type': 'modal',\n";
-            js += "'modalShadow': " + (this.isModalShadow ? 1 : 0) + ",\n";
+            js += "'showShadow': " + (this.showShadow ? 1 : 0) + ",\n";
         } else if (this.externalArtboardURL!=undefined && this.externalArtboardURL!=''){
             js += "'type': 'external',\n";
         } else if (Constants.ARTBOARD_TYPE_OVERLAY == this.artboardType){
             js += "'type': 'overlay',\n";
             // try to find a shadow
-            const shadowStr = this._getOverlayShadow()
-            if(shadowStr!=""){
-                js += "'overlayShadow':'"+shadowStr+"',\n"
+            if(this.showShadow){
+                const shadowStr = this._getOverlayShadow()
+                if(shadowStr!=""){
+                    js += "'overlayShadow':'"+shadowStr+"',\n"
+                }
             }
+            js += "'overlayByEvent': "+this.overlayByEvent+",\n";
         } else {
             js += "'type': 'regular',\n";
         }

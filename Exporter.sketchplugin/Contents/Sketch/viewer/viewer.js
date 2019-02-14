@@ -379,11 +379,11 @@ function createViewer(story, files) {
 			
 			if(page.type!="modal") return;
 
-			var isModalShadow = page.modalShadow==1;	
+			var showShadow = page.showShadow==1;	
 			var contentModal = $('#content-modal');		
 			var contentShadow = $('#content-shadow');				
 			
-			if(isModalShadow){				
+			if(showShadow){				
 				contentShadow.removeClass('no-shadow');
 				contentShadow.addClass('shadow');
 				contentShadow.removeClass('hidden');
