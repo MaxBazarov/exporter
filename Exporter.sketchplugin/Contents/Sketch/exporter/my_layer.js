@@ -126,21 +126,28 @@ class MyLayer {
                 
     }
 
-    getShadowAsStyleStr(){
+    getShadowAsStyle(){
         if(this.slayer.style==undefined ||  this.slayer.style.shadows==undefined || this.slayer.style.length==0) return ""
 
-        let shadowsStyle=""
+        let shadowInfo = undefined
         for(var shadow of this.slayer.style.shadows){
             if(!shadow.enabled) continue
+            let shadowsStyle=""
+
             if(shadowsStyle!="") shadowsStyle+=","
             shadowsStyle += shadow.x + "px "
             shadowsStyle += shadow.y + "px "
             shadowsStyle += shadow.blur + "px "
             shadowsStyle += shadow.spread + " "
             shadowsStyle += shadow.color + " "
+
+            shadowInfo = {
+                style:  shadowsStyle,
+                x:      shadow.x + shadow.blur
+            }
         }
 
-        return shadowsStyle
+        return shadowInfo
     }
 
 

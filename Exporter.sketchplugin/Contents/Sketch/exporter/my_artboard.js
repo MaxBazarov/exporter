@@ -61,17 +61,14 @@ class MyArtboard extends MyLayer {
             this.externalArtboardURL = undefined
         
         this.showShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_SHADOW)
-        log('1='+ this.showShadow )
         if(undefined!=this.showShadow)
             this.showShadow = this.showShadow == 1
         else{
             const legacyShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LEGACY_ARTBOARD_MODAL_SHADOW)
             if(undefined!=legacyShadow &&  Constants.ARTBOARD_TYPE_MODAL == this.artboardType){
                 this.showShadow = legacyShadow
-                log('2='+ this.showShadow )
             }else{
                 this.showShadow = true
-                log('3='+ this.showShadow )
             }
         }
 
@@ -151,9 +148,10 @@ class MyArtboard extends MyLayer {
             js += "'type': 'overlay',\n";
             // try to find a shadow
             if(this.showShadow){
-                const shadowStr = this._getOverlayShadow()
-                if(shadowStr!=""){
-                    js += "'overlayShadow':'"+shadowStr+"',\n"
+                const shadowInfo = this._getOverlayShadow()
+                if(shadowInfo!=undefined){
+                    js += "'overlayShadow':'"+shadowInfo.style+"',\n"
+                    js += "'overlayShadowX':"+shadowInfo.x+",\n"
                 }
             }
             js += "'overlayByEvent': "+this.overlayByEvent+",\n";
@@ -179,17 +177,17 @@ class MyArtboard extends MyLayer {
     }   
 
     _findLayersShadow(layers){
-        let shadowsStyle  = ""
+        let shadowsStyle  = undefined
         for(var l of layers){            
             shadowsStyle = this._findLayerShadow(l)
-            if(shadowsStyle!=='') return shadowsStyle
+            if(shadowsStyle!==undefined) return shadowsStyle
         }
-        return ""
+        return undefined
     }
 
     _findLayerShadow(l){
-        let shadowsStyle = l.getShadowAsStyleStr()
-        if(shadowsStyle!=='') return shadowsStyle
+        let shadowsStyle = l.getShadowAsStyle()
+        if(shadowsStyle!==undefined) return shadowsStyle
 
         return this._findLayersShadow(l.childs)
     }
@@ -220,7 +218,8 @@ class MyArtboard extends MyLayer {
                 }
                 foundPanels[type] = l
 
-                const fileNamePostfix = !(l.isFloat||l.isFixedDiv)?"":('-'+l.fixedIndex)                
+                const fileNamePostfix = !(l.isFloat||l.isFixedDiv)?"":('-'+l.fixedIndex)            
+                               
 
                 const rec = {
                     constrains:l.constrains,
@@ -240,9 +239,11 @@ class MyArtboard extends MyLayer {
                     rec.image2x = Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix +'@2x.png', false)
                 
                 // setup shadow
-                let shadowsStyle = l.getShadowAsStyleStr()
-                if(shadowsStyle!="")
-                    rec.shadow = shadowsStyle                  
+                let shadowsStyle = l.getShadowAsStyle()
+                if(shadowsStyle!=undefined){
+                    rec.shadow = shadowsStyle.style        
+                    rec.shadowX = shadowsStyle.x
+                }
                 recs.push(rec)
             }
         }

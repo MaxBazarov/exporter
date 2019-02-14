@@ -242,9 +242,14 @@ class ViewerPage {
                     var newPage = story.pages[newPageIndex];
 
                     if('overlay'==newPage.type){
-                        var linkPosX = $( this ).attr("linkPosX")
-                        var linkPosY = $( this ).attr("linkPosY")        
-                        var linkIndex = $( this ).attr("linkIndex")                        
+                        var linkPosX = parseInt($( this ).attr("linkPosX"))
+                        var linkPosY = parseInt($( this ).attr("linkPosY"))
+                        var linkIndex = $( this ).attr("linkIndex")
+
+                        const fullWidth = newPage.width+5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                        if( (linkPosX+fullWidth)>currentPage.width )
+                            linkPosX = currentPage.width - fullWidth
+
                         newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY)
                     }else{
                         viewer.goTo(parseInt(link_page))
