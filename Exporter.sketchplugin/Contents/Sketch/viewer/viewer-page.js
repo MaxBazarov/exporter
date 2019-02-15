@@ -210,6 +210,7 @@ class ViewerPage {
                 link_page: link.page ,    
                 link_action: link.action ,    
                 linkPosX:  link.rect.x,
+                linkWidth: link.rect.width,
                 linkPosY:  link.rect.y+link.rect.height,
                 target: link.target
             })
@@ -229,6 +230,7 @@ class ViewerPage {
                 var link_url = $( this ).attr("link_url")
                 var link_page = $( this ).attr("link_page")
                 var link_action = $( this ).attr("link_action")
+        
 
                 if('overlay'==$(this).attr("pageType")){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
@@ -246,10 +248,24 @@ class ViewerPage {
                         var linkPosY = parseInt($( this ).attr("linkPosY"))
                         var linkIndex = $( this ).attr("linkIndex")
 
+                        if(1==newPage.overlayAlign){
+                            // align on center
+                            var linkWidth = $( this ).attr("linkWidth")
+                            linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
+                        }else if(2==newPage.overlayAlign){
+                            // align on right
+                            var linkWidth = parseInt($( this ).attr("linkWidth"))
+                            linkPosX = linkPosX + linkWidth  - newPage.width
+                        }
+                        // check page right side
                         const fullWidth = newPage.width+5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                         if( (linkPosX+fullWidth)>currentPage.width )
                             linkPosX = currentPage.width - fullWidth
 
+                        if(linkPosX < (5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
+                            linkPosX = 5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                        }
+                                
                         newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY)
                     }else{
                         viewer.goTo(parseInt(link_page))

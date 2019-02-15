@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.4.0 (15 Feb 2019)
+- New ability to show overlay on mouse over [Example]()
+- New ability to align overlay on left, center or right side of source link
+
 ##  Version 5.3.2 (7 Feb 2019)
 - Changed way to open HTML in browser
 

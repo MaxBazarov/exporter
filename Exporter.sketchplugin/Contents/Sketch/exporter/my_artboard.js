@@ -80,9 +80,10 @@ class MyArtboard extends MyLayer {
             this.transNextSecs = undefined
 
         this.overlayByEvent = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_BY_EVENT)
-        if (this.overlayByEvent == undefined || this.overlayByEvent == "") {
-            this.overlayByEvent = 0
-        }
+        if (this.overlayByEvent == undefined || this.overlayByEvent == "") this.overlayByEvent = 0
+
+        this.overlayAlign = exporter.Settings.layerSettingForKey(this.slayer,SettingKeys.ARTBOARD_OVERLAY_ALIGN)
+        if (this.overlayAlign == undefined || this.overlayAlign == "") this.overlayAlign = 0
         
     }
 
@@ -155,6 +156,7 @@ class MyArtboard extends MyLayer {
                 }
             }
             js += "'overlayByEvent': "+this.overlayByEvent+",\n";
+            js += "'overlayAlign': "+this.overlayAlign+",\n";
         } else {
             js += "'type': 'regular',\n";
         }
