@@ -102,14 +102,7 @@ function runExporter(context,exportOptions=null) {
   if(!isCmdExportToHTML){
     const dialog = new UIDialog("Export to HTML",NSMakeRect(0, 0, 500, 130),"Export")
 
-    dialog.addTextInput("path","Destination Folder",currentPath,'e.g. ~/HTML',450)  
-    dialog.addButton("select","Select Folder",function(){
-      const newPath = Utils.askPath(currentPath)
-      if (newPath != null) {
-        dialog.views['path'].setStringValue(newPath)
-      }
-      return
-    })
+    dialog.addPathInput("path","Destination Folder","Select Folder",currentPath,'e.g. ~/HTML',450)   
     dialog.addCheckbox("open","Open generated HTML in browser", !dontOpen)
 
 

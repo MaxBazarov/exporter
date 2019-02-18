@@ -71,6 +71,10 @@ class Utils {
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
   }
 
+  static copyCGRect(rect){
+    return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
+  }
+
   // rect: GRect instnct
   static copyRectToRectangle(rect){
     return new Rectangle(rect.x(),rect.y(),rect.width(),rect.height())

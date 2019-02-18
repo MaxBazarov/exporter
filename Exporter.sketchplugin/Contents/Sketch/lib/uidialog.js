@@ -90,10 +90,10 @@ class UIAbstractWindow {
     return textBox  
   }
 
-  addTextInput(id,label,textValue,inlineHint="", width=220){
+  addTextInput(id,label,textValue,inlineHint="", width=220,frame=undefined){
     if(label!='') this.addLabel(id+"Label",label,17)    
 
-    const input = NSTextField.alloc().initWithFrame(this.getNewFrame(20,width))
+    const input = NSTextField.alloc().initWithFrame(frame?frame:this.getNewFrame(20,width))
     input.setEditable(true)
     input.setBordered(true)
     input.setStringValue(textValue)
@@ -106,6 +106,27 @@ class UIAbstractWindow {
 
     return input  
   }
+
+
+  addPathInput(id,label,labelSelect,textValue,inlineHint="", width=220,widthSelect=50){
+    if(label!='') this.addLabel(id+"Label",label,17)    
+
+    const frame = this.getNewFrame(20,width-widthSelect-5)
+    const frame2 = Utils.copyRect(frame)
+    frame2.origin.x = frame2.origin.x + width-widthSelect
+    frame2.origin.y -= 8
+
+    const input = this.addTextInput(id,"",textValue,inlineHint,0,frame) 
+
+    this.addButton(id+"Select",labelSelect,function(){
+        const newPath = Utils.askPath(input.stringValue()+"")
+        if (newPath != null) {
+            input.setStringValue(newPath)
+        }
+        return 
+    },0,frame2)
+    return input
+   }
 
 
   addComboBox(id,label,selectItem, options, width=100){
@@ -154,9 +175,9 @@ class UIAbstractWindow {
     return group
   } 
 
-  addButton(id,label,func,width=100){
+  addButton(id,label,func,width=100,frame=undefined){
       // create OK button
-    var btn = NSButton.alloc().initWithFrame(this.getNewFrame(20,width)); 
+    var btn = NSButton.alloc().initWithFrame(frame?frame:this.getNewFrame(20,width)); 
     btn.setTitle(label)
     btn.setBezelStyle(NSRoundedBezelStyle)
     btn.sizeToFit()
