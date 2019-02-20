@@ -320,7 +320,7 @@ class MyArtboard extends MyLayer {
         slice.scale = scale;
         slice.saveForWeb = false;
         slice.format = "png";
-        exporter.context.document.saveArtboardOrSlice_toFile(slice, imagePath);
+        exporter.ndoc.saveArtboardOrSlice_toFile(slice, imagePath);
     }
 
     // new experimental code to export images

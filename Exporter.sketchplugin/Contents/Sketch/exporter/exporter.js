@@ -22,18 +22,18 @@ function replacer(key, value) {
 
 class Exporter {
 
-  constructor(selectedPath, doc, page, exportOptions,context) {       
+  constructor(selectedPath, ndoc, page, exportOptions,context) {       
     this.Settings = require('sketch/settings');
     this.Sketch = require('sketch/dom');
-    this.Doc = this.Sketch.fromNative(doc);
-    this.doc = doc;
+    this.ndoc = ndoc
+    this.doc = this.Sketch.fromNative(ndoc)
     this.page = page;
     this.context = context;
 
     this.myLayers = []
 
-    // workaround for Sketch 52
-    this.docName = this._clearCloudName(this.context.document.cloudName())
+    // workaround for Sketch 52s
+    this.docName = this._clearCloudName(this.ndoc.cloudName())
     let posSketch =  this.docName.indexOf(".sketch")
     if(posSketch>0){
       this.docName = this.docName.slice(0,posSketch)
@@ -246,8 +246,8 @@ class Exporter {
 
     const artboardGroups = [];
 
-    if(this.exportOptions==null){
-      this.doc.pages().forEach(function(page){
+    if(null==this.exportOptions || !('mode' in this.exportOptions)){
+      this.ndoc.pages().forEach(function(page){
         // skip marked by '*'
         log('name='+page.name())
         if(page.name().indexOf("*")==0){
@@ -300,7 +300,7 @@ class Exporter {
   buildSymbolDict() {
     var symDict = []
 
-    for(var symbol of this.Doc.getSymbols()){
+    for(var symbol of this.doc.getSymbols()){
       const sid = symbol.symbolId
       const skSymbol = symbol.sketchObject      
       if( sid in symDict) continue
@@ -334,7 +334,7 @@ class Exporter {
 
   buildPreviews(){
     log(" buildPreviews: running...")
-    const pub = new Publisher(this.context,this.context.document);    
+    const pub = new Publisher(this.context,this.ndoc);    
     pub.copyScript("resize.sh")
     const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
     log(" buildPreviews: done!")
