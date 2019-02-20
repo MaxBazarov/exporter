@@ -1,5 +1,3 @@
-### Handle fixed layer inside a fixed layer case correctly (probably just ignore nested fixed layers)
-
 ### Add page transition effects
 
 ### Auto transition to other artboard after delay
@@ -10,8 +8,6 @@ New artboard setting:
 ### Open HTML in special window with webpage inside (not in a standalone browser)
 
 ### Add check for Sketch-compatible version
-
-### On-hover page changing
 
 ### Mass-operation for artboards and layers
 Example: Setup Auto-transition for many artboard at once
