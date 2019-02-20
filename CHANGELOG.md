@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.5.0 (20 Feb 2019)
+- Click outside hotspots highlights all hotspots for a short time
+- Improved Path selector UI
+
 ##  Version 5.4.0 (15 Feb 2019)
 - New ability to show overlay on mouse over [Example](https://github.com/MaxBazarov/exporter/tree/master/tests/OverlayOnMouseOver)
 - New ability to align overlay on left, center or right side of source link

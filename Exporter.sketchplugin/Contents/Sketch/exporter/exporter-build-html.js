@@ -57,7 +57,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   <!--/load indicator-->
   `;
   s += ' <div id="container">\n';
-  s += ' <div id="content">\n';
+  s += ' <div id="content" onclick="viewer.blinkHotspots()">\n';
   s += ' </div>\n'; 
   s += ' <div id="content-shadow" class="hidden"></div>\n';
   s += ' <div id="content-modal" class="contentModal hidden"></div>\n';

@@ -68,6 +68,10 @@ function reloadAllPageImages(){
     preloadAllPageImages()
 }
 
+function doBlinkHotspots(){
+    viewer.toggleLinks()
+}
+
 // ============================ VIEWER ====================================
 
 function createViewer(story, files) {
@@ -140,7 +144,13 @@ function createViewer(story, files) {
 					return false
 				}	
 			})						
-		},
+        },
+        
+        blinkHotspots: function(){
+            this.toggleLinks()
+            setTimeout(doBlinkHotspots,500)
+        },
+
 		getPageHash: function(index) {
 			var image = story.pages[index].image;
 			return image.substring(0, image.length - 4); // strip .png suffix
@@ -278,15 +288,13 @@ function createViewer(story, files) {
 				active: true
 			})
 			// set timer in milisecs
-			console.log("ADD NEW transition")
 			setTimeout(doTransNext,msecs)
 		},
 		// Deactivate all waiting transitions
 		_resetTransQueue: function(){	
 			for(var trans of this.transQueue){
                 trans.active = false	
-                console.log("RESET transition")
-			}			
+            }			
 		},
 		refresh_update_navbar: function(pageIndex) {
 			var page = story.pages[pageIndex];
