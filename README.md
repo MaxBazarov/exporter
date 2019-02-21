@@ -22,6 +22,9 @@ Publisher features:
 - Compressing pages using [pngquant](https://pngquant.org) tool
 - Publishing to external site by SFTP
 
+Run from command line:
+- Export HTML [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
+
 [Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
 
 Please send your feedback and requests to max@bazarov.ru

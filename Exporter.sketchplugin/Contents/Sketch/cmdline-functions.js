@@ -5,13 +5,12 @@
 osascript -e 'quit app "Sketch"'
 */
 
-var onRun = function(context) {  
+var cmdSyncLibs = function(context) {  
 
     let Document = require('sketch/dom').Document
     const Dom = require('sketch/dom')
     
     let path = context.file+""
-    log('path:'+path)
     
     if(""==path){
         log("context.file is not specified\n")
@@ -20,20 +19,44 @@ var onRun = function(context) {
     
     var document = new Document()
     Document.open(path, (err, document) => {
-        if (err) {
+        if (err || !document) {
             log("ERROR: Can't open  "+path)
             return 
-        }
-        if(!document){
-            log("Canceled")
+        }    
+        //
+        document.getSymbols().forEach(master => master.syncWithLibrary())
+        //
+        document.save()
+        document.close()
+        
+    })
+   
+};
+
+
+var cmdExportHTML = function(context) {  
+
+    let Document = require('sketch/dom').Document
+    const Dom = require('sketch/dom')
+    
+    let path = context.file+""
+    
+    if(""==path){
+        log("context.file is not specified\n")
+        return
+    }
+    
+    var document = new Document()
+    Document.open(path, (err, document) => {
+        if (err || !document) {
+            log("ERROR: Can't open  "+path)
             return 
-        }
+        }    
         const runOptions={
             cmd:"exportHTML",
             fromCmd:true,        
             nDoc:document.sketchObject
-        }
-    
+        }    
         runExporter(context,runOptions)  
         document.close()
         

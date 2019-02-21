@@ -7,15 +7,21 @@
   "appcast": "https://raw.githubusercontent.com/MaxBazarov/exporter/master/appcast.xml",
   "compatibleVersion": 3,
   "bundleVersion": 1,
-  "version" : "5.5.0",
+  "version" : "5.6.0",
   "icon": "icon.png",
   "commands" : [   
     {
-      "script" : "cmd-export-html.js",
-      "handler" : "onRun",
+      "script" : "cmdline-functions.js",
+      "handler" : "cmdExportHTML",
       "name" : "Export to HTML from command line",
       "identifier" : "cmdExportHTML"
     },  
+    {
+        "script" : "cmdline-functions.js",
+        "handler" : "cmdSyncLibs",
+        "name" : "Sync document symbols with library",
+        "identifier" : "cmdSyncLibs"
+    },     
     {
       "script" : "menu-external-link.js",
       "handler" : "onRun",

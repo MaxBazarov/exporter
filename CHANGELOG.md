@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.6.0 (21 Feb 2019)
+- Added command line API for exporting into HTML [Description](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
+
 ##  Version 5.5.0 (20 Feb 2019)
 - Click outside hotspots highlights all hotspots for a short time
 - Improved Path selector UI
