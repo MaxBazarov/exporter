@@ -1,11 +1,12 @@
 @import "exporter/exporter-run.js"
 
 /*
-/Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool  --context='{"file":"/Users/baza/GitHub/exporter/tests/Links2.sketch"}' --new-instance=No run "/Users/baza/Library/Application Support/com.bohemiancoding.sketch3/Plugins/Exporter.sketchplugin" "cmdExportHTML"
+/Applications/Sketch.app/Contents/Resources/sketchtool/bin/sketchtool  --context='{"file":"/Users/baza/GitHub/exporter/tests/Links2.sketch"}' --new-instance=No run ~/Library/Application\ Support/com.bohemiancoding.sketch3/Plugins/Exporter.sketchplugin "cmdExportHTML"
 osascript -e 'quit app "Sketch"'
 */
 
 var onRun = function(context) {  
+
     let Document = require('sketch/dom').Document
     const Dom = require('sketch/dom')
     
@@ -34,7 +35,9 @@ var onRun = function(context) {
         }
     
         runExporter(context,runOptions)  
-      })
+        document.close()
+        
+    })
    
 };
 

@@ -151,7 +151,6 @@ class Exporter {
       }
     }
 
-    error = MOPointer.alloc().init();
     if (fileManager.fileExistsAtPath(targetPath)) {
       if (!fileManager.removeItemAtPath_error(targetPath, error)) {
         this.logError("prepareFilePath(): Can't remove old directory '"+targetPath+"'. Error: "+error.value().localizedDescription());
@@ -163,15 +162,17 @@ class Exporter {
 
 
   copyStatic(resFolder) {    
-    const fileManager = NSFileManager.defaultManager();
+    const fileManager = NSFileManager.defaultManager();    
     const targetPath = this.prepareFilePath(this._outputPath,resFolder);
     if(undefined==targetPath) return false
     
-    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path();
-    let error = MOPointer.alloc().init();
+    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder)
+    //const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path();        
+   
+    let error = MOPointer.alloc().init();    
     if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
       log(error.value().localizedDescription());
-      return this.logError("copyStatic(): Can't copy to directory '"+targetPath+"'. Error: "+error.value().localizedDescription());
+      return this.logError("copyStatic(): Can't copy '"+sourcePath+"' to directory '"+targetPath+"'. Error: "+error.value().localizedDescription());
     }
 
     return true
@@ -377,7 +378,7 @@ class Exporter {
   }
 
   exportArtboards() {        
-    log("exportArtboards: running...")
+    log("exportArtboards: running...")    
 
     // Collect artboards and prepare caches
     this.artboardGroups = this.getArtboardGroups(this.context);
@@ -388,6 +389,7 @@ class Exporter {
       const layerCollector  = new MyLayerCollector()
       layerCollector.collectArtboardsLayers(" ")
     }        
+
     // Resize layers and build links
     {
       const layerResizer  = new MyLayerResizer()
@@ -396,23 +398,27 @@ class Exporter {
 
     // Remove external URLs and other garbage
     this.filterArtboards()
+    
 
     // Copy static files
-    if(!this.copyStatic("resources")) return false
+    if(!this.copyStatic("resources")) return false    
     if(!this.copyStatic("viewer")) return false
+ 
 
     // Build main HTML file
     if(!this.createMainHTML()) return false
+    
 
     // Build Story.js with hotspots  
     this.generateJSStoryBegin();
     let index = 0;
 
+
     // Export every artboard into PNG image
     this.exportArtboardImagesAndDef()
-
+    
     if(!this.generateJSStoryEnd()) return false
-
+ 
     // Build image small previews for Gallery
     this.buildPreviews()
 

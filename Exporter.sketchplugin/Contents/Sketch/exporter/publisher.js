@@ -209,11 +209,13 @@ class Publisher {
 
 	    // delete old copy
 		Utils.deleteFile(targetPath)
-	    
-	    const sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).path()+"/"+scriptName
+                
+        let sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).URLByAppendingPathComponent(scriptName)
 		let error = MOPointer.alloc().init()
 	    
 	    if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
+            log("copyScript(): Can't copy '"+sourcePath+"' to '"+targetPath+"'. Error: "+error.value().localizedDescription());)
+
 			this.UI.alert('Can`t copy script', error.value().localizedDescription())
 			return false
 		 }
