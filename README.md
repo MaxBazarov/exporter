@@ -30,9 +30,12 @@ Run from command line:
 Please send your feedback and requests to max@bazarov.ru
 
 Commands:
+
 <img width="180" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Menu.png"/><img width="367" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Export-Dialog.png"/><img width="317" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true"/>
-Settings:
-<img width="317" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="282" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/>
+
+Settings: 
+
+<img width="317" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="282" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="267" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="25%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
 
 
 ## Installation
