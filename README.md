@@ -29,13 +29,14 @@ Run from command line:
 
 Please send your feedback and requests to max@bazarov.ru
 
+## Screenshots
 Commands:
 
-<img width="180" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Menu.png"/><img width="367" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Export-Dialog.png"/><img width="317" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true"/>
+<img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Menu.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Export-Dialog.png"/><img width="40%" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true"/>
 
 Settings: 
 
-<img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
+<img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
 
 
 ## Installation
