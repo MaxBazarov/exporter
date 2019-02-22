@@ -30,7 +30,7 @@ Run from command line:
 Please send your feedback and requests to max@bazarov.ru
 
 <img width="262" height="204" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Menu.png"/>
-<img width="293" scr="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Export-Dialog.png"/>
+<img width="293" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Export-Dialog.png"/>
 <img width="423" height="398" src="https://github.com/MaxBazarov/exporter/blob/master/tests/Pictures/Publish-Dialog.png?raw=true"/>
 
 
