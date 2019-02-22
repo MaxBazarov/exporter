@@ -23,7 +23,7 @@ Publisher features:
 - Publishing to external site by SFTP
 
 Run from command line:
-- Export HTML [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
+- Export HTML from command line / [Hint](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
 
 [Change Log](https://github.com/MaxBazarov/exporter/blob/master/CHANGELOG.md)
 
