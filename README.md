@@ -35,7 +35,7 @@ Commands:
 
 Settings: 
 
-<img width="317" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="282" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="267" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="25%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
+<img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="30%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
 
 
 ## Installation
