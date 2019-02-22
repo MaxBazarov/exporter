@@ -12,16 +12,10 @@
   "commands" : [   
     {
       "script" : "cmdline-functions.js",
-      "handler" : "cmdExportHTML",
-      "name" : "Export to HTML from command line",
-      "identifier" : "cmdExportHTML"
-    },  
-    {
-        "script" : "cmdline-functions.js",
-        "handler" : "cmdSyncLibs",
-        "name" : "Sync document symbols with library",
-        "identifier" : "cmdSyncLibs"
-    },     
+      "handler" : "cmdRun",
+      "name" : "Run from command line",
+      "identifier" : "cmdRun"
+    },   
     {
       "script" : "menu-external-link.js",
       "handler" : "onRun",

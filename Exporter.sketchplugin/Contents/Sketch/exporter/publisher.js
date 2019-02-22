@@ -24,10 +24,16 @@ class Publisher {
 	}	
 
 	publish(){
-		while(true){
-			if(!this.askOptions()) return false		
-			if(this.checkOptions()) break
-		}
+
+        this.readOptions()
+
+        // Show UI
+        if(!this.context.fromCmd){
+            while(true){
+                if(!this.askOptions()) return false		
+                if(this.checkOptions()) break
+            }
+        }
 
 		let version = this.ver
 		let destFolder = this.remoteFolder
@@ -35,8 +41,9 @@ class Publisher {
 		// copy publish script
 		if(!this.copyScript("publish.sh")){			
 			return false
-		}
-		// copy compress script
+        }        
+        
+        // copy compress script
 		if(this.doCompress){
 			if(this.compressToolPath==undefined || this.compressToolPath==''){
 				this.UI.alert('Error', "You need to setup a path to image compressing tool in plugin settings.")	
@@ -46,7 +53,9 @@ class Publisher {
 			if(!this.copyScript("compress.sh")){			
 				return false
 			}
-		}
+        }
+        
+        
 		
 		let docFolder =  this.doc.cloudName();
 		let posSketch =  docFolder.indexOf(".sketch")
@@ -65,23 +74,25 @@ class Publisher {
 		// run publish script
 		let commentsID = destFolder
 		commentsID = Utils.toFilename(commentsID)
-		const runResult = this.runPublishScript(version,this.allMockupsdDir,docFolder,destFolder,commentsID)
-		
-		if(runResult.result){
-			// open browser
-			if(this.siteRoot!=''){
-				const openURL = this.siteRoot + destFolder + "/"+version+"/index.html"
-				const openResult = Utils.runCommand('/usr/bin/open', [openURL])
-				
-				if(openResult.result){
-				}else{
-					UI.alert('Can not open HTML in browser', openResult.output)
-				}
-			}
-		}
+		const runResult = this.runPublishScript(version,this.allMockupsdDir,docFolder,destFolder,commentsID)				
 
-		// success
-		this.showMessage(runResult)		
+        if(!this.context.fromCmd){
+            // success
+            if(runResult.result){
+                // open browser
+                if(this.siteRoot!=''){
+                    const openURL = this.siteRoot + destFolder + "/"+version+"/index.html"
+                    const openResult = Utils.runCommand('/usr/bin/open', [openURL])
+                    
+                    if(openResult.result){
+                    }else{
+                        UI.alert('Can not open HTML in browser', openResult.output)
+                    }
+                }
+            }
+
+            this.showMessage(runResult)		
+        }
 		return true
 	}
 
@@ -112,39 +123,48 @@ class Publisher {
 			return false
 		}
 		return true
-	}
+    }
+    
+
+    readOptions(){
+        // read current version from document settings
+        let Settings = this.Settings
+        
+		this.ver =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION)
+        if(this.ver==undefined || this.ver==null) this.ver = '1'
+        
+		this.login =  Settings.settingForKey(SettingKeys.PLUGIN_PUBLISH_LOGIN)
+		if(this.login==undefined || this.login==null) this.login = ''
+        
+        this.siteRoot =  Settings.settingForKey(SettingKeys.PLUGIN_PUBLISH_SITEROOT)
+        if(this.siteRoot==undefined || this.siteRoot==null) this.siteRoot = ''
+        
+		this.remoteFolder =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER)
+        if(this.remoteFolder==undefined || this.remoteFolder==null) this.remoteFolder = ''	
+        
+		this.doCompress =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS)==1
+
+    }
 
 	askOptions(){
-		// read current version from document settings
-		let Settings = this.Settings
-		let ver =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION)
-		if(ver==undefined || ver==null) ver = '1'
-		let login =  Settings.settingForKey(SettingKeys.PLUGIN_PUBLISH_LOGIN)
-		if(login==undefined || login==null) login = ''
-		let siteRoot =  Settings.settingForKey(SettingKeys.PLUGIN_PUBLISH_SITEROOT)
-		if(siteRoot==undefined || siteRoot==null) siteRoot = ''
-		let remoteFolder =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER)
-		if(remoteFolder==undefined || remoteFolder==null) remoteFolder = ''		
-		let doCompress =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS)==1
-
-		
-
-		// show dialod
+        let Settings = this.Settings
+        
+        // show dialod        
 		const dialog = new UIDialog("Publish HTML",NSMakeRect(0, 0, 400, 340),"Publish","Generated HTML will be uploaded to external site by SFTP.")
 		
-		dialog.addTextInput("version","Version", ver,'1')  	  	
+		dialog.addTextInput("version","Version", this.ver,'1')  	  	
 		dialog.addHint("versionHint","Exporter will publish two HTML sets - live and <version>")
 
-		dialog.addTextInput("remoteFolder","Remote Site Folder", remoteFolder,'myprojects/project1',350)  
+		dialog.addTextInput("remoteFolder","Remote Site Folder", this.remoteFolder,'myprojects/project1',350)  
 		dialog.addHint("remoteFolderHint","Relative path on server")
 
-		dialog.addCheckbox("doCompress","Compress Images", doCompress)
+		dialog.addCheckbox("doCompress","Compress Images", this.doCompress)
   		dialog.addHint("doCompressHint","Compress PNG imaged before publishing (see Plugin Settings)")
 
-		dialog.addTextInput("login","SFTP Login", login,'html@mysite.com:/var/www/html/',350)  
+		dialog.addTextInput("login","SFTP Login", this.login,'html@mysite.com:/var/www/html/',350)  
 		dialog.addHint("loginHint","SSH key should be uploaded to the site already")
 
-		dialog.addTextInput("siteRoot","Site Root URL (Optional)", siteRoot,'http://mysite.com',350)  
+		dialog.addTextInput("siteRoot","Site Root URL (Optional)", this.siteRoot,'http://mysite.com',350)  
 		dialog.addHint("siteRootHint","Specify to open uploaded HTML in web browser automatically")
 
 		
@@ -162,9 +182,8 @@ class Publisher {
 			this.doCompress = dialog.views['doCompress'].state() == 1
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS,this.doCompress)    	
 
-
 			// save new version into document settings
-			ver =  dialog.views['version'].stringValue()+""
+			let ver =  dialog.views['version'].stringValue()+""
 			this.ver = parseInt(ver)+""
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION, (parseInt(ver)+1)+"")
 
@@ -208,7 +227,7 @@ class Publisher {
 	    const targetPath = scriptPath
 
 	    // delete old copy
-		Utils.deleteFile(targetPath)
+        Utils.deleteFile(targetPath)
                 
         let sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).URLByAppendingPathComponent(scriptName)
 		let error = MOPointer.alloc().init()
