@@ -79,7 +79,8 @@ var onRun = function (context) {
     //
     dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 330, 360), "Save", "Configure exporting options for the selected artboard. ")
 
-    const typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,["Regular page","Modal Dialog","External URL Page","Overlay"],250)
+    const types = ["Regular page","Modal Dialog","External URL Page","Overlay"]
+    const typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,types,250)
     typeControl.setCOSJSTargetFunction(enableTypeRelated)
 
     const enableShadowControl = dialog.addCheckbox("enableShadow", "Show modal dialog or overlay shadow", enableShadow)
@@ -88,7 +89,11 @@ var onRun = function (context) {
     const overlayByEventControl = dialog.addComboBox("overlayByEvent","Show Overlay On", overlayByEvent,["Click","Mouse Over"],250)
     dialog.addHint("overlayByEventHint","Setup how links to this overlay will be executed") 
 
-    const overlayAlignControl = dialog.addComboBox("overlayAlign","Align Overlay on", overlayAlign,["Left","Center","Right"],250)
+    const positions = [
+        "Hotspot left side","Hotspot center","Hotspot right side ",
+        "Top left","Top center","Top right","Center","Bottom left","Bottom center","Bottom right"
+    ]
+    const overlayAlignControl = dialog.addComboBox("overlayAlign","Overlay Position", overlayAlign,positions,250)
 
     const enableAutoScrollControl = dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
     dialog.addHint("enableAutoScrollHint","The artboard will be scrolled on top after showing")

@@ -73,6 +73,8 @@ class ViewerPage {
         var cssStyle = "height: "+this.height+"px; width: "+this.width+"px;"
         if(this.overlayShadow!=undefined)
             cssStyle+="box-shadow:"+this.overlayShadow+";"
+        if('overlay'==this.type)
+            cssStyle+="z-index: 50;"            
         var imageDiv = $('<div>',{
             class:('overlay'==this.type)?"divPanel":"image_div", 
             id:"div_"+this.index,
@@ -247,23 +249,44 @@ class ViewerPage {
                         var linkPosX = parseInt($( this ).attr("linkPosX"))
                         var linkPosY = parseInt($( this ).attr("linkPosY"))
                         var linkIndex = $( this ).attr("linkIndex")
+                        var linkWidth = $( this ).attr("linkWidth")
+                        var offsetX = newPage.overlayAlign <= 2 ? 5 : 0
 
-                        if(1==newPage.overlayAlign){
-                            // align on center
-                            var linkWidth = $( this ).attr("linkWidth")
+                        if(0==newPage.overlayAlign){ // align on hotspot left                                                                            
+                        }else if(1==newPage.overlayAlign){ // align on hotspot center                                                
                             linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
-                        }else if(2==newPage.overlayAlign){
-                            // align on right
-                            var linkWidth = parseInt($( this ).attr("linkWidth"))
+                        }else if(2==newPage.overlayAlign){// align on hotpost right
                             linkPosX = linkPosX + linkWidth  - newPage.width
+                        }else if(3==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_LEFT
+                            linkPosX = 0
+                            linkPosY = 0
+                        }else if(4==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_CENTER
+                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosY = 0
+                        }else if(5==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
+                            linkPosX = currentPage.width - newPage.width
+                            linkPosY = 0
+                        }else if(6==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_CENTER
+                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosY = parseInt(currentPage.height / 2) - parseInt(newPage.height / 2)
+                        }else if(7==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_LEFT
+                            linkPosX = 0
+                            linkPosY = currentPage.height - newPage.height
+                        }else if(8==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_CENTER
+                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosY = currentPage.height - newPage.height
+                        }else if(9==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
+                            linkPosX = currentPage.width - newPage.width
+                            linkPosY = currentPage.height - newPage.height
                         }
+
                         // check page right side
-                        const fullWidth = newPage.width+5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                        const fullWidth = newPage.width + offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                         if( (linkPosX+fullWidth)>currentPage.width )
                             linkPosX = currentPage.width - fullWidth
 
-                        if(linkPosX < (5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
-                            linkPosX = 5 + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                        if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
+                            linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                         }
                                 
                         newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY)

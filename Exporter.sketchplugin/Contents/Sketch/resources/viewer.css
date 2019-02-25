@@ -332,12 +332,14 @@ area {
     cursor: hand;
 }
 
-/*** FIXED PANELS ***/
+/*** OVERLAYS ***/
 
 .divPanel{
 	position: absolute;
 	z-index: 3;	
 }
+
+/*** FIXED PANELS ***/
 
 .fixedPanel{
 	position: fixed;
