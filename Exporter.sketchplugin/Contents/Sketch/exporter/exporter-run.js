@@ -111,7 +111,11 @@ function runExporter(context, exportOptions = null) {
 
         const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 130), "Export")
 
-        dialog.addPathInput("path", "Destination Folder", "Select Folder", currentPath, 'e.g. ~/HTML', 450)
+        dialog.addPathInput({
+            id:"path",label: "Destination Folder", labelSelect:"Select Folder", 
+            textValue: currentPath, 
+            inlineHint: 'e.g. ~/HTML', width:450
+        })
         dialog.addCheckbox("open", "Open generated HTML in browser", !dontOpen)
 
 
