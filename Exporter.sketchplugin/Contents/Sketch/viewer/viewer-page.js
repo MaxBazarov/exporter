@@ -230,17 +230,18 @@ class ViewerPage {
 
             var func = function(event){
                 var link_url = $( this ).attr("link_url")
+                var link_page_src =  $( this ).attr("link_page")
                 var link_page = parseInt( $( this ).attr("link_page") )
                 var link_action = $( this ).attr("link_action")
         
 
-                if('overlay'==$(this).attr("pageType")){
+                if('overlay'==$(this).attr("pageType") && link_page!=null){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
                     page.hide()
                     if(link_page == page.index) return false
                 }
 
-                if(link_page != null) {			
+                if(link_page_src != null) {			
                     // title = story.pages[link.page].title;
                     var currentPage = story.pages[viewer.currentPage]
                     var newPageIndex = viewer.getPageIndex(link_page)
