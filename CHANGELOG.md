@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.7.0 (26 Feb 2019)
+- Changed command line API [Description](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
+- Added new overlay positions [Illustration](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Overlays/Overlay-Positions.png)
+
 ##  Version 5.6.0 (21 Feb 2019)
 - Added command line API for exporting into HTML [Description](https://github.com/MaxBazarov/exporter/blob/master/Hints.md#hint4)
 
