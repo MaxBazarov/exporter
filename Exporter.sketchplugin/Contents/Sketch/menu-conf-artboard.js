@@ -15,6 +15,9 @@ function enableTypeRelated(){
     )    
     dialog.enableControlByID('overlayAlign',
         Constants.ARTBOARD_TYPE_OVERLAY ==selectedIndex
+    )
+    dialog.enableControlByID('overlayOverFixed',
+        Constants.ARTBOARD_TYPE_OVERLAY ==selectedIndex
     )    
 
     dialog.enableControlByID('enableAutoScroll',
@@ -63,7 +66,9 @@ var onRun = function (context) {
         }
     }
 
+    const overlayOverFixed = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED) == 1 
     const enableAutoScroll = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL) != 1
+
 
     let transNextSecs = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_TRANS_TO_NEXT_SECS)
     if (undefined == transNextSecs) transNextSecs = ""
@@ -77,7 +82,7 @@ var onRun = function (context) {
     if (overlayAlign == undefined)  overlayAlign = 0
 
     //
-    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 330, 360), "Save", "Configure exporting options for the selected artboard. ")
+    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 330, 380), "Save", "Configure exporting options for the selected artboard. ")
 
     const types = ["Regular page","Modal Dialog","External URL Page","Overlay"]
     const typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,types,250)
@@ -94,6 +99,7 @@ var onRun = function (context) {
         "Top left","Top center","Top right","Center","Bottom left","Bottom center","Bottom right"
     ]
     const overlayAlignControl = dialog.addComboBox("overlayAlign","Overlay Position", overlayAlign,positions,250)
+    const overlayOverFixedControl = dialog.addCheckbox("overlayOverFixed", "Show overlay over fixed panels", overlayOverFixed)
 
     const enableAutoScrollControl = dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
     dialog.addHint("enableAutoScrollHint","The artboard will be scrolled on top after showing")
@@ -126,6 +132,8 @@ var onRun = function (context) {
             Settings.setLayerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_ALIGN, overlayAlignControl.indexOfSelectedItem())    
         if(enableShadowControl.isEnabled) 
             Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_SHADOW, enableShadowControl.state() == 1)
+        if(overlayOverFixedControl.isEnabled)
+            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED, overlayOverFixedControl.state() == 1)
         if(enableAutoScrollControl.isEnabled)
             Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, enableAutoScrollControl.state() != 1)
         if(transNextSecsControl.isEnabled)

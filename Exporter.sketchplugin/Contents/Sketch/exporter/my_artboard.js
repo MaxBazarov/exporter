@@ -71,6 +71,8 @@ class MyArtboard extends MyLayer {
                 this.showShadow = true
             }
         }
+        
+        this.overlayOverFixed = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED) == 1
 
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
@@ -157,6 +159,7 @@ class MyArtboard extends MyLayer {
             }
             js += "'overlayByEvent': "+this.overlayByEvent+",\n";
             js += "'overlayAlign': "+this.overlayAlign+",\n";
+            js += "overlayOverFixed:"+(this.overlayOverFixed?"true":"false")+",\n"
         } else {
             js += "'type': 'regular',\n";
         }

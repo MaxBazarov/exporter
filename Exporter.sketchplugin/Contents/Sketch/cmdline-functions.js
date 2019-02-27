@@ -7,10 +7,17 @@ const example=`
 `
 
 function syncDocument(document){
+    log(" SYNCING SYMBOLS...")
     document.getSymbols().forEach(master => master.syncWithLibrary())
 }
 
+function exportDocument(context,runOptions){    
+    log(" EXPORTING...")
+    runExporter(context,runOptions)  
+}
+
 function publishDocument(context,document){    
+    log(" PUBLISHING...")
     context.fromCmd = true
     const publisher = new Publisher(context,document.sketchObject);
     publisher.publish();
@@ -22,6 +29,17 @@ function showError(error){
     log(example+"\n")
 }
 
+
+function saveDocument(document){
+    log(" SAVING DOCUMENT...")
+    document.save()   
+}
+
+function closeDocument(document){
+    log(" CLOSING DOCUMENT...")
+    document.save()   
+}
+
 var cmdRun = function(context) {      
     let Document = require('sketch/dom').Document
     var document = new Document()    
@@ -31,6 +49,8 @@ var cmdRun = function(context) {
     if(''==path){
         return showError("context.file is not specified")        
     }    
+
+    log("PROCESS "+path)
 
     let argCommands = context.commands+""
     if(''==argCommands){
@@ -56,10 +76,10 @@ var cmdRun = function(context) {
             nDoc:document.sketchObject
         }    
         if(cmdSync)      syncDocument(document)
-        if(cmdExport)    runExporter(context,runOptions)  
+        if(cmdExport)    exportDocument(context,runOptions)  
         if(cmdPublish)   publishDocument(context,document)
-        if(cmdSave)      document.save()    
-        if(cmdClose)     document.close()
+        if(cmdSave)      saveDocument(document)
+        if(cmdClose)     closeDocument(document)
         
     })
    

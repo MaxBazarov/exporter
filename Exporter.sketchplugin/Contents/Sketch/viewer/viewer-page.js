@@ -73,7 +73,7 @@ class ViewerPage {
         var cssStyle = "height: "+this.height+"px; width: "+this.width+"px;"
         if(this.overlayShadow!=undefined)
             cssStyle+="box-shadow:"+this.overlayShadow+";"
-        if('overlay'==this.type)
+        if('overlay'==this.type && this.overlayOverFixed)
             cssStyle+="z-index: 50;"            
         var imageDiv = $('<div>',{
             class:('overlay'==this.type)?"divPanel":"image_div", 
@@ -230,22 +230,24 @@ class ViewerPage {
 
             var func = function(event){
                 var link_url = $( this ).attr("link_url")
-                var link_page = $( this ).attr("link_page")
+                var link_page = parseInt( $( this ).attr("link_page") )
                 var link_action = $( this ).attr("link_action")
         
 
                 if('overlay'==$(this).attr("pageType")){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
                     page.hide()
+                    if(link_page == page.index) return false
                 }
 
                 if(link_page != null) {			
                     // title = story.pages[link.page].title;
                     var currentPage = story.pages[viewer.currentPage]
-                    var newPageIndex = viewer.getPageIndex(parseInt(link_page))
+                    var newPageIndex = viewer.getPageIndex(link_page)
                     var newPage = story.pages[newPageIndex];
 
                     if('overlay'==newPage.type){
+
                         var linkPosX = parseInt($( this ).attr("linkPosX"))
                         var linkPosY = parseInt($( this ).attr("linkPosY"))
                         var linkIndex = $( this ).attr("linkIndex")

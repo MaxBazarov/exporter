@@ -70,11 +70,12 @@ var SettingKeys = {
   LEGACY_ARTBOARD_MODAL: "artboardOverlay", //legacy, replaced by ARTBOARD_TYPE
   LEGACY_ARTBOARD_MODAL_SHADOW: "artboardOverlayShadow", // replaced by  ARTBOARD_SHADOW, Outdated on 14 Frev 2018
 
-  ARTBOARD_SHADOW: "artboardShadow",
+  ARTBOARD_SHADOW: "artboardShadow",  
   ARTBOARD_DISABLE_AUTOSCROLL: "artboardDisableAutoScroll",
   ARTBOARD_TRANS_TO_NEXT_SECS: "artboardTransNextSecs",
   ARTBOARD_OVERLAY_BY_EVENT: "artboardOverlayByEvent",
   ARTBOARD_OVERLAY_ALIGN: "artboardOverlayPosition",
+  ARTBOARD_OVERLAY_OVERFIXED: "artboardOverFixed",
   
   DOC_EXPORTING_URL: "docExportingURL", // legacy, replaced by PLUGIN_EXPORTING_URL
   DOC_PUBLISH_COMPRESS: "docPublishCompress",
