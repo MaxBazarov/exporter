@@ -8,7 +8,11 @@ const example=`
 
 function syncDocument(document){
     log(" SYNCING SYMBOLS...")
-    document.getSymbols().forEach(master => master.syncWithLibrary())
+    for(var master of document.getSymbols()){
+        if(!master.syncWithLibrary()){
+            log("  Failed to sync symbol "+master.name)
+        }
+    }
 }
 
 function exportDocument(context,runOptions){    
