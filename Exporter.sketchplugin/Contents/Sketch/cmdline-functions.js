@@ -9,8 +9,13 @@ const example=`
 function syncDocument(document){
     log(" SYNCING SYMBOLS...")
     for(var master of document.getSymbols()){
+        if(null == master.getLibrary()) continue // we need only library-based master
+
         if(!master.syncWithLibrary()){
             log("  Failed to sync symbol "+master.name)
+            for(var i of master.getAllInstances()){
+                log("     instance: "+i.name)
+            }
         }
     }
 }
@@ -34,14 +39,21 @@ function showError(error){
 }
 
 
-function saveDocument(document){
+function saveDocument(document,close){
     log(" SAVING DOCUMENT...")
-    document.save()   
+    document.save(err => {
+        if (err) {
+            log(" Failed to save a document. Error: "+err)
+        }
+        if(close){
+            closeDocument(document)
+        }
+    })
 }
 
 function closeDocument(document){
     log(" CLOSING DOCUMENT...")
-    document.save()   
+    document.close()
 }
 
 var cmdRun = function(context) {      
@@ -61,16 +73,15 @@ var cmdRun = function(context) {
         return showError("context.commands is not specified")
     }    
 
-    const commands = argCommands.split(',')
-    const cmdSave = commands.includes('save')
-    const cmdSync = commands.includes('sync')
-    const cmdExport = commands.includes('export')
-    const cmdPublish = commands.includes('publish')
-    const cmdClose = commands.includes('close')
-    
+    const commandsList = argCommands.split(',')
+    const allCommands = ['save','sync','export','publish','close']
+    const cmds = {}
+    for(var cmd of allCommands){
+        cmds[cmd] = commandsList.includes(cmd)
+    }    
     // Open Sketch document 
     Document.open(path, (err, document) => {        
-        if (err || !document) {
+        if (err || !document    ) {
             log("ERROR: Can't open  "+path)
             return 
         }    
@@ -79,11 +90,11 @@ var cmdRun = function(context) {
             fromCmd:true,        
             nDoc:document.sketchObject
         }    
-        if(cmdSync)      syncDocument(document)
-        if(cmdExport)    exportDocument(context,runOptions)  
-        if(cmdPublish)   publishDocument(context,document)
-        if(cmdSave)      saveDocument(document)
-        if(cmdClose)     closeDocument(document)
+        if(cmds.sync)       syncDocument(document)
+        if(cmds.export)     exportDocument(context,runOptions)  
+        if(cmds.publish)    publishDocument(context,document)
+        if(cmds.save)       saveDocument(document,cmds.close)
+        else if(cmds.close) closeDocument(document)
         
     })
    
