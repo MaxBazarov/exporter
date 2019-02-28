@@ -4,8 +4,13 @@
 class ViewerPage {
 
 
-    hide(preloadhide=false){     
+    hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
+        
+        if(this.currentOverlayPage!=undefined){
+            this.currentOverlayPage.hide()
+            this.currentOverlayPage = undefined
+        }
     }
     
 
@@ -43,18 +48,32 @@ class ViewerPage {
             this.loadImages()
         }
 
+        if( ("currentOverlayPage" in newParentPage) 
+        && newParentPage.currentOverlayPage!=undefined 
+            && newParentPage.currentOverlayPage!=this)
+        {
+            newParentPage.currentOverlayPage.hide()
+            newParentPage.currentOverlayPage = undefined
+        }
+
         // Show overlay on the new position
         const div = this.imageDiv
 
-        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){        
+        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){
+            
             newParentPage.imageDiv.append(div)
             div.css('top',posY+"px")        
             div.css('margin-left',posX+"px")
+            
             this.show()
+            newParentPage.currentOverlayPage = this
 
             var extURL = '/o/'+linkIndex
             viewer.refresh_url(newParentPage.index,extURL)
         }else{
+            if(this == newParentPage.currentOverlayPage){
+                newParentPage.currentOverlayPage = undefined
+            }
             this.hide()
             viewer.refresh_url(newParentPage.index)
         }       
@@ -309,6 +328,7 @@ class ViewerPage {
             if(1==eventType){
                 a.mouseenter(func)
                 a.mouseleave(func)
+                a.click(function(){return false})
             }else{
                 a.click(func)
             }
