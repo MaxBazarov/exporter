@@ -1,5 +1,14 @@
 var UIDialog_iconImage = null
 
+ function Class(className, BaseClass, selectorHandlerDict) {
+    var uniqueClassName = className + NSUUID.UUID().UUIDString();
+    var delegateClassDesc = MOClassDescription.allocateDescriptionForClassWithName_superclass_(uniqueClassName, BaseClass);
+    for (var selectorString in selectorHandlerDict) {
+        delegateClassDesc.addInstanceMethodWithSelector_function_(selectorString, selectorHandlerDict[selectorString]);
+    }
+    delegateClassDesc.registerClass();
+    return NSClassFromString(uniqueClassName);
+};
 
 class UIAbstractWindow {
 
@@ -25,12 +34,23 @@ class UIAbstractWindow {
 
     }
 
+    enableHintByID(id, enabled) {
+        if (!(id in dialog.views)) return
+
+        var text = dialog.views[id]
+        if (!enabled)
+            text.textColor = NSColor.disabledControlTextColor()
+        else
+            text.textColor = NSColor.secondaryLabelColor()
+
+    }
+
     enableControlByID(id, enabled) {
         var control = dialog.views[id]
         control.enabled = enabled
-
-        this.enableTextByID(id + 'Hint', enabled)
+        
         this.enableTextByID(id + 'Label', enabled)
+        this.enableHintByID(id + 'Hint', enabled)
 
     }
 
@@ -50,7 +70,7 @@ class UIAbstractWindow {
         label.setBezeled(false);
         label.setDrawsBackground(false);
         label.setEditable(false);
-        label.setSelectable(false);
+        label.setSelectable(false);       
 
         if ('' != id) this.views[id] = label
 
@@ -196,12 +216,12 @@ class UIAbstractWindow {
 
     }
 
-    addHint(id, label, height = 30) {
+    addHint(id, label, height = 23) {
         this.y += 3
 
         const hint = NSTextField.alloc().initWithFrame(this.getNewFrame(height, -1, 3));
         hint.setStringValue(label);
-        //label.setFont(NSFont.systemFontOfSize(fontSize));
+        hint.setColor = NSColor.secondaryLabelColor()
         hint.setBezeled(false);
         hint.setDrawsBackground(false);
         hint.setEditable(false);

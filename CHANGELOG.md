@@ -1,5 +1,9 @@
 # Change Log
 
+
+##  Version 5.8.0 (1 Mar 2019)
+- Overlays calling by hotspot inside a fixed layer also are showing with fixed position (configurable in Artboard Settings)
+
 ##  Version 5.7.3 (28 Feb 2019)
 - Keep the only one overlay visible
 - Hide overlay on primary artboard hide

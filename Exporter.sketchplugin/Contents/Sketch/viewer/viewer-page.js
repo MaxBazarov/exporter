@@ -42,12 +42,13 @@ class ViewerPage {
         link.a.click()    
     }
 
-    showAsOverlayIn(newParentPage,linkIndex,posX,posY){
+    showAsOverlayIn(newParentPage,linkIndex,posX,posY,linkParentFixed){
 
         if( !this.imageDiv ){
             this.loadImages()
         }
 
+        // check if we need to hide any other already visible overlay
         if( ("currentOverlayPage" in newParentPage) 
         && newParentPage.currentOverlayPage!=undefined 
             && newParentPage.currentOverlayPage!=this)
@@ -60,6 +61,15 @@ class ViewerPage {
         const div = this.imageDiv
 
         if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){
+
+            if(linkParentFixed && this.overlayAlsoFixed){
+                div.removeClass('divPanel')
+                div.addClass('fixedPanelFloat')
+            }else{                
+                div.removeClass('fixedPanelFloat')
+                div.addClass('divPanel')
+            }
+
             
             newParentPage.imageDiv.append(div)
             div.css('top',posY+"px")        
@@ -230,9 +240,10 @@ class ViewerPage {
                 link_url: link.url,    
                 link_page: link.page ,    
                 link_action: link.action ,    
-                linkPosX:  link.rect.x,
+                linkPosX:  link.rect.x + (link.isParentFixed?panel.x:0),
                 linkWidth: link.rect.width,
-                linkPosY:  link.rect.y+link.rect.height,
+                linkPosY:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
+                linkParentFixed: link.isParentFixed?'1':'0',
                 target: link.target
             })
 
@@ -252,11 +263,14 @@ class ViewerPage {
                 var link_page_src =  $( this ).attr("link_page")
                 var link_page = parseInt( $( this ).attr("link_page") )
                 var link_action = $( this ).attr("link_action")
+                var linkParentFixed = $( this ).attr("linkParentFixed")=='1'
         
 
+                // close overlay on clock
                 if('overlay'==$(this).attr("pageType") && link_page!=null){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
                     page.hide()
+                    // don't do anything if link follows to overlay itseld
                     if(link_page == page.index) return false
                 }
 
@@ -311,7 +325,7 @@ class ViewerPage {
                             linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                         }
                                 
-                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY)
+                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed)
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }

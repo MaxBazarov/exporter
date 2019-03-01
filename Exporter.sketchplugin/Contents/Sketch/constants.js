@@ -76,6 +76,7 @@ var SettingKeys = {
   ARTBOARD_OVERLAY_BY_EVENT: "artboardOverlayByEvent",
   ARTBOARD_OVERLAY_ALIGN: "artboardOverlayPosition",
   ARTBOARD_OVERLAY_OVERFIXED: "artboardOverFixed",
+  ARTBOARD_OVERLAY_ALSOFIXED: "artboardAlsoFixed",
   
   DOC_EXPORTING_URL: "docExportingURL", // legacy, replaced by PLUGIN_EXPORTING_URL
   DOC_PUBLISH_COMPRESS: "docPublishCompress",

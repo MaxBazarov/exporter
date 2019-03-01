@@ -19,11 +19,12 @@ function enableTypeRelated(){
     dialog.enableControlByID('overlayOverFixed',
         Constants.ARTBOARD_TYPE_OVERLAY ==selectedIndex
     )    
-
+    dialog.enableControlByID('overlayAlsoFixed',
+        Constants.ARTBOARD_TYPE_OVERLAY == selectedIndex
+    )  
     dialog.enableControlByID('enableAutoScroll',
         Constants.ARTBOARD_TYPE_REGULAR == selectedIndex || Constants.ARTBOARD_TYPE_MODAL == selectedIndex
     )
-
     dialog.enableControlByID('transNextSecs',
         Constants.ARTBOARD_TYPE_EXTERNAL_URL != selectedIndex
     )
@@ -46,7 +47,7 @@ var onRun = function (context) {
     }
     const artboard = selection.layers[0]
 
-    // Read configuration
+    ///////////////// READ SETTINGS ///////////////////////
     const enabledModal = Settings.layerSettingForKey(artboard, SettingKeys.LEGACY_ARTBOARD_MODAL) == 1
     let artboardType = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_TYPE)
     if (artboardType == undefined || artboardType == "") {
@@ -67,6 +68,10 @@ var onRun = function (context) {
     }
 
     const overlayOverFixed = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED) == 1 
+
+    let overlayAlsoFixed = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_ALSOFIXED)
+    overlayAlsoFixed = (overlayAlsoFixed!=undefined)?overlayAlsoFixed==1:true
+    
     const enableAutoScroll = Settings.layerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL) != 1
 
 
@@ -81,8 +86,8 @@ var onRun = function (context) {
     let overlayAlign = Settings.layerSettingForKey(artboard,SettingKeys.ARTBOARD_OVERLAY_ALIGN)
     if (overlayAlign == undefined)  overlayAlign = 0
 
-    //
-    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 330, 380), "Save", "Configure exporting options for the selected artboard. ")
+    ///////////////// CREATE DIALOG ///////////////////////
+    dialog = new UIDialog("Artboard Settings", NSMakeRect(0, 0, 370, 450), "Save", "Configure exporting options for the selected artboard. ")
 
     const types = ["Regular page","Modal Dialog","External URL Page","Overlay"]
     const typeControl = dialog.addComboBox("artboardType","Artboard Type", artboardType,types,250)
@@ -100,6 +105,9 @@ var onRun = function (context) {
     ]
     const overlayAlignControl = dialog.addComboBox("overlayAlign","Overlay Position", overlayAlign,positions,250)
     const overlayOverFixedControl = dialog.addCheckbox("overlayOverFixed", "Show overlay over fixed panels", overlayOverFixed)
+    const overlayAlsoFixedControl = dialog.addCheckbox("overlayAlsoFixed", "Show overlay as fixed panel if called from fixed panel", overlayAlsoFixed)
+
+    dialog.addSpace()
 
     const enableAutoScrollControl = dialog.addCheckbox("enableAutoScroll", "Scroll browser page to top", enableAutoScroll)
     dialog.addHint("enableAutoScrollHint","The artboard will be scrolled on top after showing")
@@ -108,7 +116,8 @@ var onRun = function (context) {
     dialog.addHint("transNextSecsHint","Go to the next page auto the delay (0.001 - 60 secs)")
 
     enableTypeRelated()
-    //
+    
+     ///////////////// RUN EVENT LOOP ///////////////////////
     while (true) {
         // Cancel clicked
         if (!dialog.run()) break;
@@ -134,6 +143,8 @@ var onRun = function (context) {
             Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_SHADOW, enableShadowControl.state() == 1)
         if(overlayOverFixedControl.isEnabled)
             Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED, overlayOverFixedControl.state() == 1)
+        if(overlayAlsoFixedControl.isEnabled)
+            Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_OVERLAY_ALSOFIXED, overlayAlsoFixedControl.state() == 1)            
         if(enableAutoScrollControl.isEnabled)
             Settings.setLayerSettingForKey(artboard, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL, enableAutoScrollControl.state() != 1)
         if(transNextSecsControl.isEnabled)

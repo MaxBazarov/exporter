@@ -73,6 +73,10 @@ class MyArtboard extends MyLayer {
         }
         
         this.overlayOverFixed = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_OVERFIXED) == 1
+        {
+            var overlayAlsoFixed = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_OVERLAY_ALSOFIXED)
+            this.overlayAlsoFixed = overlayAlsoFixed!=undefined?overlayAlsoFixed:true
+        }
 
         this.disableAutoScroll =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_DISABLE_AUTOSCROLL)
@@ -160,6 +164,7 @@ class MyArtboard extends MyLayer {
             js += "'overlayByEvent': "+this.overlayByEvent+",\n";
             js += "'overlayAlign': "+this.overlayAlign+",\n";
             js += "overlayOverFixed:"+(this.overlayOverFixed?"true":"false")+",\n"
+            js += "overlayAlsoFixed:"+(this.overlayAlsoFixed?"true":"false")+",\n"
         } else {
             js += "'type': 'regular',\n";
         }
@@ -237,7 +242,7 @@ class MyArtboard extends MyLayer {
                     isFloat: l.isFloat,
                     isFixedDiv: l.isFixedDiv,
                     divID: l.layerDivID!=undefined?l.layerDivID:"",
-                    links: this._buildHotspots(l.hotspots),                    
+                    links: this._buildHotspots(l.hotspots,true),                    
                     image:Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix+'.png')
                 }                
                 if (exporter.retinaImages)
@@ -260,11 +265,12 @@ class MyArtboard extends MyLayer {
 
 
 
-    _buildHotspots(srcHotspots) {        
+    _buildHotspots(srcHotspots,isParentFixed=false) {        
         let newHotspots = []
         for(var hotspot of srcHotspots){
             const newHotspot = {
-               rect: hotspot.r      
+               rect: hotspot.r,
+               isParentFixed:isParentFixed,
             }
 
             exporter.log(' _buildHotspots linkType='+hotspot.linkType+" l.name="+hotspot.l.name)
