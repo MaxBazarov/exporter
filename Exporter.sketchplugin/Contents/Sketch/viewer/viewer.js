@@ -72,6 +72,7 @@ function doBlinkHotspots(){
     viewer.toggleLinks()
 }
 
+
 // ============================ VIEWER ====================================
 
 function createViewer(story, files) {
@@ -87,6 +88,7 @@ function createViewer(story, files) {
         handleURLRefresh : true,
         files: files,
         userStoryPages: [],
+        zoomEnabled: story.zoomEnabled,
 
 		transQueue : [],
 		
@@ -129,6 +131,9 @@ function createViewer(story, files) {
 			});
 			$(document).bind('keydown', 'shift', function() {
 				v.toggleLinks();
+            });
+            $(document).bind('keydown', 'z', function() {
+				v.toggleZoom();
 			});
 			$(document).bind('keydown', 'g', function() {
 				gallery.toogle();
@@ -149,6 +154,38 @@ function createViewer(story, files) {
         blinkHotspots: function(){
             this.toggleLinks()
             setTimeout(doBlinkHotspots,500)
+        },
+
+        toggleZoom: function(){
+            this.zoomEnabled = !this.zoomEnabled
+            this.zoomContent()
+        },
+
+        zoomContent: function(){
+            if(undefined==this.lastRegularPage || this.lastRegularPage<0) return
+            var page = story.pages[this.lastRegularPage]
+
+            if(undefined==this.marker){
+                this.marker = $('#marker')
+            }
+            var marker = this.marker    
+            
+            var content = $('#content')
+            var contentShadow = $('#content-shadow')
+            var contentModal= $('#content-modal')
+
+            var markerWidth = marker.innerWidth()
+            if(!this.zoomEnabled || markerWidth>=page.width){
+                content.css("zoom","")
+                contentShadow.css("zoom","")
+                contentModal.css("zoom","")
+                return
+            } 
+                        
+            var zoom = markerWidth / page.width
+            content.css("zoom",zoom)
+            contentShadow.css("zoom",zoom)
+            contentModal.css("zoom",zoom)
         },
 
 		getPageHash: function(index) {
@@ -646,5 +683,6 @@ $(document).ready(function() {
             viewer.handleNewLocation(false)       
         viewer.handleURLRefresh = true
 	});
-	//$(window).hashchange();
+    //$(window).hashchange();
+    viewer.zoomContent()
 });

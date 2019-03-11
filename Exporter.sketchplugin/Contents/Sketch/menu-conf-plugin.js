@@ -18,6 +18,7 @@ var onRun = function(context) {
   if(sortRule==undefined || sortRule=="") position = 0
 
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
+  const disableZoom = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)==1
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
   const saveJSON = Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
@@ -41,6 +42,7 @@ var onRun = function(context) {
   dialog.addHint("","Specify how artboards will sorted in HTML story.")
 
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
+  dialog.addCheckbox("zoom","Enable page zooming", !disableZoom)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
   dialog.addCheckbox("disableHotspots","Highlight hotspots on mouse over", !disableHotspots)
   dialog.addCheckbox("savejson","Dump layers into JSON file", saveJSON)
@@ -56,6 +58,7 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.views['position'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_SORT_RULE, dialog.views['sortRule'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.views['retina'].state() != 1) 
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM, dialog.views['zoom'].state() != 1) 
     /*Temporary disable, it's too experimental
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")*/
     Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.views['googleCode'].stringValue()+"")  

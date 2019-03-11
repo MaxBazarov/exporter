@@ -28,6 +28,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   }
   s += '<script type="text/javascript">\n';
   s += '  var viewer = createViewer(story, "images");\n';
+  s += '  jQuery(window).resize(function(){viewer.zoomContent()});\n';
   s += '  var gallery = createGallery();\n';
   if(commentsURL!=''){
     s += '  var comments = createComments();\n';
@@ -56,6 +57,7 @@ function buildMainHTML(docName, centerContent,commentsURL,hideNav,googleCode,bac
   <!--/load indicator-->
   `;
   s += ' <div id="container">\n';
+  s += ' <div id="marker"></div>\n';
   s += ' <div id="content" onclick="viewer.blinkHotspots()">\n';
   s += ' </div>\n'; 
   s += ' <div id="content-shadow" class="hidden"></div>\n';
@@ -79,6 +81,10 @@ s += "                                    <svg><use xlink:href=\"#icPointer\"><\
 s += "                                    <span>Hot Spots<\/span>";
 s += "                                    <div class=\"tips\">⇧<\/div>";
 s += "                                <\/div>";
+s += "                                <div class=\"item\" onclick=\"viewer.toggleZoom();return false;\">";
+s += "                                    <span>Toogle Zoom<\/span>";
+s += "                                    <div class=\"tips\">z<\/div>";
+s += "                                <\/div>";
 /*
 s += "                                <div class=\"item disabled\" onclick=\"addRemoveClass('class','annotation','active'); addRemoveClass('class','menu','active');\">";
 s += "                                    <svg><use xlink:href=\"#icAnnotation\"><\/use><\/svg>";
@@ -98,12 +104,12 @@ s += "                            <div class=\"groupe\">";
 s += "                                <div class=\"item\" onclick=\"gallery.show(); addRemoveClass('class','menu','active'); return false;\">";
 s += "                                    <svg><use xlink:href=\"#icGrid\"><\/use><\/svg>";
 s += "                                    <span>View All Screens<\/span>";
-s += "                                    <div class=\"tips\">G<\/div>";
+s += "                                    <div class=\"tips\">g<\/div>";
 s += "                                <\/div>";
 s += "                                <div class=\"item\" onclick=\"viewer.goToPage(0); addRemoveClass('class','menu','active'); return false;\">";
 s += "                                    <svg><use xlink:href=\"#icEye\"><\/use><\/svg>";
 s += "                                    <span>Go To The Start<\/span>";
-s += "                                    <div class=\"tips\">S<\/div>";
+s += "                                    <div class=\"tips\">s<\/div>";
 s += "                                <\/div>";
 s += "                            <\/div>";
 /*

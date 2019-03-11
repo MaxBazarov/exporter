@@ -350,6 +350,7 @@ class Exporter {
     this.jsStory += 
      '   ]\n,'+
      '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
+     '"zoomEnabled": '+ (this.Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)!=1?'true':'false')+',\n'+
      '"title": "'+this.docName+'",\n'+
      '"totalImages": '+this.totalImages+',\n'+
      '"highlightLinks": false\n'+
