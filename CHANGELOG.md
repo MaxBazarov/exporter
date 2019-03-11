@@ -1,5 +1,7 @@
 # Change Log
 
+##  Version 5.8.1 (11 Mar 2019)
+- Fixed rendering of direct link to modal dialog executed by overlay artboard link
 
 ##  Version 5.8.0 (1 Mar 2019)
 - Overlays calling by hotspot inside a fixed layer also are showing with fixed position (configurable in Artboard Settings)

@@ -175,6 +175,11 @@ function createViewer(story, files) {
 				for(var li = 0; li < page.links.length; li ++) {
 					link = page.links[li];
 					if(link.page!=null && link.page==modalIndex){
+                        // check if the source link is in overlay?
+                        if(page.type==='overlay'){
+                            // ok, now find the source page for this overlay
+                            return this.getModalFirstParentPageIndex(i)
+                        }
 						// return the page index which has link to modal
 						return i;
 					}
