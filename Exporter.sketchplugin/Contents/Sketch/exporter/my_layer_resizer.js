@@ -114,10 +114,10 @@ class MyLayerResizer {
 
             // check link to external URL
             const externalLinkHref = exporter.Settings.layerSettingForKey(l.slayer,SettingKeys.LAYER_EXTERNAL_LINK)
-            if(externalLinkHref!=null && externalLinkHref!=""){
+            if(externalLinkHref!=null && externalLinkHref!="" && externalLinkHref!="http://"){
                 const externalLink = {
                     'href' : externalLinkHref,
-                    'openNewWindow': false
+                    'openNewWindow': exporter.Settings.layerSettingForKey(l.slayer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)==1
 
                 }
                 if( !this._specifyExternalURLHotspot(prefix+" ",finalHotspot,externalLink)) return

@@ -1,9 +1,13 @@
+@import "lib/uidialog.js";
+@import "lib/utils.js";
 @import "constants.js"
 
 var onRun = function(context) {
   const sketch = require('sketch')
   var UI = require('sketch/ui')
-  var Settings = require('sketch/settings')
+  var Settings = require('sketch/settings')  
+  UIDialog.setUp(context);
+
 
   const document = sketch.fromNative(context.document)
   var selection = document.selectedLayers
@@ -18,35 +22,52 @@ var onRun = function(context) {
 
   // Get current settings for this layer (and reset to default if undefined)
   //--------------------------------------------------------------------
-  var link = "http://"
+  var link = ""
   var openNewWindow = true
 
   if(layers.length==1){
     var layer = layers[0]
     // restore settings for a single layer selected
-    var savedLink  = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK)
-    if(savedLink != undefined && savedLink != null && savedLink!=''){
-      link = savedLink
-    }
-    var savedOpenNewWindow = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)
-    if(savedOpenNewWindow != undefined){
-      openNewWindow = savedOpenNewWindow
-    }
+    link = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK)
+    if(undefined==link) link = ""
+    openNewWindow = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)==1
   }
+  if('http://'==link) link = '' // workaround to fix previous wrong dialog behaviour
 
   // Ask user for external URL
   //--------------------------------------------------------------------
-  link = UI.getStringFromUser("Provide some external URL",link)
-  // handle cancel button
-  if(link == 'null'){
-    return
-  }
+  const dialog = new UIDialog("Provide some external URL",NSMakeRect(0, 0, 400, 100),"Save","The selected layers or artboards will be linked to the specified URL.")
+
+
+  dialog.addTextInput("url","URL", link,'http://',350)  
+  dialog.addCheckbox("sameWindow","Open new browser window", openNewWindow)
+
 
   //Save new external URL
   //--------------------------------------------------------------------
-  layers.forEach(function(layer){
-    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK,link)
-    Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN,openNewWindow)
-  })
+  while (true) {
+    // Cancel clicked
+    if (!dialog.run()) break;
+
+    // OK clicked
+    // read data
+    link =  dialog.views['url'].stringValue() + ""
+    openNewWindow = dialog.views['openNewWindow'].state() == 1
+
+    // check data
+    if (false) {
+        continue
+    }
+
+    // save data  
+    layers.forEach(function(layer){
+        Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK,link)
+        Settings.setLayerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN,openNewWindow)
+    })
+
+    break
+  }
   
+
+  dialog.finish()
 }

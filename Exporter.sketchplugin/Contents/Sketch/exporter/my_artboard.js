@@ -57,7 +57,7 @@ class MyArtboard extends MyLayer {
         this.isModal = Constants.ARTBOARD_TYPE_MODAL == this.artboardType
         this.externalArtboardURL =
             exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_EXTERNAL_LINK)
-        if(this.externalArtboardURL!=undefined && ''==this.externalArtboardURL) 
+        if(this.externalArtboardURL!=undefined && (''==this.externalArtboardURL || 'http://'==this.externalArtboardURL)) 
             this.externalArtboardURL = undefined
         
         this.showShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_SHADOW)
