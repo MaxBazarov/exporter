@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.9.0 (11 Mar 2019)
+- Added zooming of large pages (can be disabled in Plugin settings)
+
 ##  Version 5.8.1 (11 Mar 2019)
 - Fixed rendering of direct link to modal dialog executed by overlay artboard link
 
