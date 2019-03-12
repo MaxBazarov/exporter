@@ -42,7 +42,7 @@ var onRun = function(context) {
   dialog.addHint("","Specify how artboards will sorted in HTML story.")
 
   dialog.addCheckbox("retina","Export Retina images", !dontRetina)
-  dialog.addCheckbox("zoom","Enable page zooming", !disableZoom)
+  dialog.addCheckbox("zoom","Enable auto-scale", !disableZoom)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
   dialog.addCheckbox("disableHotspots","Highlight hotspots on mouse over", !disableHotspots)
   dialog.addCheckbox("savejson","Dump layers into JSON file", saveJSON)

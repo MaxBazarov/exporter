@@ -82,7 +82,7 @@ s += "                                    <span>Hot Spots<\/span>";
 s += "                                    <div class=\"tips\">⇧<\/div>";
 s += "                                <\/div>";
 s += "                                <div class=\"item\" onclick=\"viewer.toggleZoom();return false;\">";
-s += "                                    <span>Toogle Zoom<\/span>";
+s += "                                    <span>Toogle Auto-Scale<\/span>";
 s += "                                    <div class=\"tips\">z<\/div>";
 s += "                                <\/div>";
 /*
