@@ -155,8 +155,9 @@ class MyArtboard extends MyLayer {
             js += "'type': 'overlay',\n";
             // try to find a shadow
             if(this.showShadow){
-                const shadowInfo = this._getOverlayShadow()
-                if(shadowInfo!=undefined){
+                const layerWithShadow = this._getOverlayShadowLayer()                
+                if(layerWithShadow){
+                    const shadowInfo = layerWithShadow.getShadowAsStyle()                    
                     js += "'overlayShadow':'"+shadowInfo.style+"',\n"
                     js += "'overlayShadowX':"+shadowInfo.x+",\n"
                 }
@@ -182,22 +183,21 @@ class MyArtboard extends MyLayer {
     }
 
 
-    _getOverlayShadow(){
+    _getOverlayShadowLayer(){
         return this._findLayersShadow(this.childs)
     }   
 
     _findLayersShadow(layers){
-        let shadowsStyle  = undefined
         for(var l of layers){            
-            shadowsStyle = this._findLayerShadow(l)
-            if(shadowsStyle!==undefined) return shadowsStyle
+            let layerWithShadow = this._findLayerShadow(l)
+            if(layerWithShadow) return layerWithShadow
         }
         return undefined
     }
 
     _findLayerShadow(l){
         let shadowsStyle = l.getShadowAsStyle()
-        if(shadowsStyle!==undefined) return shadowsStyle
+        if(shadowsStyle!==undefined) return l
 
         return this._findLayersShadow(l.childs)
     }
@@ -249,10 +249,11 @@ class MyArtboard extends MyLayer {
                     rec.image2x = Utils.quoteString(Utils.toFilename(mainName,false) + fileNamePostfix +'@2x.png', false)
                 
                 // setup shadow
-                let shadowsStyle = l.getShadowAsStyle()
-                if(shadowsStyle!=undefined){
+                const layerWithShadow = this._findLayerShadow(l)                
+                if(layerWithShadow){
+                    const shadowsStyle = layerWithShadow.getShadowAsStyle()
                     rec.shadow = shadowsStyle.style        
-                    rec.shadowX = shadowsStyle.x
+                    rec.shadowX = shadowsStyle.x                    
                 }
                 recs.push(rec)
             }
@@ -377,9 +378,15 @@ class MyArtboard extends MyLayer {
         for(var layer of this.fixedLayers){               
             layer.calculateFixedType()         
 
+            log('_exportFixedLayersToImages for: '+layer.name)
             // temporary disable fixed panel shadows
-            let orgShadows = layer.slayer.style.shadows
-            layer.slayer.style.shadows = []            
+            let orgShadows = undefined
+            let layerWithShadow = this._findLayerShadow(layer)            
+            log('_exportFixedLayersToImages find shadow style: '+layerWithShadow)
+            if(layerWithShadow){
+                orgShadows = layerWithShadow.slayer.style.shadows
+                layerWithShadow.slayer.style.shadows = []            
+            }
             
             // for div and  float fixed layer we need to generate its own image files
             if(layer.isFloat || layer.isFixedDiv){
@@ -391,7 +398,9 @@ class MyArtboard extends MyLayer {
             }
 
             // restore original fixed panel shadows
-            layer.slayer.style.shadows  = orgShadows
+            if(layerWithShadow){
+                layerWithShadow.slayer.style.shadows  = orgShadows
+            }
         }
     }
 

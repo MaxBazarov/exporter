@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.9.1 (12 Mar 2019)
+- Fixed support for shadow inside a fixed layer
+
 ##  Version 5.9.0 (11 Mar 2019)
 - Added zooming of large pages (can be disabled in Plugin settings)
 
