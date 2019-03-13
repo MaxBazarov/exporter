@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.9.2 (12 Mar 2019)
+- Improved Auto-Scale feature
+- Fixed Set External URL dialog
+
 ##  Version 5.9.1 (12 Mar 2019)
 - Fixed support for shadow inside a fixed layer
 
