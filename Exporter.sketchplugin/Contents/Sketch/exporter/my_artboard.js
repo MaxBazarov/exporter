@@ -378,11 +378,9 @@ class MyArtboard extends MyLayer {
         for(var layer of this.fixedLayers){               
             layer.calculateFixedType()         
 
-            log('_exportFixedLayersToImages for: '+layer.name)
             // temporary disable fixed panel shadows
             let orgShadows = undefined
             let layerWithShadow = this._findLayerShadow(layer)            
-            log('_exportFixedLayersToImages find shadow style: '+layerWithShadow)
             if(layerWithShadow){
                 orgShadows = layerWithShadow.slayer.style.shadows
                 layerWithShadow.slayer.style.shadows = []            
