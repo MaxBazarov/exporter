@@ -1,7 +1,7 @@
 # Change Log
 
 ##  Version 5.9.2 (12 Mar 2019)
-- Improved Auto-Scale feature
+- Improved Auto-Scale feature (thanks to Konstantin Smirnov for the new icon)
 - Fixed Set External URL dialog
 
 ##  Version 5.9.1 (12 Mar 2019)
