@@ -81,7 +81,7 @@ s += "                                    <svg><use xlink:href=\"#icPointer\"><\
 s += "                                    <span>Hot Spots<\/span>";
 s += "                                    <div class=\"tips\">⇧<\/div>";
 s += "                                <\/div>";
-s += "                                <div class=\"item\" onclick=\"viewer.toggleZoom();return false;\">";
+s += "                                <div class=\"item\" onclick=\"viewer.toggleZoom(); addRemoveClass('class','menu','active'); return false;\">";
 s += "                                    <svg><use xlink:href=\"#icResize\"><\/use><\/svg>";
 s += "                                    <span>Toogle Auto-Scale<\/span>";
 s += "                                    <div class=\"tips\">z<\/div>";
