@@ -29,10 +29,9 @@ var onRun = function(context) {
     var layer = layers[0]
     // restore settings for a single layer selected
     link = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK)
-    if(undefined==link) link = ""
+    if(undefined==link || 'http://'==link) link = ""// workaround to fix previous wrong dialog behaviour
     openNewWindow = Settings.layerSettingForKey(layer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)==1
   }
-  if('http://'==link) link = '' // workaround to fix previous wrong dialog behaviour
 
   // Ask user for external URL
   //--------------------------------------------------------------------
@@ -52,7 +51,7 @@ var onRun = function(context) {
     // OK clicked
     // read data
     link =  dialog.views['url'].stringValue() + ""
-    openNewWindow = dialog.views['openNewWindow'].state() == 1
+    openNewWindow = dialog.views['sameWindow'].state() == 1
 
     // check data
     if (false) {
