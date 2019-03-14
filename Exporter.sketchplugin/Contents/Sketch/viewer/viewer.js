@@ -106,6 +106,8 @@ function createViewer(story, files) {
                 // hide Navigation
                 $('.navCenter').hide()             
                 $('.navPreviewNext').hide()
+                $('#btnMenu').hide()
+                $('#btnOpenNew').show()
             }
         },
 		initializeHighDensitySupport: function() {
@@ -170,6 +172,16 @@ function createViewer(story, files) {
         toggleZoom: function(){
             this.zoomEnabled = !this.zoomEnabled
             this.zoomContent()
+        },
+
+        openNewWindow: function(){
+            // remove GET parames from current URL 
+            var cleanURL = window.location.origin 
+            if(window.location.port!='') cleanURL = cleanURL + ":" + window.location.port
+            cleanURL = cleanURL + window.location.pathname 
+            if(window.location.hash!='') cleanURL = cleanURL + window.location.hash
+            // ok, now open it in the new browse window
+            window.open(cleanURL,"_blank")
         },
 
         zoomContent: function(){

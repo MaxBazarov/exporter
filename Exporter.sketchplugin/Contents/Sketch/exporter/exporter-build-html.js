@@ -126,7 +126,7 @@ s += "                <\/div>";
 s += "                <div id=\"btnMenu\" class=\"btnMenu\" onclick=\"addRemoveClass('class', 'menu', 'active')\">";
 s += "                    <svg><use xlink:href=\"#icMenu\"><\/use><\/svg>";
 s += "                <\/div>";
-s += "                <div id=\"btnOpenNew\" class=\"hidden btnMenu\" onclick=\"viewer.opennew();return false;\">";
+s += "                <div id=\"btnOpenNew\" style='display:none' class=\"btnMenu\" onclick=\"viewer.openNewWindow();return false;\">";
 s += "                    <svg><use xlink:href=\"#icResize\"><\/use><\/svg>";
 s += "                <\/div>";
 s += "                <div class=\"navPreviewNext\">";
@@ -137,7 +137,8 @@ s += "                    <div id=\"nav-left-next\" class=\"btnNext\" onclick=\"
 s += "                <\/div>";
 s += "            <\/div>";
 s += "            <div class=\"navCenter\"><div class=\"pageName title\">Default button<\/div><\/div>";
-s += "            <div class=\"navRight\"><\/div>";
+s += "            <div class=\"navRight\">";
+s += "            <\/div>";
 s += "        <\/div>";
 
   s += ' </div>\n';

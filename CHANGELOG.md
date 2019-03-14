@@ -1,6 +1,9 @@
 # Change Log
 
-##  Version 5.9.2 (12 Mar 2019)
+##  Version 5.10.0 (14 Mar 2019)
+- Add ?embed to prototype URL to hide navigation and show "Scale" icon
+
+##  Version 5.9.2 (13 Mar 2019)
 - Improved Auto-Scale feature (thanks to Konstantin Smirnov for the new icon)
 - Fixed Set External URL dialog
 
