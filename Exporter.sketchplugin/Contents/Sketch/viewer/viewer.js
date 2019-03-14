@@ -78,6 +78,7 @@ function doBlinkHotspots(){
 function createViewer(story, files) {
 	return {
         highlightLinks: story.highlightLinks,
+        isEmbed: false,
 		prevPageIndex: -1,
 		lastRegularPage: -1,
 		currentPage : -1,
@@ -93,10 +94,20 @@ function createViewer(story, files) {
 		transQueue : [],
 		
 		initialize: function() {
+            this.initParseGetParams()
             this.addHotkeys();
 			this.buildUserStory();            
 			this.initializeHighDensitySupport();			
-		},
+        },
+        initParseGetParams : function() {
+            var s = document.location.search
+            if(s.includes('embed')){
+                isEmbed = true
+                // hide Navigation
+                $('.navCenter').hide()             
+                $('.navPreviewNext').hide()
+            }
+        },
 		initializeHighDensitySupport: function() {
 			if (window.matchMedia) {
 				this.hdMediaQuery = window
