@@ -102,8 +102,10 @@ function createViewer(story, files) {
         initParseGetParams : function() {
             var s = document.location.search
             if(s.includes('embed')){
-                isEmbed = true
-                // hide Navigation
+                this.isEmbed = true
+                // hide image preload indicator
+                $('#loading').hide()
+                // hide Navigation                
                 $('.navCenter').hide()             
                 $('.navPreviewNext').hide()
                 $('#btnMenu').hide()
@@ -699,7 +701,7 @@ $(document).ready(function() {
     
     viewer.handleNewLocation(true)
 
-	preloadAllPageImages();
+    if(!viewer.isEmbed) preloadAllPageImages();
 	
 	$(window).hashchange(function(e) {
         if(viewer.handleURLRefresh)
