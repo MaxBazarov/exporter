@@ -198,19 +198,23 @@ function createViewer(story, files) {
             var content = $('#content')
             var contentShadow = $('#content-shadow')
             var contentModal= $('#content-modal')
+            var elems = [content,contentShadow,contentModal]
 
             var markerWidth = marker.innerWidth()
-            if(!this.zoomEnabled || markerWidth>=page.width){
-                content.css("zoom","")
-                contentShadow.css("zoom","")
-                contentModal.css("zoom","")
-                return
+            var zoom = ""
+            var scale = ""
+            if(this.zoomEnabled && markerWidth<page.width){                
+                zoom = markerWidth / page.width
+                scale = "scale("+zoom+")"
             } 
                         
-            var zoom = markerWidth / page.width
-            content.css("zoom",zoom)
-            contentShadow.css("zoom",zoom)
-            contentModal.css("zoom",zoom)
+            for(var el of elems){
+                el.css("zoom",zoom)
+                el.css("-moz-transform",scale)                
+            }
+            content.css("-moz-transform-origin","left top")
+            contentShadow.css("-moz-transform-origin","left top")
+            contentModal.css("-moz-transform-origin","center top")
         },
 
 		getPageHash: function(index) {
