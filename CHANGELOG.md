@@ -1,4 +1,7 @@
 # Change Log
+##  Version 5.10.2 (18 Mar 2019)
+- Improved auto-scale of modal dialogs in FireFox
+- Stretched modal dialog shadow on full page
 
 ##  Version 5.10.1 (18 Mar 2019)
 - Fixed auto-scale for FireFox
