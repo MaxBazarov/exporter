@@ -196,10 +196,10 @@ function createViewer(story, files) {
             var marker = this.marker    
             
             var content = $('#content')
-            var contentShadow = $('#content-shadow')
+            //var contentShadow = $('#content-shadow')
             var contentModal= $('#content-modal')
-            var elems = [content,contentShadow,contentModal]
-
+            var elems = [content,contentModal] //,contentShadow
+ 
             var markerWidth = marker.innerWidth()
             var zoom = ""
             var scale = ""
@@ -213,7 +213,7 @@ function createViewer(story, files) {
                 el.css("-moz-transform",scale)                
             }
             content.css("-moz-transform-origin","left top")
-            contentShadow.css("-moz-transform-origin","left top")
+            //contentShadow.css("-moz-transform-origin","left top")
             contentModal.css("-moz-transform-origin","center top")
         },
 
@@ -445,8 +445,8 @@ function createViewer(story, files) {
 
 			//content.width(page.width);		
 			//content.height(page.height);
-			contentShadow.width(page.width);		
-			contentShadow.height(page.height);
+			//contentShadow.width(page.width);		
+			//contentShadow.height(page.height);
 			//contentModal.width(page.width);		
             //contentModal.height(page.height)            
 

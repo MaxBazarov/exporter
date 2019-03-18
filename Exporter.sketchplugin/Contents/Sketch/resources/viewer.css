@@ -41,7 +41,7 @@
 .contentModal {
 	z-index: 50;
 	position: fixed;
-	overflow: auto;
+	/*overflow: auto;*/
 	top: 0;
 	left: 0;
 	right: 0;
