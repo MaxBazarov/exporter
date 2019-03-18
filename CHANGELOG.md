@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.10.1 (18 Mar 2019)
+- Fixed auto-scale for FireFox
+
 ##  Version 5.10.0 (14 Mar 2019)
 - Add ?embed to prototype URL to hide navigation and show "Scale" icon
 
