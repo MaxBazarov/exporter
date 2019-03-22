@@ -24,7 +24,34 @@ class MyArtboard extends MyLayer {
     // nlayer: ref to native MSLayer Layer
     // myParent: ref to parent MyLayer
     constructor(nlayer) {
+
+        // init Artboard own things !!! before object construction !!!
+        let slayer = Sketch.fromNative(nlayer)
+        let artboardType = exporter.Settings.layerSettingForKey(slayer, SettingKeys.ARTBOARD_TYPE)
+        if(undefined == artboardType || '' == artboardType){
+            if(exporter.Settings.layerSettingForKey(slayer, SettingKeys.LEGACY_ARTBOARD_MODAL)==1){
+                artboardType = Constants.ARTBOARD_TYPE_MODAL // use legacy setting
+            }else
+                artboardType = Constants.ARTBOARD_TYPE_REGULAR // set default 0 value
+        }
+        let externalArtboardURL =
+            exporter.Settings.layerSettingForKey(slayer, SettingKeys.LAYER_EXTERNAL_LINK)
+        if(externalArtboardURL!=undefined && (''==externalArtboardURL || 'http://'==externalArtboardURL)) 
+            externalArtboardURL = undefined
+
+
+        // Resize before exporting
+        const oldframe = slayer.frame.copy()
+        if(exporter.customArtboardFrame && Constants.ARTBOARD_TYPE_REGULAR == artboardType && undefined == externalArtboardURL){            
+            if(exporter.customArtboardFrame.width > 0 ) 
+                slayer.frame.width = exporter.customArtboardFrame.width
+            if(exporter.customArtboardFrame.height > 0)    
+                slayer.frame.height = exporter.customArtboardFrame.height
+        }
+
         super(nlayer, undefined)
+        
+        this.oldFrame = oldframe
 
         this.fixedLayers = [] // list of layers which are configured as fixed
 
@@ -46,19 +73,9 @@ class MyArtboard extends MyLayer {
         exporter.pageIDsDict[this.objectID] = this
         
         // init Artboard own things
-        this.artboardType = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_TYPE)
-        if(undefined == this.artboardType || '' == this.artboardType){
-            if(exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LEGACY_ARTBOARD_MODAL)==1){
-                this.artboardType = Constants.ARTBOARD_TYPE_MODAL // use legacy setting
-            }else
-                this.artboardType = Constants.ARTBOARD_TYPE_REGULAR // set default 0 value
-        }
-
+        this.artboardType = artboardType
         this.isModal = Constants.ARTBOARD_TYPE_MODAL == this.artboardType
-        this.externalArtboardURL =
-            exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_EXTERNAL_LINK)
-        if(this.externalArtboardURL!=undefined && (''==this.externalArtboardURL || 'http://'==this.externalArtboardURL)) 
-            this.externalArtboardURL = undefined
+        this.externalArtboardURL = externalArtboardURL
         
         this.showShadow = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.ARTBOARD_SHADOW)
         if(undefined!=this.showShadow)
@@ -93,12 +110,17 @@ class MyArtboard extends MyLayer {
         
     }
 
-    export(){
+    export(){        
         this._exportImages()
         this._findFixedPanelHotspots()
         this._pushIntoJSStory(this.pageIndex)
     }
 
+    resetCustomArtboardSize(){
+        if(exporter.customArtboardFrame){
+            this.slayer.frame = this.oldFrame.copy()
+        }
+    }
 
     //------------------- FIND HOTSPOTS WHICH LOCATE OVER FIXED HOTPOSTS ----------------------------
     //------------------- AND MOVE THEM INTO FIXED LAYER SPECIAL HOTSPOTS ---------------------------

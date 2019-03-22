@@ -65,6 +65,8 @@ var SettingKeys = {
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
   PLUGIN_COMPRESS_TOOL_PATH: "pluginCompressPath",
   PLUGIN_EXPORTING_URL: "pluginExportingURL", 
+  PLUGIN_CUSTOM_WIDTH: "pluginArtboardCustomWidth", 
+  PLUGIN_CUSTOM_HEIGHT: "pluginArtboardCustomHeight", 
 
   ARTBOARD_TYPE: "artboardType",
 

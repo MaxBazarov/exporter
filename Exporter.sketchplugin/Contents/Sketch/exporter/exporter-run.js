@@ -32,7 +32,7 @@ function panelSwitchFinished() {
 }
 
 function exportHTML(currentPath, nDoc, exportOptions, context) {
-    let fromCmd = exportOptions!=null && ('fromCmd' in exportOptions) && exportOptions.fromCmd
+    let fromCmd = ('fromCmd' in exportOptions) && exportOptions.fromCmd
 
     new Exporter(currentPath, nDoc, nDoc.currentPage(), exportOptions, context);
 
@@ -83,17 +83,22 @@ function exportHTML(currentPath, nDoc, exportOptions, context) {
 }
 
 
-
 function runExporter(context, exportOptions = null) {    
-    let fromCmd = exportOptions!=null && ('fromCmd' in exportOptions) && exportOptions.fromCmd
+    if(null==exportOptions){
+        exportOptions = {
+            cmd:'exportHTML'
+        }   
+    }   
+
+    let fromCmd = ('fromCmd' in exportOptions) && exportOptions.fromCmd
 
     const Dom = require('sketch/dom')
-    const nDoc = exportOptions && exportOptions.nDoc ? exportOptions.nDoc : context.document
+    const nDoc = exportOptions.nDoc ? exportOptions.nDoc : context.document
     const doc = Dom.fromNative(nDoc)
     const Settings = require('sketch/settings')
 
 
-    const isCmdExportToHTML = exportOptions && exportOptions['cmd'] == "exportHTML"
+    const isCmdExportToHTML =  exportOptions['cmd'] == "exportHTML"
     const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
 
     // ask for output path
@@ -105,11 +110,16 @@ function runExporter(context, exportOptions = null) {
             currentPath = ''
     }
 
+    let customWidth =  Settings.settingForKey(SettingKeys.PLUGIN_CUSTOM_WIDTH)
+    if(null==customWidth) customWidth = ''
+    let customHeight =  Settings.settingForKey(SettingKeys.PLUGIN_CUSTOM_HEIGHT)
+    if(null==customHeight) customHeight = ''
+
 
     if (!fromCmd) {
         UIDialog.setUp(context);
 
-        const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 130), "Export")
+        const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 180), "Export")
 
         dialog.addPathInput({
             id:"path",label: "Destination Folder", labelSelect:"Select Folder", 
@@ -117,11 +127,25 @@ function runExporter(context, exportOptions = null) {
             inlineHint: 'e.g. ~/HTML', width:450
         })
         dialog.addCheckbox("open", "Open generated HTML in browser", !dontOpen)
+        dialog.addTextInput("customWidth", "Artboard Custom Width (px)", customWidth+"",'e.g. 1920')
+        dialog.addTextInput("customHeight", "Artboard Custom Height (px)", customHeight+"",'e.g. 1080')
 
 
         while (true) {
             const result = dialog.run()
             if (!result) return
+
+            customWidth =  dialog.views['customWidth'].stringValue()
+            if(customWidth!=''){
+                if(isNaN(customWidth)) continue
+            }else
+                customWidth = ''
+
+            customHeight =  dialog.views['customHeight'].stringValue()
+                if(customHeight!=''){
+                    if(isNaN(customHeight)) continue
+                }else
+                customHeight = ''
 
             currentPath = dialog.views['path'].stringValue() + ""
             if (currentPath == "") continue
@@ -131,9 +155,14 @@ function runExporter(context, exportOptions = null) {
         dialog.finish()
 
         Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORTING_URL, currentPath)
+        Settings.setSettingForKey(SettingKeys.PLUGIN_CUSTOM_HEIGHT, customHeight)
+        Settings.setSettingForKey(SettingKeys.PLUGIN_CUSTOM_WIDTH, customWidth)
         Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.views['open'].state() != 1)
     }
 
+
+    exportOptions.customArtboardHeight = customHeight
+    exportOptions.customArtboardWidth = customWidth
 
     exportHTML(currentPath, nDoc, exportOptions, context)
 

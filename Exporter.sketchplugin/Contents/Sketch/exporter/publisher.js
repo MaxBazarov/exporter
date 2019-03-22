@@ -36,7 +36,8 @@ class Publisher {
         }
 
 		let version = this.ver
-		let destFolder = this.remoteFolder
+        let destFolder = this.remoteFolder
+        if(''==destFolder) return true
 
 		// copy publish script
 		if(!this.copyScript("publish.sh")){			

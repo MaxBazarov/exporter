@@ -1,4 +1,7 @@
 # Change Log
+##  Version 5.11.0 (22 Mar 2019)
+- Added custom height and width settings to Export HTML dialog (also it flatten fixed layers automatically)
+
 ##  Version 5.10.2 (18 Mar 2019)
 - Improved auto-scale of modal dialogs in FireFox
 - Stretched modal dialog shadow on full page

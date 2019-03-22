@@ -29,8 +29,13 @@ class Exporter {
     this.doc = this.Sketch.fromNative(ndoc)
     this.page = page;
     this.context = context;
-
+    this.customArtboardFrame = undefined
     this.myLayers = []
+    this.jsStory = '';
+    this.pagesDict = []
+    this.pageIDsDict = []
+    this.errors = []
+    
 
     // workaround for Sketch 52s
     this.docName = this._clearCloudName(this.ndoc.cloudName())
@@ -42,24 +47,24 @@ class Exporter {
 
     this.prepareOutputFolder(selectedPath);
 
-    this._readSettings()
-    this.jsStory = '';
-
     this.exportOptions = exportOptions
-
-    this.pagesDict = []
-    this.pageIDsDict = []
-
-    this.errors = []
+    this._readSettings()
 
     // init global variable
     exporter = this
   }
 
   _readSettings() {
+    if(this.exportOptions.customArtboardWidth >0 || this.exportOptions.customArtboardHeight>0){
+        this.customArtboardFrame =  new Rectangle(0,0
+            ,parseInt(this.exportOptions.customArtboardWidth,10)
+            ,parseInt(this.exportOptions.customArtboardHeight,10)
+        )
+    }
+
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
     this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
-    this.disableFixedLayers = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
+    this.disableFixedLayers = this.customArtboardFrame || this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
 
     let pluginSortRule = this.Settings.settingForKey(SettingKeys.PLUGIN_SORT_RULE)
     if(undefined==pluginSortRule) pluginSortRule = Constants.SORT_RULE_X
@@ -333,6 +338,17 @@ class Exporter {
     log(" exportImages: done!")
   }
 
+  resetCustomArtboardSizes(){
+    log(" reset artboard custom sizes: running...")
+
+    for(var artboard of this.myLayers){
+      artboard.resetCustomArtboardSize();    
+    }
+    log(" reset artboard custom sizes: done...")
+  }
+
+  
+
   buildPreviews(){
     log(" buildPreviews: running...")
     const pub = new Publisher(this.context,this.ndoc);    
@@ -425,6 +441,8 @@ class Exporter {
 
     // Dump document layers to JSON file
     this.saveToJSON()
+
+    this.resetCustomArtboardSizes()
 
     log("exportArtboards: done!")
 
