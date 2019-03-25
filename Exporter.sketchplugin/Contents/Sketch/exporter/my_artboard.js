@@ -42,7 +42,8 @@ class MyArtboard extends MyLayer {
 
         // Resize before exporting
         const oldframe = slayer.frame.copy()
-        if(exporter.customArtboardFrame && Constants.ARTBOARD_TYPE_REGULAR == artboardType && undefined == externalArtboardURL){            
+        const needResize = exporter.customArtboardFrame && Constants.ARTBOARD_TYPE_REGULAR == artboardType && undefined == externalArtboardURL
+        if(needResize){            
             if(exporter.customArtboardFrame.width > 0 ) 
                 slayer.frame.width = exporter.customArtboardFrame.width
             if(exporter.customArtboardFrame.height > 0)    
@@ -51,7 +52,7 @@ class MyArtboard extends MyLayer {
 
         super(nlayer, undefined)
         
-        this.oldFrame = oldframe
+        this.oldFrame = needResize?oldframe:undefined
 
         this.fixedLayers = [] // list of layers which are configured as fixed
 
@@ -118,7 +119,10 @@ class MyArtboard extends MyLayer {
 
     resetCustomArtboardSize(){
         if(exporter.customArtboardFrame){
-            this.slayer.frame = this.oldFrame.copy()
+            if(this.oldFrame!=undefined){
+                const slayer = Sketch.fromNative(this.nlayer)
+                slayer.frame = this.oldFrame.copy()
+            }
         }
     }
 

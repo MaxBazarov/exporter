@@ -1,4 +1,7 @@
 # Change Log
+##  Version 5.11.1 (25 Mar 2019)
+- Fixed support for custom sizes
+
 ##  Version 5.11.0 (22 Mar 2019)
 - Added custom height and width settings to Export HTML dialog (also it flatten fixed layers automatically)
 
