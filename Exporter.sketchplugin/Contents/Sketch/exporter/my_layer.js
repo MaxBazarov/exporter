@@ -52,7 +52,7 @@ class MyLayer {
         if(myParent!=undefined) this.constrains = this._calculateConstrains()
         this.tempOverrides = undefined        
         
-        if(!exporter.disableFixedLayers && !this.isParentFixed){
+        if(!this.isArtboard && !exporter.disableFixedLayers && !this.isParentFixed){
             var overlayType = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_OVERLAY_TYPE)
             if(undefined==overlayType || ''==overlayType)
                 overlayType = Constants.LAYER_OVERLAY_DEFAULT

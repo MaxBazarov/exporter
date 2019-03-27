@@ -20,6 +20,10 @@ var onRun = function (context) {
     }
 
     var layer = layers[0]
+    if('Artboard'==layer.type){
+        UI.alert("alert", "Select some single layer.")
+        return
+    }
 
     // read settings
 

@@ -1,4 +1,8 @@
 # Change Log
+##  Version 5.11.2 (27 Mar 2019)
+- Fixed exporting
+- Now custom artboard size is reseting after an exporting
+
 ##  Version 5.11.1 (25 Mar 2019)
 - Fixed support for custom sizes
 

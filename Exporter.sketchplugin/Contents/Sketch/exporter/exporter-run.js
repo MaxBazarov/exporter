@@ -110,10 +110,8 @@ function runExporter(context, exportOptions = null) {
             currentPath = ''
     }
 
-    let customWidth =  Settings.settingForKey(SettingKeys.PLUGIN_CUSTOM_WIDTH)
-    if(null==customWidth) customWidth = ''
-    let customHeight =  Settings.settingForKey(SettingKeys.PLUGIN_CUSTOM_HEIGHT)
-    if(null==customHeight) customHeight = ''
+    let customWidth = ''
+    let customHeight = ''
 
 
     if (!fromCmd) {
@@ -155,8 +153,6 @@ function runExporter(context, exportOptions = null) {
         dialog.finish()
 
         Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORTING_URL, currentPath)
-        Settings.setSettingForKey(SettingKeys.PLUGIN_CUSTOM_HEIGHT, customHeight)
-        Settings.setSettingForKey(SettingKeys.PLUGIN_CUSTOM_WIDTH, customWidth)
         Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.views['open'].state() != 1)
     }
 
