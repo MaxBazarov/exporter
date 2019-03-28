@@ -43,7 +43,7 @@ var Constants = {
 };
 
 var PublishKeys = {
-  SHOW_OUTPUT: false,
+  SHOW_OUTPUT: true,
   TMP_FILE: "publish.sh",
   RESOURCES_FOLDER: "scripts",
 

@@ -106,8 +106,8 @@ class Publisher {
 	}
 
 	showOutput(result){		
-		if(result.result) return true
-		this.UI.alert('Error', result.output)		
+		if(result.result && !PublishKeys.SHOW_OUTPUT) return true
+		this.UI.alert(result.result?'Output':'Error', result.output)		
 	}
 
 	checkOptions(){
@@ -202,11 +202,7 @@ class Publisher {
 		return this.runScriptWithArgs("publish.sh",args)		
 	}
 
-	runCompressScript(allMockupsdDir, docFolder){
-		let args = [allMockupsdDir+"/"+docFolder+"/images",this.compressToolPath ]
-		return this.runScriptWithArgs("compress.sh",args)		
-	}
-
+    
 	runScriptWithArgs(scriptName,args){				
 		const scriptPath = this.allMockupsdDir + "/" + scriptName
 		args.unshift(scriptPath) // add script itself as a first argument
@@ -216,6 +212,15 @@ class Publisher {
 		Utils.deleteFile(scriptPath)
 
 		return res
+    }
+    
+    runToolInResourcesWithArgs(toolName,args){		
+        var url = this.context.plugin.urlForResourceNamed(toolName).path()
+        //args.unshift(toolName)
+        //const regex = / /gi;
+        //const pathTo = this._getFilePathInResourceFolder(toolName).replace(regex,"\\ ")
+        const res =  Utils.runCommand(url, args)
+		return res
 	}
 
 
@@ -224,22 +229,26 @@ class Publisher {
 		const scriptPath = this.allMockupsdDir + "/" + scriptName
 
 	    const fileManager = NSFileManager.defaultManager()
-	    const resFolder = PublishKeys.RESOURCES_FOLDER
 	    const targetPath = scriptPath
 
 	    // delete old copy
         Utils.deleteFile(targetPath)
                 
-        let sourcePath = this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(resFolder).URLByAppendingPathComponent(scriptName)
+        let sourcePath = this._getFileURLInResourceFolder(scriptName)
 		let error = MOPointer.alloc().init()
 	    
 	    if (!fileManager.copyItemAtPath_toPath_error(sourcePath, targetPath, error)) {
-            log("copyScript(): Can't copy '"+sourcePath+"' to '"+targetPath+"'. Error: "+error.value().localizedDescription());)
+            log("copyScript(): Can't copy '"+sourcePath+"' to '"+targetPath+"'. Error: "+error.value().localizedDescription());
 
 			this.UI.alert('Can`t copy script', error.value().localizedDescription())
 			return false
 		 }
 		
 		 return true
-	}
+    }
+    
+
+    _getFileURLInResourceFolder(file){
+        return this.context.plugin.url().URLByAppendingPathComponent("Contents").URLByAppendingPathComponent("Sketch").URLByAppendingPathComponent(PublishKeys.RESOURCES_FOLDER).URLByAppendingPathComponent(file)        
+    }
 }

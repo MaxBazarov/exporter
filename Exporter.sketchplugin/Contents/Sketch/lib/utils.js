@@ -66,6 +66,11 @@ class Utils {
     return Object.assign({}, dict);
   }
 
+
+  static escapeSpaces(path){
+    const regex = / /gi;
+    return path.replace(regex,"\\ ")
+  }
   
   static copyRect(rect){
     return NSMakeRect(rect.origin.x,rect.origin.y,rect.size.width,rect.size.height)
@@ -137,7 +142,7 @@ class Utils {
     var pipe = NSPipe.alloc().init()
     task.setStandardOutput_(pipe);
     task.setStandardError_(pipe);
-    task.setLaunchPath_(command);
+    task.setLaunchPath(command);
     task.arguments = args;
     task.launch();
     task.waitUntilExit();

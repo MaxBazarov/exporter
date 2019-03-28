@@ -355,6 +355,17 @@ class Exporter {
   }
 
   
+  compressImages(){
+    /*log(" compressImages: running...")
+    const pub = new Publisher(this.context,this.ndoc);    
+    const res = pub.runToolInResourcesWithArgs("advpng",['-2','-z','/Users/baza/Temp/Support/images/support.png']) // Utils.escapeSpaces(this.imagesPath)+"*.png"])        
+    if(!res.result){        
+        log(" compressImages: failed!")
+    }else
+        log(" compressImages: done!")
+
+    pub.showOutput(res)    */
+  }
 
   buildPreviews(){
     log(" buildPreviews: running...")
@@ -362,7 +373,7 @@ class Exporter {
     pub.copyScript("resize.sh")
     const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
     log(" buildPreviews: done!")
-    if(!res.result) pub.showOutput(res)    
+    pub.showOutput(res)    
   }
 
   createViewerFile(fileName){
@@ -460,6 +471,9 @@ class Exporter {
     
     if(!this.generateJSStoryEnd()) return false
  
+    // Compress Images
+    this.compressImages()
+
     // Build image small previews for Gallery
     this.buildPreviews()
 
