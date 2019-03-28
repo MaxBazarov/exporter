@@ -222,22 +222,29 @@ class Exporter {
   }
 
   createMainHTML(){
-    const docName = this.docName
+    const buildOptions = {
+        docName:            this.docName,
+        backColor:          this.backColor,
+        isPositionCenter:   this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER
+    }    
 
-    let position = this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION)
-    const isPositionCenter = position === Constants.POSITION_CENTER
-    
+
     const docHideNav = this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_CUSTOM_HIDE_NAV)
-    let hideNav = docHideNav==undefined||docHideNav==0?this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1 : docHideNav==2
+    buildOptions.hideNav = docHideNav==undefined||docHideNav==0?this.Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1 : docHideNav==2
 
     let commentsURL = this.Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
     if(commentsURL==undefined) commentsURL = ''
+    buildOptions.commentsURL = commentsURL
+    
     let googleCode = this.Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
     if(googleCode==undefined) googleCode = ''
-    if(""==this.backColor) this.backColor = Constants.DEF_BACK_COLOR
+    buildOptions.googleCode = googleCode
+
+    
+    if(""==buildOptions.backColor) buildOptions.backColor = Constants.DEF_BACK_COLOR
   
     
-    const s = buildMainHTML(docName,isPositionCenter,commentsURL,hideNav,googleCode,this.backColor);
+    const s = buildMainHTML(buildOptions);
 
     const filePath = this.prepareFilePath(this._outputPath,'index.html');
     if(undefined==filePath) return false
@@ -363,13 +370,30 @@ class Exporter {
   }
 
   generateJSStoryEnd(){
+    const iFrameSizeSrc = this.Settings.settingForKey(SettingKeys.PLUGIN_SHARE_IFRAME_SIZE)    
+    let iFrameSize = undefined
+    if(iFrameSizeSrc!=undefined && iFrameSizeSrc!=''){
+        const size = iFrameSizeSrc.split(':')
+        if(2==size.length){
+            iFrameSize = {
+                width: size[0],
+                height: size[1]
+            }
+        }
+    }
+
     this.jsStory += 
      '   ]\n,'+
      '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
      '"zoomEnabled": '+ (this.Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)!=1?'true':'false')+',\n'+
      '"title": "'+this.docName+'",\n'+
      '"totalImages": '+this.totalImages+',\n'+
-     '"highlightLinks": false\n'+
+     '"highlightLinks": false\n'
+    if(undefined!=iFrameSize){
+        this.jsStory += ',"iFrameSizeWidth": "'+iFrameSize.width+'"\n'
+        this.jsStory += ',"iFrameSizeHeight": "'+iFrameSize.height+'"\n'
+    }
+     this.jsStory += 
     '}\n';
 
     const pathStoryJS = this.createViewerFile('story.js')

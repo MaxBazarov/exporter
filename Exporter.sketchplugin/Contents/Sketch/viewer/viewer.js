@@ -149,6 +149,9 @@ function createViewer(story, files) {
             });
             $(document).bind('keydown', 'z', function() {
 				v.toggleZoom();
+            });
+            $(document).bind('keydown', 'e', function() {
+				v.share();
 			});
 			$(document).bind('keydown', 'g', function() {
 				gallery.toogle();
@@ -169,6 +172,26 @@ function createViewer(story, files) {
         blinkHotspots: function(){
             this.toggleLinks()
             setTimeout(doBlinkHotspots,500)
+        },
+
+        share: function(){
+            var href = ''            
+
+            if(document.location.search.includes('embed')){
+                href = document.location.href
+            }else{
+                href = document.location.href.split('#')[0] + '?embed' + document.location.hash
+            }
+
+            var currentPageIndex = undefined==this.lastRegularPage || this.lastRegularPage<0 ? this.currentPage : this.lastRegularPage
+            var page = story.pages[currentPageIndex]
+
+            var iframe = '<iframe src="'+href+'" style="border: none;" noborder="0"'
+            iframe += ' width="'+(story.iFrameSizeWidth?story.iFrameSizeWidth:page.width) + '"'
+            iframe += ' height="'+(story.iFrameSizeHeight?story.iFrameSizeHeight:page.height) + '"'
+            iframe += ' scrolling="auto" seamless id="iFrame1"></iframe>'
+
+            alert(iframe)
         },
 
         toggleZoom: function(){

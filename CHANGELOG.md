@@ -1,4 +1,8 @@
 # Change Log
+
+##  Version 5.12.0 (28 Mar 2019)
+- Added "Show embed code" item to view menu (also available on "e" key)
+
 ##  Version 5.11.2 (27 Mar 2019)
 - Fixed exporting
 - Now custom artboard size is reseting after an exporting
