@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.13.0 (29 Mar 2019)
+- Added image compression)
+
 ##  Version 5.12.0 (28 Mar 2019)
 - Added "Show embed code" item to view menu (also available on "e" key)
 

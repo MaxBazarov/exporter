@@ -356,6 +356,8 @@ class Exporter {
 
   
   compressImages(){
+    if(this.exportOptions.dontCompress) return true
+    
     log(" compressImages: running...")
     const pub = new Publisher(this.context,this.ndoc);    
     pub.copyScript("compress2.sh")

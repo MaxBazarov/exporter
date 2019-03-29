@@ -12,6 +12,7 @@ Exporter Features:
 - Skips pages and artboards with * prefix 
 - Ability to insert Google counter
 - Ability to hide navigation controls and hotspot highlighting
+- Automatic compression of images
 
 Viewer features:
 - Gallery / [Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
@@ -19,7 +20,6 @@ Viewer features:
 
 Publisher features:
 - Increasing of version counter and injecting it into HTML
-- Compressing pages using [pngquant](https://pngquant.org) tool
 - Publishing to external site by SFTP
 
 Run from command line:

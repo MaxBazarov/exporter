@@ -98,8 +98,8 @@ function runExporter(context, exportOptions = null) {
 
 
     const isCmdExportToHTML =  exportOptions['cmd'] == "exportHTML"
-    const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
-    const dontCompress = Settings.settingForKey(SettingKeys.PLUGIN_DONT_COMPRESS) == 1
+    var dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
+    var dontCompress = Settings.settingForKey(SettingKeys.PLUGIN_DONT_COMPRESS) == 1
 
     // ask for output path
     let currentPath = Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)
@@ -117,7 +117,7 @@ function runExporter(context, exportOptions = null) {
     if (!fromCmd) {
         UIDialog.setUp(context);
 
-        const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 180), "Export")
+        const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 200), "Export")
 
         dialog.addPathInput({
             id:"path",label: "Destination folder", labelSelect:"Select Folder", 
@@ -125,7 +125,7 @@ function runExporter(context, exportOptions = null) {
             inlineHint: 'e.g. ~/HTML', width:450
         })
         dialog.addCheckbox("compress","Compress images", !dontCompress)
-        dialog.addCheckbox("open", "Open generated HTML in browser", !dontOpen)
+        dialog.addCheckbox("open", "Open HTML in browser", !dontOpen)
         dialog.addTextInput("customWidth", "Artboard custom width (px)", customWidth+"",'e.g. 1920')
         dialog.addTextInput("customHeight", "Artboard custom height (px)", customHeight+"",'e.g. 1080')
 
@@ -150,7 +150,7 @@ function runExporter(context, exportOptions = null) {
             if (currentPath == "") continue
 
             dontOpen =  dialog.views['open'].state() != 1
-            dontCompress =  dialog.views['open'].compress() != 1
+            dontCompress =  dialog.views['compress'].state() != 1
             
 
             break
