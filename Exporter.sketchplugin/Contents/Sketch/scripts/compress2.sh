@@ -14,11 +14,4 @@ if [ $? != 0 ]; then
     exit 1
 fi	
 
-## check if this folder images were already compressed
-#if [ -f _compressed ]; then
-#    exit 0
-#fi
-
-## run pngquant to compress all *.png files into *.gnp
-"${app}" -2 -z *.png
-#touch _compressed
+"${app}" -2 -z *.png  </dev/null &>/dev/null &
