@@ -52,6 +52,7 @@ var PublishKeys = {
 var SettingKeys = {
   PLUGIN_POSITION: "positon",
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
+  PLUGIN_DONT_COMPRESS: "pluginDontCompress",  
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   PLUGIN_DISABLE_ZOOM: "pluginDisableZoom",
   PLUGIN_COMMENTS_URL: "commentsURL",

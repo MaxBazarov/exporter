@@ -356,15 +356,17 @@ class Exporter {
 
   
   compressImages(){
-    /*log(" compressImages: running...")
+    log(" compressImages: running...")
     const pub = new Publisher(this.context,this.ndoc);    
-    const res = pub.runToolInResourcesWithArgs("advpng",['-2','-z','/Users/baza/Temp/Support/images/support.png']) // Utils.escapeSpaces(this.imagesPath)+"*.png"])        
+    pub.copyScript("compress2.sh")
+    var url = pub.context.plugin.urlForResourceNamed('advpng').path()
+    const res = pub.runScriptWithArgs("compress2.sh",[this.imagesPath,url])
     if(!res.result){        
         log(" compressImages: failed!")
     }else
         log(" compressImages: done!")
 
-    pub.showOutput(res)    */
+    pub.showOutput(res) 
   }
 
   buildPreviews(){

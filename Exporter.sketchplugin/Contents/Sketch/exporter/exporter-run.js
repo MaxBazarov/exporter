@@ -53,8 +53,7 @@ function exportHTML(currentPath, nDoc, exportOptions, context) {
             let exportedOk = exporter.exportArtboards()
             if (exportedOk) {
                 // open HTML in browser 
-                const dontOpenBrowser = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
-                if (!dontOpenBrowser) {
+                if (!exportOptions.dontOpenBrowser) {
                     const openPath = currentPath + "/" + exporter.docName + "/"
                     const fullPath = "" + openPath + (openPath.endsWith('/') ? '' : '/') + 'index.html'
                     NSWorkspace.sharedWorkspace().openFile(fullPath);
@@ -100,6 +99,7 @@ function runExporter(context, exportOptions = null) {
 
     const isCmdExportToHTML =  exportOptions['cmd'] == "exportHTML"
     const dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
+    const dontCompress = Settings.settingForKey(SettingKeys.PLUGIN_DONT_COMPRESS) == 1
 
     // ask for output path
     let currentPath = Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)
@@ -120,13 +120,14 @@ function runExporter(context, exportOptions = null) {
         const dialog = new UIDialog("Export to HTML", NSMakeRect(0, 0, 500, 180), "Export")
 
         dialog.addPathInput({
-            id:"path",label: "Destination Folder", labelSelect:"Select Folder", 
+            id:"path",label: "Destination folder", labelSelect:"Select Folder", 
             textValue: currentPath, 
             inlineHint: 'e.g. ~/HTML', width:450
         })
+        dialog.addCheckbox("compress","Compress images", !dontCompress)
         dialog.addCheckbox("open", "Open generated HTML in browser", !dontOpen)
-        dialog.addTextInput("customWidth", "Artboard Custom Width (px)", customWidth+"",'e.g. 1920')
-        dialog.addTextInput("customHeight", "Artboard Custom Height (px)", customHeight+"",'e.g. 1080')
+        dialog.addTextInput("customWidth", "Artboard custom width (px)", customWidth+"",'e.g. 1920')
+        dialog.addTextInput("customHeight", "Artboard custom height (px)", customHeight+"",'e.g. 1080')
 
 
         while (true) {
@@ -147,18 +148,27 @@ function runExporter(context, exportOptions = null) {
 
             currentPath = dialog.views['path'].stringValue() + ""
             if (currentPath == "") continue
+
+            dontOpen =  dialog.views['open'].state() != 1
+            dontCompress =  dialog.views['open'].compress() != 1
+            
+
             break
         }
 
         dialog.finish()
 
         Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORTING_URL, currentPath)
-        Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dialog.views['open'].state() != 1)
+        Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dontOpen)
+        Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_COMPRESS, dontCompress)
     }
 
 
+    exportOptions.dontOpen = dontOpen
+    exportOptions.dontCompress = dontCompress
     exportOptions.customArtboardHeight = customHeight
     exportOptions.customArtboardWidth = customWidth
+
 
     exportHTML(currentPath, nDoc, exportOptions, context)
 

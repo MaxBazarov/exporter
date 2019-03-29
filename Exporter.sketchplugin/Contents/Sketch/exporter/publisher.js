@@ -15,7 +15,6 @@ class Publisher {
 		this.remoteFolder = ''
 		
 		this.allMockupsdDir = this.Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)		
-		this.compressToolPath = this.Settings.settingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH)		
 	}
 
 
@@ -43,35 +42,13 @@ class Publisher {
 		if(!this.copyScript("publish.sh")){			
 			return false
         }        
-        
-        // copy compress script
-		if(this.doCompress){
-			if(this.compressToolPath==undefined || this.compressToolPath==''){
-				this.UI.alert('Error', "You need to setup a path to image compressing tool in plugin settings.")	
-				return false
-			}
-
-			if(!this.copyScript("compress.sh")){			
-				return false
-			}
-        }
-        
-        
+            
 		
 		let docFolder =  this.doc.cloudName();
 		let posSketch =  docFolder.indexOf(".sketch")
 		if(posSketch>0){
 			docFolder = docFolder.slice(0,posSketch)
 		}		
-		// copy compress script
-		if(this.doCompress){
-			const runResult = this.runCompressScript(this.allMockupsdDir,docFolder)
-			if(!runResult.result){
-				this.showOutput(runResult)
-				return false
-			}
-		}
-
 		// run publish script
 		let commentsID = destFolder
 		commentsID = Utils.toFilename(commentsID)
@@ -143,8 +120,6 @@ class Publisher {
 		this.remoteFolder =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER)
         if(this.remoteFolder==undefined || this.remoteFolder==null) this.remoteFolder = ''	
         
-		this.doCompress =  Settings.documentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS)==1
-
     }
 
 	askOptions(){
@@ -158,9 +133,6 @@ class Publisher {
 
 		dialog.addTextInput("remoteFolder","Remote Site Folder", this.remoteFolder,'myprojects/project1',350)  
 		dialog.addHint("remoteFolderHint","Relative path on server")
-
-		dialog.addCheckbox("doCompress","Compress Images", this.doCompress)
-  		dialog.addHint("doCompressHint","Compress PNG imaged before publishing (see Plugin Settings)")
 
 		dialog.addTextInput("login","SFTP Login", this.login,'html@mysite.com:/var/www/html/',350)  
 		dialog.addHint("loginHint","SSH key should be uploaded to the site already")
@@ -179,9 +151,6 @@ class Publisher {
 
 			this.remoteFolder = dialog.views['remoteFolder'].stringValue()+""
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER,this.remoteFolder )    
-
-			this.doCompress = dialog.views['doCompress'].state() == 1
-			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_COMPRESS,this.doCompress)    	
 
 			// save new version into document settings
 			let ver =  dialog.views['version'].stringValue()+""
