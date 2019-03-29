@@ -18,6 +18,14 @@ storyVerPlaceholderCode="VERSION_INJECT=' "
 
 echo "$tmpFolder"
 
+waitCompressor(){
+    SERVICE="advpng"
+    while pgrep -x "$SERVICE" >/dev/null
+    do
+        sleep 2
+    done
+}
+
 prepareMockups()
 {	
 	rm -rf "${tmpFolder}"*
@@ -74,6 +82,7 @@ if [ "$ver" == "" ]; then
 	fi
 fi
 
+waitCompressor
 prepareMockups
 uploadReadyMockups
 
