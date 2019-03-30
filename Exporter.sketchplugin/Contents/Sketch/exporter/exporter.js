@@ -356,7 +356,7 @@ class Exporter {
 
   
   compressImages(){
-    if(this.exportOptions.dontCompress) return true
+    if(!this.exportOptions.compress) return true
     
     log(" compressImages: running...")
     const pub = new Publisher(this.context,this.ndoc);    

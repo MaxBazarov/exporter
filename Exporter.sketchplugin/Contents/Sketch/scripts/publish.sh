@@ -82,7 +82,7 @@ if [ "$ver" == "" ]; then
 	fi
 fi
 
-waitCompressor
+#waitCompressor
 prepareMockups
 uploadReadyMockups
 

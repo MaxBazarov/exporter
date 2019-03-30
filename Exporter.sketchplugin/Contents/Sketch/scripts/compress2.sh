@@ -14,4 +14,4 @@ if [ $? != 0 ]; then
     exit 1
 fi	
 
-"${app}" -2 -z *.png  </dev/null &>/dev/null &
+"${app}" -2 -z *.png 

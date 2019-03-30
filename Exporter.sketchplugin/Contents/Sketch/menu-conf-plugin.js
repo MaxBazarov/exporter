@@ -22,8 +22,6 @@ var onRun = function(context) {
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
   const saveJSON = Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
-  let compressPath =  Settings.settingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH)
-  if(compressPath==undefined) compressPath = ""
 
   /*Temporary disable, it's too experimental
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
@@ -35,7 +33,7 @@ var onRun = function(context) {
     //
 
 
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 450),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 420),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("","Specify how artboard will be aligned in browser page")
@@ -50,7 +48,6 @@ var onRun = function(context) {
   dialog.addCheckbox("savejson","Dump layers into JSON file", saveJSON)
 
   dialog.addTextInput("googleCode","Google Code", googleCode,'e.g. UA-XXXXXXXX-X')  
-  dialog.addTextInput("compressPath","Image Compressing Tool", compressPath,'e.g. /Applications/pngquant/pngquant')  
   dialog.addTextInput("shareiFrameSize","Embed Code iFrame Size", shareiFrameSize,'e.g. 400:225')  
   dialog.addHint("","Use width:height format")
 
@@ -67,7 +64,6 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")*/
     Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.views['googleCode'].stringValue()+"")  
     Settings.setSettingForKey(SettingKeys.PLUGIN_SHARE_IFRAME_SIZE, dialog.views['shareiFrameSize'].stringValue()+"")  
-    Settings.setSettingForKey(SettingKeys.PLUGIN_COMPRESS_TOOL_PATH, dialog.views['compressPath'].stringValue()+"")    
     Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.views['hidenav'].state() != 1)     
     Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS, dialog.views['disableHotspots'].state() != 1)     
     Settings.setSettingForKey(SettingKeys.PLUGIN_SAVE_JSON, dialog.views['savejson'].state() == 1)     

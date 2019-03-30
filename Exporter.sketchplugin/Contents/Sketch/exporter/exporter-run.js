@@ -99,7 +99,7 @@ function runExporter(context, exportOptions = null) {
 
     const isCmdExportToHTML =  exportOptions['cmd'] == "exportHTML"
     var dontOpen = Settings.settingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER) == 1
-    var dontCompress = Settings.settingForKey(SettingKeys.PLUGIN_DONT_COMPRESS) == 1
+    var compress = Settings.settingForKey(SettingKeys.PLUGIN_COMPRESS) == 1
 
     // ask for output path
     let currentPath = Settings.settingForKey(SettingKeys.PLUGIN_EXPORTING_URL)
@@ -124,7 +124,7 @@ function runExporter(context, exportOptions = null) {
             textValue: currentPath, 
             inlineHint: 'e.g. ~/HTML', width:450
         })
-        dialog.addCheckbox("compress","Compress images", !dontCompress)
+        dialog.addCheckbox("compress","Compress images", compress)
         dialog.addCheckbox("open", "Open HTML in browser", !dontOpen)
         dialog.addTextInput("customWidth", "Artboard custom width (px)", customWidth+"",'e.g. 1920')
         dialog.addTextInput("customHeight", "Artboard custom height (px)", customHeight+"",'e.g. 1080')
@@ -150,7 +150,7 @@ function runExporter(context, exportOptions = null) {
             if (currentPath == "") continue
 
             dontOpen =  dialog.views['open'].state() != 1
-            dontCompress =  dialog.views['compress'].state() != 1
+            compress =  dialog.views['compress'].state() == 1
             
 
             break
@@ -160,12 +160,12 @@ function runExporter(context, exportOptions = null) {
 
         Settings.setSettingForKey(SettingKeys.PLUGIN_EXPORTING_URL, currentPath)
         Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_OPEN_BROWSER, dontOpen)
-        Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_COMPRESS, dontCompress)
+        Settings.setSettingForKey(SettingKeys.PLUGIN_COMPRESS, compress)
     }
 
 
     exportOptions.dontOpen = dontOpen
-    exportOptions.dontCompress = dontCompress
+    exportOptions.compress = compress
     exportOptions.customArtboardHeight = customHeight
     exportOptions.customArtboardWidth = customWidth
 

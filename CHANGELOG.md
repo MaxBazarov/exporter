@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.13.2 (30 Mar 2019)
+- Switched compression off by default
+- Running compressing in sync
+
 ##  Version 5.13.1 (29 Mar 2019)
 - Corrected compressor permissions
 - Running compressing in async

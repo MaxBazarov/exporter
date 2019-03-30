@@ -52,7 +52,7 @@ var PublishKeys = {
 var SettingKeys = {
   PLUGIN_POSITION: "positon",
   PLUGIN_DONT_OPEN_BROWSER: "dontOpenBrowser",
-  PLUGIN_DONT_COMPRESS: "pluginDontCompress",  
+  PLUGIN_COMPRESS: "pluginCompress",  
   PLUGIN_DONT_RETINA_IMAGES: "dontRetinaImages",
   PLUGIN_DISABLE_ZOOM: "pluginDisableZoom",
   PLUGIN_COMMENTS_URL: "commentsURL",
@@ -64,7 +64,6 @@ var SettingKeys = {
   PLUGIN_SAVE_JSON: "pluginSaveJSON",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
-  PLUGIN_COMPRESS_TOOL_PATH: "pluginCompressPath",
   PLUGIN_EXPORTING_URL: "pluginExportingURL", 
   PLUGIN_SHARE_IFRAME_SIZE: "pluginShareiFrameSize", 
 
