@@ -138,7 +138,7 @@ function createViewer(story, files) {
 		},
 		addHotkeys: function() {
 			var v = this;
-			$(document).bind('keydown', 'right space return', function() {
+			$(document).bind('keydown', 'right return', function() {
 				v.next();
 			});
 			$(document).bind('keydown', 'left backspace', function() {
