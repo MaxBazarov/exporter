@@ -345,10 +345,15 @@ class MyArtboard extends MyLayer {
         const  nlayer = layer.nlayer
         
         const imagePath = exporter.imagesPath + this._getImageName(scale,panelPostix)
-        let slice;        
+        let slice = null
 
         if (nlayer.isKindOfClass(MSArtboardGroup)) {
             slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
+        } else if (layer.isFixed) {
+            let frame = layer.frame.copy()
+            frame.x += layer.artboard.slayer.frame.x
+            frame.y += layer.artboard.slayer.frame.y
+            slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(layer.artboard.nlayer,frame.copyToRect(),false).firstObject()
         } else {            
             slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
             //slice = MSExportRequest.exportRequestsFromExportableLayer_inRect_useIDForName(nlayer, nlayer.absoluteInfluenceRect(), false).firstObject();
@@ -380,22 +385,21 @@ class MyArtboard extends MyLayer {
     _exportImages() {
         log("  exportArtboardImages: running... " + this.name)
         let scales = exporter.retinaImages?[1,2]:[1]    
-
+        
+        // hide fixed panels to generate a main page content without fixed panels 
+        // and their artefacts (shadows)
+        this._hideFixedLayers(true)
+        
         // export fixed panels to their own image files
         this._exportFixedLayersToImages(scales)
 
-        // hide fixed panels to generate a main page content without fixed panels 
-        // and their artefacts (shadows)
-        // ! temporary disabled because an exported image still shows hidden layers
-        this._switchFixedLayers(true)
-                
         for(var scale of scales){                     
             this._exportImage(scale,this)
         }
         
         // show fixed panels back
         // ! temporary disabled because an exported image still shows hidden layers
-        this._switchFixedLayers(false)
+        this._hideFixedLayers(false)
 
         log("  exportArtboardImages: done!")
     }
@@ -414,11 +418,16 @@ class MyArtboard extends MyLayer {
             
             // for div and  float fixed layer we need to generate its own image files
             if(layer.isFloat || layer.isFixedDiv){
+
+                layer.slayer.hidden = false
+
                 //this._exportImage2('1, 2',layer.parent.slayer)         
                 for(var scale of scales){                                         
-                    this._exportImage(scale,layer.parent.isSymbolInstance?layer.parent:layer,"-"+layer.fixedIndex)                    
+                    this._exportImage(scale,layer.parent.isSymbolInstance?layer:layer,"-"+layer.fixedIndex)                    
                     //this._exportImage(scale,layer,"-"+layer.fixedIndex)                    
                 }                 
+
+                layer.slayer.hidden = true
             }
 
             // restore original fixed panel shadows
@@ -428,7 +437,7 @@ class MyArtboard extends MyLayer {
         }
     }
 
-    _switchFixedLayers(hide){         
+    _hideFixedLayers(hide){         
         const show = !hide
         for(var layer of this.fixedLayers){
             // we need to hide/show only div and  float panels

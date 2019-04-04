@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 5.14.0 (5 Apr 2019)
+- Removed custom handling of "Space" key
+- Changed rendering of fixed layes to fix many know issues
+
 ##  Version 5.13.2 (30 Mar 2019)
 - Switched compression off by default
 - Running compressing in sync
