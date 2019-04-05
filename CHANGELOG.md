@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.14.1 (5 Apr 2019)
+- Executed autoscale on page switching
+
 ##  Version 5.14.0 (5 Apr 2019)
 - Removed custom handling of "Space" key
 - Changed rendering of fixed layes to fix many know issues

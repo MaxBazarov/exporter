@@ -346,9 +346,9 @@ function createViewer(story, files) {
 
 				this.currentPageModal = false;
 			}
-            this.prevPageIndex = this.currentPage;		
-                        
-			
+            this.prevPageIndex = this.currentPage		
+            var prevRegularPage = this.lastRegularPage
+                        	
             newPage.show()                      
             this.refresh_adjust_content_layer(index);	  
             
@@ -359,8 +359,18 @@ function createViewer(story, files) {
 
 			this.currentPage = index;
 			if(story.pages[index].type!="modal"){
-				this.lastRegularPage = index;				
-			}
+				this.lastRegularPage = index
+            }
+            
+            // zoom content if the new page dimensions differ from the previous
+            if(story.pages[index].type!="modal"){
+                if(prevRegularPage>=0){
+                    var lastPage = story.pages[prevRegularPage]
+                    if(newPage.width!=lastPage.width || newPage.height!=lastPage.height)
+                        this.zoomContent()
+                }
+            }
+
 
 			if(newPage.transNextMsecs!=undefined){				
 				this._setupTransNext(newPage.transNextMsecs)
