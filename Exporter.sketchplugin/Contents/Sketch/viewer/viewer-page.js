@@ -233,7 +233,7 @@ class ViewerPage {
         
         for(var link of panel.links) {
             var a = $("<a>",{
-                href:"#",
+                href:link.url,
                 pageIndex: this.index,
                 pageType: this.type,
                 linkIndex: link.index,
