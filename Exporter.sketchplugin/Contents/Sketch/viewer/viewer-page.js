@@ -334,7 +334,9 @@ class ViewerPage {
                     viewer.goBack()
                 } else if(link_url != null){
                     //title = link.url;
-                    document.location = link_url
+                    var target = $( this ).attr("target")
+                    window.open(link_url,target!=undefined?target:"_self")
+                    //document.location = link_url
                     //target = link.target!=null?link.target:null;		
                 }
                 return false

@@ -318,6 +318,8 @@ class MyArtboard extends MyLayer {
                 newHotspot.page = targetPageIndex
             } else if (hotspot.linkType == 'href') {
                 newHotspot.url = hotspot.href 
+                if(hotspot.target!=null)
+                    newHotspot.target = hotspot.target 
             } else if (hotspot.target != undefined) {
                 newHotspot.target = hotspot.target
             } else {
