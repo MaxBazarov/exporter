@@ -16,7 +16,9 @@ Exporter Features:
 
 Viewer features:
 - Gallery / [Picture](https://github.com/MaxBazarov/exporter/raw/master/tests/Pictures/Gallery.png)
-- Async pre-loading of document pages
+- Async pre-loading of all page images
+- Auto-scale of large pages to fit into small browser window
+- Ability to get <iframe> code to embed you prototypes into external web pages (with special UI)
 
 Publisher features:
 - Increasing of version counter and injecting it into HTML
