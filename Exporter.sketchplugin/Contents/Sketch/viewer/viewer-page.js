@@ -189,8 +189,23 @@ class ViewerPage {
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
         img.appendTo(imageDiv)
-        //if(!this.isDefault) imageDiv.css("webkit-transform","translate3d(0,0,0)")
+
+
+        this._addLayoutLines(imageDiv)
+        
     }   
+
+    _addLayoutLines(imageDiv){
+        if( this.type=="modal") return
+        {        
+            var style="left: "+ 100+"px; top:"+0+"px; width: "+ 20+"px; height:"+400+"px; "
+            var colDiv = $("<div>",{
+                class:"layoutColDiv",
+            }).attr('style', style)
+            colDiv.appendTo(this.linksDiv)        
+        }
+    }
+
 
     /*------------------------------- INTERNAL METHODS -----------------------------*/
     _getLinkByIndex(index){

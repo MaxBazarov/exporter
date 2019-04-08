@@ -33,6 +33,21 @@
     transition: opacity 0.5s;
 }
 
+/************ LAYOUT ******/
+
+.layoutColDiv {
+	position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s;
+    background-color:#FF0000;
+    z-index:30;
+}
+
+.contentLayoutVisible .layoutColDiv {
+    opacity: 0.4;
+    transition: opacity 0.5s;
+}
+
 .map {
     z-index: 9;	
     position: absolute;

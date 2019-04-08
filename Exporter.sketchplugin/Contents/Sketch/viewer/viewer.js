@@ -78,6 +78,7 @@ function doBlinkHotspots(){
 function createViewer(story, files) {
 	return {
         highlightLinks: story.highlightLinks,
+        showLayout: false,
         isEmbed: false,
 		prevPageIndex: -1,
 		lastRegularPage: -1,
@@ -155,7 +156,11 @@ function createViewer(story, files) {
 			});
 			$(document).bind('keydown', 'g', function() {
 				gallery.toogle();
-			});
+            });
+            $(document).bind('keydown', 'l', function() {
+				v.toogleLayout();
+            });
+            
 			$(document).bind('keydown', 's', function() {
                 var first = v.getFirstUserPage()
                 if(first && first.index!=v.currentPage) v.goToPage( first.index );
@@ -669,6 +674,19 @@ function createViewer(story, files) {
             this.refresh_update_links_toggler(this.currentPage)
             this._updateLinksState()
         },
+
+        toogleLayout : function() {
+            this.showLayout = !this.showLayout
+            div = $('#content')
+
+            if(this.showLayout )
+                div.addClass("contentLayoutVisible")
+            else
+                div.removeClass("contentLayoutVisible")        
+        },
+
+        
+
         _updateLinksState : function(showLinks = undefined, div = undefined){
             if(undefined == div){
                 if(this.currentPageModal){
