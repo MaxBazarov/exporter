@@ -35,17 +35,26 @@
 
 /************ LAYOUT ******/
 
-.layoutColDiv {
+.layouLineDiv {
 	position: absolute;
     opacity: 0;
     transition: opacity 0.5s;
-    background-color:#FF0000;
     z-index:30;
+    pointer-events: none;
 }
 
-.contentLayoutVisible .layoutColDiv {
-    opacity: 0.4;
+.layoutColDiv {	
+    background-color:#FF0000;
+}
+
+.layoutRowDiv {
+    background-color:#000000;
+}
+
+.contentLayoutVisible .layouLineDiv{
+    opacity: 0.05;
     transition: opacity 0.5s;
+    pointer-events: none;
 }
 
 .map {

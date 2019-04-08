@@ -196,13 +196,27 @@ class ViewerPage {
     }   
 
     _addLayoutLines(imageDiv){
-        if( this.type=="modal") return
-        {        
-            var style="left: "+ 100+"px; top:"+0+"px; width: "+ 20+"px; height:"+400+"px; "
+        if( this.type!="regular" ||  undefined==this.layout) return
+ 
+        var x = this.layout.offset
+        var colWidth = this.layout.columnWidth
+        var colWidthInt = Math.round(this.layout.columnWidth)
+        var gutterWidth = this.layout.gutterWidth
+        for(var i = 0;i<this.layout.numberOfColumns;i++){
+            var style="left: "+ Math.trunc(x)+"px; top:"+0+"px; width: " + colWidthInt + "px; height:"+this.height+"px; "
             var colDiv = $("<div>",{
-                class:"layoutColDiv",
+                class:"layoutColDiv layouLineDiv",
             }).attr('style', style)
-            colDiv.appendTo(this.linksDiv)        
+            colDiv.appendTo(this.linksDiv) 
+            x += colWidth + gutterWidth
+        }
+
+        for(var y = 0;y<this.height;y+=5){
+            var style="left: "+ 0 +"px; top:"+y+"px; width: "+ this.width +"px; height:"+ 1 +"px; "
+            var colDiv = $("<div>",{
+                class:"layoutRowDiv layouLineDiv",
+            }).attr('style', style)
+            colDiv.appendTo(this.linksDiv) 
         }
     }
 

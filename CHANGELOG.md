@@ -1,5 +1,10 @@
 # Change Log
 
+##  Version 5.15.0 (8 Apr 2019)
+- Added "Show grid layout" feature (also available on "l" key)
+- External links now use "Open in the new window" setting
+- Now hotspots show real links on hover, not abstract "#"
+
 ##  Version 5.14.1 (5 Apr 2019)
 - Executed autoscale on page switching
 

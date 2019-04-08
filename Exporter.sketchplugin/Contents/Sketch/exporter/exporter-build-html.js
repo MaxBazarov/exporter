@@ -129,6 +129,11 @@ s += "                                    <svg><use xlink:href=\"#icEmbed\"><\/u
 s += "                                    <span>Show embed code<\/span>";
 s += "                                    <div class=\"tips\">E<\/div>";
 s += "                                <\/div>";
+s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active'); viewer.toogleLayout();  return false;\">";
+s += "                                    <svg><use xlink:href=\"#icEmbed\"><\/use><\/svg>";
+s += "                                    <span>Show grid layout<\/span>";
+s += "                                    <div class=\"tips\">L<\/div>";
+s += "                                <\/div>";
 /*
 s += "                                <div class=\"item disabled\" onclick=\"addRemoveClass('class','annotation','active'); addRemoveClass('class','menu','active');\">";
 s += "                                    <svg><use xlink:href=\"#icAnnotation\"><\/use><\/svg>";

@@ -172,6 +172,21 @@ class MyArtboard extends MyLayer {
             js += "'disableAutoScroll': " + (this.disableAutoScroll ? 'true' : 'false') + ",\n";
         }
 
+        {
+            var layoutGrid = this.nlayer.layout() // class: MSLayoutGrid
+            if(!layoutGrid) layoutGrid = MSDefaultLayoutGrid.defaultLayout();
+            if(layoutGrid){
+                var data = {
+                    offset:             layoutGrid.horizontalOffset(),
+                    totalWidth:         layoutGrid.totalWidth(),
+                    numberOfColumns:    layoutGrid.numberOfColumns(),
+                    columnWidth:        layoutGrid.columnWidth(),
+                    gutterWidth:        layoutGrid.gutterWidth()
+                }
+                js += "'layout' : " +JSON.stringify(data,null,"\t") +",\n"
+            } 
+        }
+
         if (this.isModal) {
             js += "'type': 'modal',\n";
             js += "'showShadow': " + (this.showShadow ? 1 : 0) + ",\n";
