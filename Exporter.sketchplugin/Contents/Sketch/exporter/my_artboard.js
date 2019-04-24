@@ -315,14 +315,14 @@ class MyArtboard extends MyLayer {
                isParentFixed:isParentFixed,
             }
 
-            exporter.log(' _buildHotspots linkType='+hotspot.linkType+" l.name="+hotspot.l.name)
+            //log(' _buildHotspots linkType='+hotspot.linkType+" l.name="+hotspot.l.name+" l.target="+hotspot.target)
 
             if (hotspot.linkType == 'back') {
                 newHotspot.action = 'back'
             } else if (hotspot.linkType == 'artboard' && exporter.pagesDict[hotspot.artboardID] != undefined 
                 && exporter.pageIDsDict[hotspot.artboardID].externalArtboardURL != undefined
             ) {
-                newHotspot.url = exporter.pageIDsDict[hotspot.artboardID].externalArtboardURL
+                newHotspot.url = exporter.pageIDsDict[hotspot.artboardID].externalArtboardURL                
             } else if (hotspot.linkType == 'artboard') {
                 const targetPage = exporter.pageIDsDict[hotspot.artboardID]
                 if (targetPage == undefined) {
@@ -332,13 +332,15 @@ class MyArtboard extends MyLayer {
                 const targetPageIndex = targetPage.pageIndex;
                 newHotspot.page = targetPageIndex
             } else if (hotspot.linkType == 'href') {
-                newHotspot.url = hotspot.href 
-                if(hotspot.target!=null)
-                    newHotspot.target = hotspot.target 
+                newHotspot.url = hotspot.href        
             } else if (hotspot.target != undefined) {
                 newHotspot.target = hotspot.target
             } else {
                 exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+            }
+
+            if (hotspot.target != undefined) {
+                newHotspot.target = hotspot.target
             }
 
             newHotspot.index = this.nextLinkIndex++

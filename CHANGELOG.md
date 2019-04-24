@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.15.1 (24 Apr 2019)
+- Fixed "Open new browser window" opton for external links
+
 ##  Version 5.15.0 (8 Apr 2019)
 - Added "Show grid layout" feature (also available on "l" key)
 - External links now use "Open in the new window" setting

@@ -99,8 +99,9 @@ class MyLayerResizer {
 
         let finalHotspot = {
             r: l.frame.copy(),
-            l: l,
-            linkType: 'undefined'
+            //l: l,
+            linkType: 'undefined',
+            target: null
         }
 
         this._processLayerOverrides(l,prefix + " ",lostOverrides)
@@ -122,13 +123,15 @@ class MyLayerResizer {
                 }
                 if( !this._specifyExternalURLHotspot(prefix+" ",finalHotspot,externalLink)) return
                 break            
-            }
+            }            
 
             // check native link
             if(layer.flow()!=null){
                 if( !this._specifyHotspot(prefix+" ",l,finalHotspot)) return
                 break
             }
+
+            // No any link on layer
             return
         }
         exporter.log(prefix+"_processLayerLinks: finalHotspot type="+finalHotspot.linkType)
@@ -136,10 +139,11 @@ class MyLayerResizer {
 
         // finalization
         Array.prototype.push.apply(this.currentArtboard.hotspots, hotspots);        
+
+        
     }
 
-    _specifyExternalURLHotspot(prefix,finalHotspot,externalLink){   
-        
+    _specifyExternalURLHotspot(prefix,finalHotspot,externalLink){           
         exporter.log(prefix+"_specifyExternalURLHotspothotspot: href")
         // found external link
         const regExp = new RegExp("^http(s?)://");
@@ -151,7 +155,7 @@ class MyLayerResizer {
 
         finalHotspot.linkType = "href"
         finalHotspot.href = href
-        finalHotspot.target = target
+        finalHotspot.target = target        
 
         return true
     }
@@ -202,7 +206,7 @@ class MyLayerResizer {
             if(targetArtboard.externalArtboardURL!=undefined){                
                 const externalLink = {
                     'href' : targetArtboard.externalArtboardURL,
-                    'openNewWindow': false        
+                    'openNewWindow':  exporter.Settings.layerSettingForKey(targetArtboard.slayer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)==1  
                 }
                 finalHotspot.artboardID = targetArtboard.objectID                
                 this._specifyExternalURLHotspot(prefix+" ",finalHotspot,externalLink)
