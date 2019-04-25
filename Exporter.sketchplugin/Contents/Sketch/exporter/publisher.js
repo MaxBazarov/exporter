@@ -190,6 +190,11 @@ class Publisher {
         //const pathTo = this._getFilePathInResourceFolder(toolName).replace(regex,"\\ ")
         const res =  Utils.runCommand(url, args)
 		return res
+    }
+    
+    runToolWithArgs(toolName,args){		
+        const res =  Utils.runCommand(toolName, args)
+		return res
 	}
 
 

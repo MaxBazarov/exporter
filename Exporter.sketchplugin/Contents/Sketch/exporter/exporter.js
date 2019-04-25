@@ -374,9 +374,12 @@ class Exporter {
   buildPreviews(){
     log(" buildPreviews: running...")
     const pub = new Publisher(this.context,this.ndoc);    
-    pub.copyScript("resize.sh")
-    const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
-    log(" buildPreviews: done!")
+    //pub.copyScript("resize.sh")
+    //const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
+    let args = ["-Z","300",this.imagesPath+"*.png","--out",this.imagesPath+"previews/"]
+    let res = pub.runToolWithArgs("/usr/bin/sips", args)
+
+    log(" buildPreviews: done!!!!!")
     pub.showOutput(res)    
   }
 
@@ -506,17 +509,19 @@ class Exporter {
     }
     error = MOPointer.alloc().init();
     if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(this._outputPath, false, null, error)) {
-      log(error.value().localizedDescription());
-    }       
+        log(error.value().localizedDescription());
+    }
 
     this.imagesPath = this._outputPath + "/" + Constants.IMAGES_DIRECTORY;
-    if (!fileManager.fileExistsAtPath(this.imagesPath)) {
-      error = MOPointer.alloc().init();
-      if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(this.imagesPath, false, null, error)) {
-        log(error.value().localizedDescription());
-      }
+    const previewPath =  this.imagesPath + "previews/"    
+    if (!fileManager.fileExistsAtPath(previewPath)) {
+        error = MOPointer.alloc().init();
+        log(previewPath)
+        if (!fileManager.createDirectoryAtPath_withIntermediateDirectories_attributes_error(previewPath, true, null, error)) {
+            log(error.value().localizedDescription());
+        }
     } else {
-      Utils.removeFilesWithExtension(this.imagesPath, "png");
+        Utils.removeFilesWithExtension(this.imagesPath, "png");
     }
   }
 }
