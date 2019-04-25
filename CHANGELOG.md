@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.16.1 (25 Apr 2019)
+- Improved image batch resizing (in order to fix non-completed exports)
+
 ##  Version 5.16.0 (25 Apr 2019)
 - Added "Hotspot top * side overlay positions to Artboard Settings
 
