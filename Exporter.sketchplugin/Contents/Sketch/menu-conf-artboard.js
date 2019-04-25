@@ -101,7 +101,8 @@ var onRun = function (context) {
 
     const positions = [
         "Hotspot left side","Hotspot center","Hotspot right side ",
-        "Top left","Top center","Top right","Center","Bottom left","Bottom center","Bottom right"
+        "Top left","Top center","Top right","Center","Bottom left","Bottom center","Bottom right",
+        "Hotspot top left side","Hotspot top center","Hotspot top right side ",
     ]
     const overlayAlignControl = dialog.addComboBox("overlayAlign","Overlay Position", overlayAlign,positions,250)
     const overlayOverFixedControl = dialog.addCheckbox("overlayOverFixed", "Show overlay over fixed panels", overlayOverFixed)

@@ -271,6 +271,7 @@ class ViewerPage {
                 link_action: link.action ,    
                 linkPosX:  link.rect.x + (link.isParentFixed?panel.x:0),
                 linkWidth: link.rect.width,
+                linkHeight: link.rect.height,
                 linkPosY:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
                 linkParentFixed: link.isParentFixed?'1':'0',
                 target: link.target
@@ -314,7 +315,8 @@ class ViewerPage {
                         var linkPosX = parseInt($( this ).attr("linkPosX"))
                         var linkPosY = parseInt($( this ).attr("linkPosY"))
                         var linkIndex = $( this ).attr("linkIndex")
-                        var linkWidth = $( this ).attr("linkWidth")
+                        var linkWidth = parseInt($( this ).attr("linkWidth"))
+                        var linkHeight = parseInt($( this ).attr("linkHeight"))
                         var offsetX = newPage.overlayAlign <= 2 ? 5 : 0
 
                         if(0==newPage.overlayAlign){ // align on hotspot left                                                                            
@@ -343,6 +345,14 @@ class ViewerPage {
                         }else if(9==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
                             linkPosX = currentPage.width - newPage.width
                             linkPosY = currentPage.height - newPage.height
+                        }else if(10==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
+                            linkPosY = linkPosY - newPage.height - linkHeight
+                        }else if(11==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
+                            linkPosY = linkPosY - newPage.height - linkHeight
+                            linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
+                        }else if(12==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT
+                            linkPosY = linkPosY - newPage.height - linkHeight
+                            linkPosX = linkPosX + linkWidth  - newPage.width
                         }
 
                         // check page right side
@@ -353,6 +363,8 @@ class ViewerPage {
                         if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
                             linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                         }
+
+                        if(linkPosY<0) linkPosY = 0
                                 
                         newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed)
                     }else{
