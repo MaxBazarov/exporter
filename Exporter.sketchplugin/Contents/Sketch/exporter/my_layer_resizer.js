@@ -301,7 +301,7 @@ class MyLayerResizer {
                 if(targetArtboard.externalArtboardURL!=undefined){                
                     const externalLink = {
                         'href' : targetArtboard.externalArtboardURL,
-                        'openNewWindow': false        
+                        'openNewWindow':  exporter.Settings.layerSettingForKey(targetArtboard.slayer,SettingKeys.LAYER_EXTERNAL_LINK_BLANKWIN)==1        
                     }
                     srcLayer.customLink = {
                         artboardID: targetArtboard.objectID
