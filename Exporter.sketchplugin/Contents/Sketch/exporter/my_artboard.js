@@ -359,12 +359,15 @@ class MyArtboard extends MyLayer {
         return Utils.toFilename(this.name, false) + panelPostix +  suffix + ".png";
       }
 
-    _exportImage(scale,layer,panelPostix="") {
+    _exportImage(scale,layer,panelPostix="",addToExported = true) {
         exporter.log("   exportImage() for "+layer.name);
         const  nlayer = layer.nlayer
         
-        const imagePath = exporter.imagesPath + this._getImageName(scale,panelPostix)
+        const imageName = this._getImageName(scale,panelPostix)
+        const imagePath = exporter.imagesPath + imageName
         let slice = null
+
+        if(addToExported) exporter.exportedImages.push(imageName)
 
         if (nlayer.isKindOfClass(MSArtboardGroup)) {
             slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
@@ -413,7 +416,7 @@ class MyArtboard extends MyLayer {
         this._exportFixedLayersToImages(scales)
 
         for(var scale of scales){                     
-            this._exportImage(scale,this)
+            this._exportImage(scale,this,'',Constants.ARTBOARD_TYPE_OVERLAY != this.artboardType)
         }
         
         // show fixed panels back
@@ -442,7 +445,7 @@ class MyArtboard extends MyLayer {
 
                 //this._exportImage2('1, 2',layer.parent.slayer)         
                 for(var scale of scales){                                         
-                    this._exportImage(scale,layer.parent.isSymbolInstance?layer:layer,"-"+layer.fixedIndex)                    
+                    this._exportImage(scale,layer.parent.isSymbolInstance?layer:layer,"-"+layer.fixedIndex,false)
                     //this._exportImage(scale,layer,"-"+layer.fixedIndex)                    
                 }                 
 

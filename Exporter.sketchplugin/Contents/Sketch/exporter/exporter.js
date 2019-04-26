@@ -35,6 +35,7 @@ class Exporter {
     this.pagesDict = []
     this.pageIDsDict = []
     this.errors = []
+    this.exportedImages = []
     
 
     // workaround for Sketch 52s
@@ -262,10 +263,11 @@ class Exporter {
     if(null==this.exportOptions || !('mode' in this.exportOptions)){
       this.ndoc.pages().forEach(function(page){
         // skip marked by '*'
-        log('name='+page.name())
         if(page.name().indexOf("*")==0){
           return
         }
+        log('name='+page.name())
+ 
         let artBoards = MyArtboard.getArtboardGroupsInPage(page, context, false)
         if(!artBoards.length) return
         
@@ -374,13 +376,21 @@ class Exporter {
   buildPreviews(){
     log(" buildPreviews: running...")
     const pub = new Publisher(this.context,this.ndoc);    
-    //pub.copyScript("resize.sh")
-    //const res = pub.runScriptWithArgs("resize.sh",[this.imagesPath])
-    let args = ["-Z","300",this.imagesPath+"*.png","--out",this.imagesPath+"previews/"]
-    let res = pub.runToolWithArgs("/usr/bin/sips", args)
+
+    for(var file of this.exportedImages){
+       //log(" buildPreviews: "+file)
+        var fileName = this.imagesPath + "/" + file
+
+        let args = ["-Z","300",fileName,"--out",this.imagesPath+"previews/"]
+        let res = pub.runToolWithArgs("/usr/bin/sips", args)
+
+        if(!res.result){
+            pub.showOutput(res)    
+            break
+        }
+    }
 
     log(" buildPreviews: done!!!!!")
-    pub.showOutput(res)    
   }
 
   createViewerFile(fileName){
