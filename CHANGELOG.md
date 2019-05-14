@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.17.0 (14 May 2019)
+- Hotspot inside an overlay linked to other overlay opens that second overlay on the same position (usefull to switch between single overlay states) 
+
 ##  Version 5.16.2 (25 Apr 2019)
 - Improved image batch resizing (in order to fix non-completed exports) - Part II
 

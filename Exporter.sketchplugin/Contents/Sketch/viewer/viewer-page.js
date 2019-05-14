@@ -42,7 +42,7 @@ class ViewerPage {
         link.a.click()    
     }
 
-    showAsOverlayIn(newParentPage,linkIndex,posX,posY,linkParentFixed){
+    showAsOverlayIn(newParentPage,linkIndex,posX,posY,linkParentFixed,linkPageType){
 
         if( !this.imageDiv ){
             this.loadImages()
@@ -54,7 +54,14 @@ class ViewerPage {
             && newParentPage.currentOverlayPage!=this)
         {
             newParentPage.currentOverlayPage.hide()
+
+            if('overlay'==linkPageType){
+                posX = newParentPage.currentOverlayPage.currentX
+                posY = newParentPage.currentOverlayPage.currentY
+            }
+
             newParentPage.currentOverlayPage = undefined
+
         }
 
         // Show overlay on the new position
@@ -70,6 +77,8 @@ class ViewerPage {
                 div.addClass('divPanel')
             }
 
+            this.currentX = posX
+            this.currentY = posY
             
             newParentPage.imageDiv.append(div)
             div.css('top',posY+"px")        
@@ -294,10 +303,11 @@ class ViewerPage {
                 var link_page = parseInt( $( this ).attr("link_page") )
                 var link_action = $( this ).attr("link_action")
                 var linkParentFixed = $( this ).attr("linkParentFixed")=='1'
+                var linkPageType = $(this).attr("pageType")
         
 
                 // close overlay on clock
-                if('overlay'==$(this).attr("pageType") && link_page!=null){
+                if('overlay'==linkPageType && link_page!=null){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
                     page.hide()
                     // don't do anything if link follows to overlay itseld
@@ -366,7 +376,7 @@ class ViewerPage {
 
                         if(linkPosY<0) linkPosY = 0
                                 
-                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed)
+                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed,linkPageType)
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }
