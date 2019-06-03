@@ -12,7 +12,9 @@ docPathPlaceholder="P_P_P"
 docVerPlaceholder="V_V_V"
 storyVerPlaceholder='VERSION_INJECT=""'
 
-tmpFolder="$(mktemp -d)/"
+orgTmpFolder="$(mktemp -d)/"
+tmpFolder="${orgTmpFolder}${remoteFolder}/"
+mkdir -p "${tmpFolder}"
 
 storyVerPlaceholderCode="VERSION_INJECT=' "
 
@@ -56,8 +58,8 @@ prepareMockups()
 uploadReadyMockups()
 {
 
-	echo "-- publish to mirror1 site from ${tmpFolder}"
-	rsync -r -v "$tmpFolder" "${mirror1}${remoteFolder}/"
+	echo "-- publish to mirror1 site from ${orgTmpFolder} to ${mirror1}/"
+	rsync -r -v "$orgTmpFolder" "${mirror1}/"
 
 	if [ $? != 0 ]; then
 		exit 1
@@ -65,7 +67,7 @@ uploadReadyMockups()
 
 	if [ "$mirror2" != "" ]; then
 		echo "-- publish to mirror2 site"
-		rsync -r -v  --chmod=777 -p "$tmpFolder" "${mirror2}${remoteFolder}/"
+		rsync -r -v  --chmod=777 -p --perms "$tmpFolder" "${mirror2}${remoteFolder}/"
 		if [ $? != 0 ]; then
 			exit 1
 		fi
