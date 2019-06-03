@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.18.0 (3 Jun 2019)
+- Publisher creates sub-folders on SFTP server automatically
+
 ##  Version 5.17.0 (14 May 2019)
 - Hotspot inside an overlay linked to other overlay opens that second overlay on the same position (usefull to switch between single overlay states) 
 
