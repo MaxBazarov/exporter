@@ -59,18 +59,14 @@ uploadReadyMockups()
 {
 
 	echo "-- publish to mirror1 site from ${orgTmpFolder} to ${mirror1}/"
-	rsync -r -v "$orgTmpFolder" "${mirror1}/"
+	rsync -r "$orgTmpFolder" "${mirror1}/"
 
 	if [ $? != 0 ]; then
 		exit 1
 	fi	
 
 	if [ "$mirror2" != "" ]; then
-		echo "-- publish to mirror2 site"
-		rsync -r -v  --chmod=777 -p --perms "$tmpFolder" "${mirror2}${remoteFolder}/"
-		if [ $? != 0 ]; then
-			exit 1
-		fi
+		echo "-- publish to mirror2 site"	
 	fi
 } 
 

@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 5.18.1 (4 Jun 2019)
+- Fixed publishing freeze (for some large projects)
+
 ##  Version 5.18.0 (3 Jun 2019)
 - Publisher creates sub-folders on SFTP server automatically
 
