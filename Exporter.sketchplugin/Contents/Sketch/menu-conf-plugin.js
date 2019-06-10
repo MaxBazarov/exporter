@@ -23,9 +23,9 @@ var onRun = function(context) {
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
   const saveJSON = Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
 
-  /*Temporary disable, it's too experimental
+
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
-  if(commentsURL==undefined) commentsURL = ''*/
+  if(commentsURL==undefined) commentsURL = ''
   let googleCode = Settings.settingForKey(SettingKeys.PLUGIN_GOOGLE_CODE)
   if(googleCode==undefined) googleCode = ''
   let shareiFrameSize = Settings.settingForKey(SettingKeys.PLUGIN_SHARE_IFRAME_SIZE)
@@ -33,7 +33,7 @@ var onRun = function(context) {
     //
 
 
-  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 420),"Save","Edit settings which are common for all documents.")
+  const dialog = new UIDialog("Plugin Settings",NSMakeRect(0, 0, 300, 460),"Save","Edit settings which are common for all documents.")
 
   dialog.addComboBox("position","Artboards Aligment", position,["Default (Top)","Top","Center"],150)
   dialog.addHint("","Specify how artboard will be aligned in browser page")
@@ -51,17 +51,15 @@ var onRun = function(context) {
   dialog.addTextInput("shareiFrameSize","Embed Code iFrame Size", shareiFrameSize,'e.g. 400:225')  
   dialog.addHint("","Use width:height format")
 
-  /*Temporary disable, it's too experimental
   dialog.addTextInput("comments","Comments URL (Experimental)", commentsURL)
-  */
+
   
   if(dialog.run()){
     Settings.setSettingForKey(SettingKeys.PLUGIN_POSITION, dialog.views['position'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_SORT_RULE, dialog.views['sortRule'].indexOfSelectedItem())    
     Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES, dialog.views['retina'].state() != 1) 
     Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM, dialog.views['zoom'].state() != 1) 
-    /*Temporary disable, it's too experimental
-    Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")*/
+    Settings.setSettingForKey(SettingKeys.PLUGIN_COMMENTS_URL, dialog.views['comments'].stringValue()+"")
     Settings.setSettingForKey(SettingKeys.PLUGIN_GOOGLE_CODE, dialog.views['googleCode'].stringValue()+"")  
     Settings.setSettingForKey(SettingKeys.PLUGIN_SHARE_IFRAME_SIZE, dialog.views['shareiFrameSize'].stringValue()+"")  
     Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.views['hidenav'].state() != 1)     

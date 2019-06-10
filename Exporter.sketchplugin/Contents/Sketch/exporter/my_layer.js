@@ -39,18 +39,19 @@ class MyLayer {
 
         this.customLink = undefined
 
+        //log('+++++ this.name: ' + this.name + " symbol: "+(nlayer.isKindOfClass(MSSymbolInstance)))
+
         if(nlayer.isKindOfClass(MSLayerGroup)) this.isGroup = true
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             this.isSymbolInstance = true
             this.symbolMaster = nlayer.symbolMaster()
 
             const lib = this.slayer.master.getLibrary()            
-            if(lib && UX1LibraryName==lib.name){
+
+            if(lib && UX1LibraryName==lib.name||true){
                 this.symbolMasterName = this.symbolMaster.name()+""
-                log('+++++ this.symbolMasterName:')
-                log( this.symbolMasterName )
-                log('+++++ this.name:')
-                log( this.name)
+                //log('----- this.symbolMasterName:')
+                //log( this.symbolMasterName )                
             }
         }else{
             this.symbolMasterName = undefined

@@ -3,7 +3,6 @@
 
 class ViewerPage {
 
-
     hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
         

@@ -78,6 +78,7 @@ function doBlinkHotspots(){
 function createViewer(story, files) {
 	return {
         highlightLinks: story.highlightLinks,
+        symbolViewer: null,
         showLayout: false,
         isEmbed: false,
 		prevPageIndex: -1,
@@ -96,9 +97,15 @@ function createViewer(story, files) {
 		
 		initialize: function() {
             this.initParseGetParams()
-            this.addHotkeys();
 			this.buildUserStory();            
-			this.initializeHighDensitySupport();			
+
+            if(story.layersExist){
+                this.symbolViewer = new SymbolViewer()
+                this.symbolViewer.initialize()
+            }
+
+            this.addHotkeys();
+            this.initializeHighDensitySupport();	            		
         },
         initParseGetParams : function() {
             var s = document.location.search
@@ -160,6 +167,11 @@ function createViewer(story, files) {
             $(document).bind('keydown', 'l', function() {
 				v.toogleLayout();
             });
+            if(v.symbolViewer){
+                $(document).bind('keydown', 'm', function() {
+                    v.symbolViewer.toggle()
+                })
+            };
             
 			$(document).bind('keydown', 's', function() {
                 var first = v.getFirstUserPage()

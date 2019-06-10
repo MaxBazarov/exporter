@@ -47,7 +47,7 @@
 }
 
 .contentSymbolsVisible .symbolDiv{
-    opacity: 0.4;
+    opacity: 0.1;
     transition: opacity 0.5s;
 }
 

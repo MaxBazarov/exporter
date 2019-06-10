@@ -438,9 +438,15 @@ class Exporter {
     if( !this.enabledJSON ) return true
 
     let symbolTokens = ''
-    {
-        const path to 
-        symbolTokens =  Utils.readFile(this.pathToTokensLess)
+    while(true){
+        let pathToSymbolTokens = this._findMainLibraryPath()
+        if(undefined == pathToSymbolTokens) break
+        pathToSymbolTokens = Utils.cutLastPathFolder(pathToSymbolTokens)+"/skins/currentskin-symboltokens.json"
+        log('pathToSymbolTokens='+pathToSymbolTokens)
+        symbolTokens =  Utils.readFile(pathToSymbolTokens)
+        if(undefined==symbolTokens) break
+        symbolTokens = "var symbolsData = "+symbolTokens+";"
+        break
     }
 
     log(" SaveToJSON: cleanup before saving...")
@@ -449,10 +455,20 @@ class Exporter {
     log(" SaveToJSON: running...")
     const layersJSON = JSON.stringify(this.myLayers,replacer,4)
     const pathJSFile = this.createViewerFile('LayersData.js')
-    Utils.writeToFile("var layersData = "+layersJSON, pathJSFile)
+    Utils.writeToFile(symbolTokens+"var layersData = "+layersJSON, pathJSFile)
     log(" SaveToJSON: done!")
 
     return true
+  }
+
+  _findMainLibraryPath(){
+    var libraries = require('sketch/dom').getLibraries()    
+    for(const lib of libraries){
+        if("ux1-ui" != lib.name) continue
+        const doc = lib.getDocument() 
+        return doc.path+""
+    }
+    return undefined
   }
 
   exportArtboards() {        

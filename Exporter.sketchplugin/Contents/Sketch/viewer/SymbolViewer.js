@@ -1,24 +1,44 @@
 class SymbolViewer{
-    new (){
+    constructor (){
         this.visible = false
-        this.created = false
+        this.createdPages = {}
+    }
+
+    initialize(){
+        
+    }
+
+
+    toggle(){
+        return this.visible ? this.hide(): this.show()        
+    }
+
+    hide(){
+        const contentDiv = $('#content')
+        contentDiv.removeClass("contentSymbolsVisible")
+
+        this.visible = false
     }
 
     show(){
-        if(this.visible) return
+        this.page = story.pages[viewer.currentPage];        
+
         viewer.toggleLinks(false)
         viewer.toogleLayout(false)
 
-        if(!this.created) this._create()
+        if(!(viewer.currentPage in this.createdPages)){
+            this._create()
+            this.createdPages[viewer.currentPage] = true
+        } 
 
         const contentDiv = $('#content')
         contentDiv.addClass("contentSymbolsVisible")
-    }
+ 
+        this.visible = true
+}
 
-    _create(){
-        this.page = story.pages[viewer.currentPage];
-
-        this._processLayerList(layersData)
+    _create(){        
+        this._processLayerList(layersData[viewer.currentPage].childs)        
     }
 
     _processLayerList(layers){
@@ -31,18 +51,41 @@ class SymbolViewer{
     }
 
     _showSymbol(l){
-        var pageDiv = this.page.imageDiv
+
+        var currentPanel = this.page
+    
+        for(const panel of this.page.fixedPanels){
+            if( l.frame.x >= panel.x && l.frame.y >= panel.y &&
+                ((l.frame.x + l.frame.width) <= (panel.x + panel.width )) && ((l.frame.y + l.frame.height) <= (panel.y + panel.height ))
+            ){
+                currentPanel = panel
+                break
+            }
+        }
 
         var a = $("<a>",{
             sym_name: l.symbolMasterName            
-        })
+        })        
 
         a.click(function () {
             var symName = $( this ).attr("sym_name")
-            alert(symName)
+
+            var info = symName
+            if(symName in symbolsData){
+                const symInfo = symbolsData[symName]
+                info+="\n\nSymbol layers and @tokens:"
+                for(const layerName of Object.keys(symInfo.layers)){
+                    info+="\n    "+layerName
+                    for(const tokenName of Object.keys(symInfo.layers[layerName].tokens)){
+                        info+="\n        "+tokenName
+                    }
+                }                
+            }
+            
+            alert(info)
         })
 
-        a.appendTo(this.page.linksDiv)
+        a.appendTo(currentPanel.linksDiv)
 
         var style="left: "+ l.frame.x+"px; top:"+l.frame.y+"px; width: " + l.frame.width + "px; height:"+l.frame.height+"px; "
         var symbolDiv = $("<div>",{
