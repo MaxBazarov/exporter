@@ -64,13 +64,23 @@ class SymbolViewer{
         }
 
         var a = $("<a>",{
+            l_x: l.frame.x,
+            l_y: l.frame.y,
+            l_width: l.frame.width,
+            l_height: l.frame.height,
             sym_name: l.symbolMasterName            
         })        
 
         a.click(function () {
             var symName = $( this ).attr("sym_name")
+            var frameX = $( this ).attr("l_x")
+            var frameY = $( this ).attr("l_y")
+            var frameWidth = $( this ).attr("l_width")
+            var frameHeight = $( this ).attr("l_height")
 
             var info = symName
+            info += "\n\n X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
+
             if(symName in symbolsData){
                 const symInfo = symbolsData[symName]
                 info+="\n\nSymbol layers and @tokens:"
