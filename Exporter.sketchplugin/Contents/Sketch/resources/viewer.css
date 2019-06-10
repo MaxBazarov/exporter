@@ -33,6 +33,26 @@
     transition: opacity 0.5s;
 }
 
+/************ SYMBOLS ******/
+
+.symbolDiv {
+	position: absolute;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index:30;
+    /*pointer-events: none;*/
+    background-color:#FF0000;
+    cursor: pointer;	
+    pointer-events: auto;
+}
+
+.contentSymbolsVisible .symbolDiv{
+    opacity: 0.4;
+    transition: opacity 0.5s;
+}
+
+/******************/
+
 /************ LAYOUT ******/
 
 .layouLineDiv {
@@ -56,6 +76,8 @@
     transition: opacity 0.5s;
     pointer-events: none;
 }
+
+/******************/
 
 .map {
     z-index: 9;	

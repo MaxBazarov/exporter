@@ -669,14 +669,14 @@ function createViewer(story, files) {
             if(prevUserIndex<0) return null
             return this.userStoryPages[ prevUserIndex ] 
 		},
-		toggleLinks : function() {
-            this.highlightLinks = !this.highlightLinks
+		toggleLinks : function(newState=undefined) {
+            this.highlightLinks = newState!=undefined?newState:!this.highlightLinks
             this.refresh_update_links_toggler(this.currentPage)
             this._updateLinksState()
         },
 
-        toogleLayout : function() {
-            this.showLayout = !this.showLayout
+        toogleLayout : function(newState=undefined) {
+            this.showLayout = newState!=undefined?newState:!this.showLayout
             div = $('#content')
 
             if(this.showLayout )

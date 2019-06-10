@@ -21,6 +21,10 @@ function buildMainHTML(options) {
   s += '<script type="text/javascript" src="viewer/story.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/gallery.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/viewer.js" charset="UTF-8"></script>\n';
+  if(options.loadLayers){
+    s += '<script type="text/javascript" src="viewer/LayersData.js" charset="UTF-8"></script>\n';
+    s += '<script type="text/javascript" src="viewer/SymbolViewer.js" charset="UTF-8"></script>\n';
+  }
   if(options.commentsURL!=''){
     s += '<link rel="stylesheet" type="text/css" href="'+options.commentsURL+'/EasyPageComments.css"/>\n';
     s += '<script type="text/javascript" src="'+options.commentsURL+'/EasyPageComments.js"></script>\n';
@@ -32,6 +36,9 @@ function buildMainHTML(options) {
   s += '  var gallery = createGallery();\n';
   if(options.commentsURL!=''){
     s += '  var comments = createComments();\n';
+  }
+  if(options.loadLayers){
+    s += '  var symbolViewer = new SymbolViewer;\n';
   }
   s += '</script>\n';
   if(options.googleCode!=''){
@@ -137,6 +144,13 @@ s += "                                    <svg><use xlink:href=\"#icGridLayout\"
 s += "                                    <span>Show grid layout<\/span>";
 s += "                                    <div class=\"tips\">L<\/div>";
 s += "                                <\/div>";
+if(options.loadLayers){
+s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active'); symbolViewer.show();  return false;\">";
+s += "                                    <svg><use xlink:href=\"#icGridLayout\"><\/use><\/svg>";
+s += "                                    <span>Show symbols<\/span>";
+s += "                                    <div class=\"tips\">L<\/div>";
+s += "                                <\/div>";
+}
 /*
 s += "                                <div class=\"item disabled\" onclick=\"addRemoveClass('class','annotation','active'); addRemoveClass('class','menu','active');\">";
 s += "                                    <svg><use xlink:href=\"#icAnnotation\"><\/use><\/svg>";

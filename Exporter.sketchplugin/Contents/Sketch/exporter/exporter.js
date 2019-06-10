@@ -8,11 +8,12 @@
 
 var exporter = undefined
 
-const replaceValidKeys = ["name","frame","x","y","width","height","childs","constrains"]
+const replaceValidKeys = ["name","frame","x","y","width","height","childs","constrains","symbolMasterName"]
 function replacer(key, value) {
   // Pass known keys and array indexes
   if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
-    //log("VALID "+key)
+    //log("VALID key "+key)
+    //log("VALID value "+value)
     return value
   }    
   //log("INVALID "+key)
@@ -226,7 +227,8 @@ class Exporter {
     const buildOptions = {
         docName:            this.docName,
         backColor:          this.backColor,
-        isPositionCenter:   this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER
+        isPositionCenter:   this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER.Constants,
+        loadLayers:         this.enabledJSON
     }    
 
 
@@ -415,6 +417,7 @@ class Exporter {
      '"resolutions": ['+(this.retinaImages?'2':'1')+'],\n'+
      '"zoomEnabled": '+ (this.Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)!=1?'true':'false')+',\n'+
      '"title": "'+this.docName+'",\n'+
+     '"layersExist": ' + ( this.enabledJSON ? "true":"false") +',\n'+
      '"totalImages": '+this.totalImages+',\n'+
      '"highlightLinks": false\n'
     if(undefined!=iFrameSize){
@@ -434,13 +437,19 @@ class Exporter {
   saveToJSON(){
     if( !this.enabledJSON ) return true
 
+    let symbolTokens = ''
+    {
+        const path to 
+        symbolTokens =  Utils.readFile(this.pathToTokensLess)
+    }
+
     log(" SaveToJSON: cleanup before saving...")
     for(var l of this.myLayers) l.clearRefsBeforeJSON()
 
     log(" SaveToJSON: running...")
-    const layersJSON = JSON.stringify(this.myLayers,replacer)
-    const pathJSFile = this.createViewerFile('layers.json')
-    Utils.writeToFile(layersJSON, pathJSFile)
+    const layersJSON = JSON.stringify(this.myLayers,replacer,4)
+    const pathJSFile = this.createViewerFile('LayersData.js')
+    Utils.writeToFile("var layersData = "+layersJSON, pathJSFile)
     log(" SaveToJSON: done!")
 
     return true

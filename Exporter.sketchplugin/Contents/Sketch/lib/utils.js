@@ -51,6 +51,16 @@ class Utils {
     return objcStr.writeToFile_atomically_encoding_error(filePath, true, NSUTF8StringEncoding, null);
   }
 
+  static readFile(path) {
+    const fileManager = NSFileManager.defaultManager();  
+    if (!fileManager.fileExistsAtPath(path)) {
+        return undefined
+    }
+
+    return NSString.stringWithContentsOfFile_encoding_error(path, NSUTF8StringEncoding, null);
+}
+
+
   static deleteFile(filePath){
     const fileManager = NSFileManager.defaultManager();
 

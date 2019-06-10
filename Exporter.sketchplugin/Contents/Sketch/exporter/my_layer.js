@@ -13,6 +13,8 @@ var ResizingConstraint = {
 }
 
 
+var UX1LibraryName = "ux1-ui"
+
 Sketch = require('sketch/dom')
 
 class MyLayer {
@@ -41,6 +43,17 @@ class MyLayer {
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             this.isSymbolInstance = true
             this.symbolMaster = nlayer.symbolMaster()
+
+            const lib = this.slayer.master.getLibrary()            
+            if(lib && UX1LibraryName==lib.name){
+                this.symbolMasterName = this.symbolMaster.name()+""
+                log('+++++ this.symbolMasterName:')
+                log( this.symbolMasterName )
+                log('+++++ this.name:')
+                log( this.name)
+            }
+        }else{
+            this.symbolMasterName = undefined
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
         
@@ -160,6 +173,12 @@ class MyLayer {
         //l.nlayer = undefined
         this.customLink = undefined
 
+        //log('---- this.symbolMasterName:')
+        //log( this.symbolMasterName )
+        //log('---- this.name:')
+        //log( this.name)
+
+
         for(var l of this.childs){
             l.clearRefsBeforeJSON()
         }
@@ -220,7 +239,15 @@ class MyLayerCollector {
                     return null
                 }
                 myLayer.originalID = objectID
-                myLayer.symbolMaster = newMaster        
+                myLayer.symbolMaster = newMaster      
+                
+                const lib =   Sketch.fromNative(newMaster).getLibrary()            
+                if(lib && UX1LibraryName==lib.name){
+                    myLayer.symbolMasterName = myLayer.symbolMaster.name()+""
+                }        
+                
+                //log('myLayer.symbolMasterName:')
+                //log(myLayer.symbolMasterName)
                 delete symbolOverrides[objectID] 
                 break                                              
             }                     
