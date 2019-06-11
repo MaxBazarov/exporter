@@ -43,6 +43,7 @@ Settings:
 <img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Layer-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Artboard-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Document-Dialog.png"/><img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Pictures/Plugin-Dialog.png"/>
 
 Viewer - Show symbols (and design tokens):
+
 <img width="40%" src="https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Show Symbols/screenshot.png"/>
 
 ## Installation
