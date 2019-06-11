@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 6.0.1 (12 Jun 2019)
+- Returned "overflow: auto;" for modal dialogs to enable scrolling
+
 ##  Version 6.0.0 (11 Jun 2019)
 - Added "Show symbols" menu option to see shared symbols used on the page
 - Added second option to "Show embed code" 
