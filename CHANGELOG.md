@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 6.0.0 (11 Jun 2019)
+- Added "Show symbols" menu option to see shared symbols used on the page
+- Added second option to "Show embed code" 
+
 ##  Version 5.18.1 (4 Jun 2019)
 - Fixed publishing freeze (for some large projects)
 

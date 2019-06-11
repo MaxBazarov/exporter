@@ -437,17 +437,16 @@ class Exporter {
   saveToJSON(){
     if( !this.enabledJSON ) return true
 
-    let symbolTokens = ''
+    let loadedSmbolTokens = undefined
     while(true){
         let pathToSymbolTokens = this._findMainLibraryPath()
         if(undefined == pathToSymbolTokens) break
         pathToSymbolTokens = Utils.cutLastPathFolder(pathToSymbolTokens)+"/skins/currentskin-symboltokens.json"
         log('pathToSymbolTokens='+pathToSymbolTokens)
-        symbolTokens =  Utils.readFile(pathToSymbolTokens)
-        if(undefined==symbolTokens) break
-        symbolTokens = "var symbolsData = "+symbolTokens+";"
+        loadedSmbolTokens =  Utils.readFile(pathToSymbolTokens)
         break
     }
+    let symbolTokens = "var symbolsData = "+(undefined!=loadedSmbolTokens?loadedSmbolTokens:'{}')+";"
 
     log(" SaveToJSON: cleanup before saving...")
     for(var l of this.myLayers) l.clearRefsBeforeJSON()

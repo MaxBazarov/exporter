@@ -192,13 +192,14 @@ function createViewer(story, files) {
         },
 
         share: function(){
+            var srcHref =  document.location.href
             var href = ''            
 
             if(document.location.search.includes('embed')){
-                href = document.location.href
+                href = srcHref
             }else{
-                href = document.location.href.split('#')[0] + '?embed' + document.location.hash
-            }
+                href = srcHref.split('#')[0] + '?embed' + document.location.hash
+            }            
 
             var currentPageIndex = undefined==this.lastRegularPage || this.lastRegularPage<0 ? this.currentPage : this.lastRegularPage
             var page = story.pages[currentPageIndex]
@@ -207,6 +208,16 @@ function createViewer(story, files) {
             iframe += ' width="'+(story.iFrameSizeWidth?story.iFrameSizeWidth:page.width) + '"'
             iframe += ' height="'+(story.iFrameSizeHeight?story.iFrameSizeHeight:page.height) + '"'
             iframe += ' scrolling="auto" seamless id="iFrame1"></iframe>'
+
+            iframe += '\n\n'
+
+            var ihref = srcHref.substring(0, srcHref.lastIndexOf("/"))
+            ihref = ihref+ "/images/"+page['image2x']
+            iframe += "<a target='_blank' href='" + srcHref + "'>" + "<img border='0' "
+            iframe += ' width="'+(story.iFrameSizeWidth?story.iFrameSizeWidth:page.width) + '"'
+            //iframe += ' height="'+(story.iFrameSizeHeight?story.iFrameSizeHeight:page.height) + '"'
+            iframe += "src='" +  ihref+ "'"
+            iframe += "/></a>"
 
             alert(iframe)
         },
