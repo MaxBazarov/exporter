@@ -187,6 +187,7 @@ function createViewer(story, files) {
         },
         
         blinkHotspots: function(){
+            if(this.symbolViewer && this.symbolViewer.visible) return
             this.toggleLinks()
             setTimeout(doBlinkHotspots,500)
         },

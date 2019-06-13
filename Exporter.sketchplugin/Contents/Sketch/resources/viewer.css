@@ -40,15 +40,15 @@
     opacity: 0;
     transition: opacity 0.5s;
     z-index:30;
-    /*pointer-events: none;*/
-    background-color:#FF0000;
-    cursor: pointer;	
-    pointer-events: auto;
+    pointer-events: none;
+    background-color:#FF0000;   
 }
 
 .contentSymbolsVisible .symbolDiv{
     opacity: 0.1;
-    transition: opacity 0.5s;
+    transition: all 0.5s;
+    cursor: pointer;	
+    pointer-events: auto;
 }
 
 /******************/

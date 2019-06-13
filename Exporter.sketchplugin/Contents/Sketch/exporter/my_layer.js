@@ -57,6 +57,12 @@ class MyLayer {
             this.symbolMasterName = undefined
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
+        if(nlayer.isKindOfClass(MSTextLayer)){
+            log('----- this.MSTextLayer:  '+this.name)
+            log( this.slayer.style )    
+            if(this.slayer.style)
+                this.styleName = this.slayer.style.name
+        }
         
         this.childs = []  
         this.hotspots = [] 

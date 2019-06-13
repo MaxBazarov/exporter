@@ -8,7 +8,7 @@
 
 var exporter = undefined
 
-const replaceValidKeys = ["name","frame","x","y","width","height","childs","constrains","symbolMasterName"]
+const replaceValidKeys = ["name","frame","x","y","width","height","childs","constrains","symbolMasterName","styleName"]
 function replacer(key, value) {
   // Pass known keys and array indexes
   if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
