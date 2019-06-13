@@ -136,18 +136,18 @@ s += "                                    <div class=\"tips\">Z<\/div>";
 s += "                                <\/div>";
 s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active'); viewer.share();  return false;\">";
 s += "                                    <svg><use xlink:href=\"#icEmbed\"><\/use><\/svg>";
-s += "                                    <span>Show embed code<\/span>";
+s += "                                    <span>Show Embed Code<\/span>";
 s += "                                    <div class=\"tips\">E<\/div>";
 s += "                                <\/div>";
 s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active'); viewer.toogleLayout();  return false;\">";
 s += "                                    <svg><use xlink:href=\"#icGridLayout\"><\/use><\/svg>";
-s += "                                    <span>Show grid layout<\/span>";
+s += "                                    <span>Toogle Grid Layout<\/span>";
 s += "                                    <div class=\"tips\">L<\/div>";
 s += "                                <\/div>";
 if(options.loadLayers){
 s += "                                <div class=\"item\" onclick=\"addRemoveClass('class','menu','active'); viewer.symbolViewer.toggle();  return false;\">";
 s += "                                    <svg><use xlink:href=\"#icInspector\"><\/use><\/svg>";
-s += "                                    <span>Show symbols<\/span>";
+s += "                                    <span>Toogle Elements Inspector<\/span>";
 s += "                                    <div class=\"tips\">M<\/div>";
 s += "                                <\/div>";
 }
