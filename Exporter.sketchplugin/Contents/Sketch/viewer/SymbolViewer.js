@@ -27,9 +27,14 @@ class SymbolViewer{
         viewer.toogleLayout(false)
 
         if(!(viewer.currentPage in this.createdPages)){
+            this.createdPages[viewer.currentPage] = {
+                layerArray:[]
+            }            
+            this.pageInfo = this.createdPages[viewer.currentPage]
             this._create()
-            this.createdPages[viewer.currentPage] = true
+           
         } 
+
 
         const contentDiv = $('#content')
         contentDiv.addClass("contentSymbolsVisible")
@@ -63,29 +68,34 @@ class SymbolViewer{
             }
         }
 
+        const layerIndex = this.pageInfo.layerArray.length
+        this.pageInfo.layerArray.push(l)
+
         var a = $("<a>",{
-            l_x: l.frame.x,
-            l_y: l.frame.y,
-            l_width: l.frame.width,
-            l_height: l.frame.height,
-            sym_name: l.symbolMasterName!=undefined?l.symbolMasterName:"",
-            style_name: (l.styleName!=undefined)?l.styleName:""
+            l_index:    layerIndex,
         })        
 
         a.click(function () {
-            var symName = $( this ).attr("sym_name")
-            var styleName = $( this ).attr("style_name")
-            var frameX = $( this ).attr("l_x")
-            var frameY = $( this ).attr("l_y")
-            var frameWidth = $( this ).attr("l_width")
-            var frameHeight = $( this ).attr("l_height")
+            const layerIndex =  $( this ).attr("l_index")
+            const layer = viewer.symbolViewer.pageInfo.layerArray[layerIndex]
+            
+            var symName = layer.symbolMasterName
+            var styleName = layer.styleName
+            var frameX = layer.frame.x
+            var frameY = layer.frame.y
+            var frameWidth = layer.frame.width
+            var frameHeight = layer.frame.height
 
             var info = ""
-            if(symName!="") info = "Symbol: "+symName
-            if(styleName!="") info = "Style: "+styleName
+            if(symName!=undefined) info = "Symbol: "+symName
+            if(styleName!=undefined) info = "Style: "+styleName
             info += "\n\n X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
 
-            if(symName!="" && symName in symbolsData){
+            if(layer.text!=undefined && layer.text!=''){
+                info+="\n\nText: "+layer.text
+            }
+
+            if(symName!=undefined && symName in symbolsData){
                 const symInfo = symbolsData[symName]
                 info+="\n\nSymbol layers and @tokens:"
                 for(const layerName of Object.keys(symInfo.layers)){
@@ -95,9 +105,9 @@ class SymbolViewer{
                     }
                 }                
             }
-            if(styleName!="" && styleName in  symbolsData.styles){
+            if(styleName!=undefined && styleName in  symbolsData.styles){
                 const styleInfo = symbolsData.styles[styleName]
-                info+="\n\Style @tokens:"     
+                info+="\n\nStyle @tokens:"     
                 for(const tokenName of Object.keys(styleInfo.tokens)){
                     info+="\n     "+tokenName
                 }                                

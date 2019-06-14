@@ -46,21 +46,21 @@ class MyLayer {
             this.isSymbolInstance = true
             this.symbolMaster = nlayer.symbolMaster()
 
+            // prepare data for Element Inspector
             const lib = this.slayer.master.getLibrary()            
-
             if(lib && UX1LibraryName==lib.name||true){
-                this.symbolMasterName = this.symbolMaster.name()+""
-                //log('----- this.symbolMasterName:')
-                //log( this.symbolMasterName )                
+                this.symbolMasterName = this.symbolMaster.name()+""                
             }
         }else{
             this.symbolMasterName = undefined
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
         if(nlayer.isKindOfClass(MSTextLayer)){
+            // prepare data for Element Inspector
             const sharedStyle = nlayer.sharedStyle()
             if(sharedStyle)
                 this.styleName = sharedStyle.name()+""
+                this.text = this.slayer.text+""
         }
         
         this.childs = []  
