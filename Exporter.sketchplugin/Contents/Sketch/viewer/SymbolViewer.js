@@ -41,16 +41,16 @@ class SymbolViewer{
         this._processLayerList(layersData[viewer.currentPage].childs)        
     }
 
-    _processLayerList(layers){
+    _processLayerList(layers,isParentSymbol=false){
         for(var l of layers){
-            if(l.symbolMasterName!=undefined){
-                this._showSymbol(l)
+            if(l.symbolMasterName!=undefined || (!isParentSymbol && l.styleName!=undefined)){
+                this._showElement(l)
             }
-            this._processLayerList(l.childs)
+            this._processLayerList(l.childs,l.symbolMasterName!=undefined)
         }
     }
 
-    _showSymbol(l){
+    _showElement(l){
 
         var currentPanel = this.page
     
@@ -68,20 +68,24 @@ class SymbolViewer{
             l_y: l.frame.y,
             l_width: l.frame.width,
             l_height: l.frame.height,
-            sym_name: l.symbolMasterName            
+            sym_name: l.symbolMasterName!=undefined?l.symbolMasterName:"",
+            style_name: (l.styleName!=undefined)?l.styleName:""
         })        
 
         a.click(function () {
             var symName = $( this ).attr("sym_name")
+            var styleName = $( this ).attr("style_name")
             var frameX = $( this ).attr("l_x")
             var frameY = $( this ).attr("l_y")
             var frameWidth = $( this ).attr("l_width")
             var frameHeight = $( this ).attr("l_height")
 
-            var info = symName
+            var info = ""
+            if(symName!="") info = "Symbol: "+symName
+            if(styleName!="") info = "Style: "+styleName
             info += "\n\n X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
 
-            if(symName in symbolsData){
+            if(symName!="" && symName in symbolsData){
                 const symInfo = symbolsData[symName]
                 info+="\n\nSymbol layers and @tokens:"
                 for(const layerName of Object.keys(symInfo.layers)){
@@ -90,6 +94,13 @@ class SymbolViewer{
                         info+="\n        "+tokenName
                     }
                 }                
+            }
+            if(styleName!="" && styleName in  symbolsData.styles){
+                const styleInfo = symbolsData.styles[styleName]
+                info+="\n\Style @tokens:"     
+                for(const tokenName of Object.keys(styleInfo.tokens)){
+                    info+="\n     "+tokenName
+                }                                
             }
             
             alert(info)

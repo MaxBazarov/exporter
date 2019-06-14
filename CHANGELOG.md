@@ -1,5 +1,10 @@
 # Change Log
 
+##  Version 6.1.0 (14 Jun 2019)
+- Renaming Show Symbols to Element Inspector
+- Fixed closing of Element Inspector
+- Added shared style info to Element Inspector
+
 ##  Version 6.0.1 (12 Jun 2019)
 - Returned "overflow: auto;" for modal dialogs to enable scrolling
 

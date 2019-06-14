@@ -58,10 +58,9 @@ class MyLayer {
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
         if(nlayer.isKindOfClass(MSTextLayer)){
-            log('----- this.MSTextLayer:  '+this.name)
-            log( this.slayer.style )    
-            if(this.slayer.style)
-                this.styleName = this.slayer.style.name
+            const sharedStyle = nlayer.sharedStyle()
+            if(sharedStyle)
+                this.styleName = sharedStyle.name()+""
         }
         
         this.childs = []  
