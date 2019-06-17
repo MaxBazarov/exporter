@@ -14,36 +14,54 @@ class SymbolViewer{
     }
 
     hide(){
-        const contentDiv = $('#content')
-        contentDiv.removeClass("contentSymbolsVisible")
+        if(viewer.currentPageModal){
+            $(".modalSymbolLink").remove()
+            delete this.createdPages[viewer.currentPage]
+        }
+        const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
+        contentDiv.removeClass("contentSymbolsVisible")        
 
         this.visible = false
     }
 
     show(){
-        this.page = story.pages[viewer.currentPage];        
-
+        
         viewer.toggleLinks(false)
         viewer.toogleLayout(false)
+        
+        this._showPage(viewer.currentPage)
+        if(this.page.currentOverlayPage){
+            this._showPage(this.page.currentOverlayPage.index)
+        }
 
-        if(!(viewer.currentPage in this.createdPages)){
-            this.createdPages[viewer.currentPage] = {
-                layerArray:[]
-            }            
-            this.pageInfo = this.createdPages[viewer.currentPage]
-            this._create()
-           
-        } 
-
-
-        const contentDiv = $('#content')
+        const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
         contentDiv.addClass("contentSymbolsVisible")
  
         this.visible = true
-}
+    }
+
+    _showPage(pageIndex){
+        this.pageIndex = pageIndex
+        this.page = story.pages[pageIndex];        
+        if(!(pageIndex in this.createdPages)){
+            const newPageInfo = {
+                layerArray:[]
+            }
+            // cache only standalone pages
+            // if(!viewer.currentPageModal){                  
+             this.createdPages[pageIndex] = newPageInfo
+            
+            this.pageInfo = newPageInfo
+            this._create()           
+        }else{
+            this.pageInfo = this.createdPages[pageIndex]
+        }
+    }
+
+
 
     _create(){        
-        this._processLayerList(layersData[viewer.currentPage].childs)        
+        this._processLayerList(layersData[this.pageIndex].childs)        
     }
 
     _processLayerList(layers,isParentSymbol=false){
@@ -72,12 +90,15 @@ class SymbolViewer{
         this.pageInfo.layerArray.push(l)
 
         var a = $("<a>",{
-            l_index:    layerIndex,
+            class:      viewer.currentPageModal?"modalSymbolLink":"symbolLink",
+            pi:         this.pageIndex,
+            li:         layerIndex,
         })        
 
         a.click(function () {
-            const layerIndex =  $( this ).attr("l_index")
-            const layer = viewer.symbolViewer.pageInfo.layerArray[layerIndex]
+            const pageIndex =  $( this ).attr("pi")
+            const layerIndex =  $( this ).attr("li")
+            const layer = viewer.symbolViewer.createdPages[pageIndex].layerArray[layerIndex]
             
             var symName = layer.symbolMasterName
             var styleName = layer.styleName

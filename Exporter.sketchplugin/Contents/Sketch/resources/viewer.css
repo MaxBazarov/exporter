@@ -35,6 +35,14 @@
 
 /************ SYMBOLS ******/
 
+.symbolLink {
+
+}
+
+.modalSymbolLink {
+    
+}
+
 .symbolDiv {
 	position: absolute;
     opacity: 0;

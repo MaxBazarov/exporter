@@ -196,12 +196,15 @@ class ViewerPage {
         }
         var img = this._loadSingleImage(this,'img_')		 
         this.imageObj = img
-        img.appendTo(imageDiv)
-
-
-        this._addLayoutLines(imageDiv)
-        
+        img.appendTo(imageDiv) 
     }   
+
+    showLayout(){
+        if(undefined==this.layoutCreated){
+            this.layoutCreated = true
+            this._addLayoutLines(this.imageDiv) 
+        }
+    }
 
     _addLayoutLines(imageDiv){
         if( this.type!="regular" ||  undefined==this.layout) return

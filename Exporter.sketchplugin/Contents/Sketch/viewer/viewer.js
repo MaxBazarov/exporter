@@ -336,6 +336,8 @@ function createViewer(story, files) {
 		goTo : function(page,refreshURL=true) {
 			// We don't need any waiting page transitions anymore
             this._resetTransQueue()
+
+            if(this.symbolViewer) this.symbolViewer.hide()
             
 			var index = this.getPageIndex(page);
 
@@ -349,6 +351,7 @@ function createViewer(story, files) {
 			
 			if(index <0 ||  index == this.currentPage || index >= story.pages.length) return;
 
+            
 			var newPage = story.pages[index];
 			if(newPage.type==="modal"){                
                 // hide parent page links hightlighting
@@ -377,10 +380,10 @@ function createViewer(story, files) {
 			}
             this.prevPageIndex = this.currentPage		
             var prevRegularPage = this.lastRegularPage
-                        	
-            newPage.show()                      
-            this.refresh_adjust_content_layer(index);	  
-            
+
+            newPage.show()                   
+
+            this.refresh_adjust_content_layer(index);	              
             this.refresh_hide_last_image(index)                       
 			this.refresh_switch_modal_layer(index);	
 			this.refresh_update_navbar(index);			
@@ -703,9 +706,10 @@ function createViewer(story, files) {
             this.showLayout = newState!=undefined?newState:!this.showLayout
             div = $('#content')
 
-            if(this.showLayout )
+            if(this.showLayout ){
+                story.pages[this.currentPage].showLayout()
                 div.addClass("contentLayoutVisible")
-            else
+            }else
                 div.removeClass("contentLayoutVisible")        
         },
 

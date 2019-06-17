@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 6.1.1 (17 Jun 2019)
+- Added modals and overlays to Element Inspector
+- Viewer constructs Layout Grid on the first call, not on page creation
+
 ##  Version 6.1.0 (14 Jun 2019)
 - Renaming Show Symbols to Element Inspector
 - Fixed closing of Element Inspector
