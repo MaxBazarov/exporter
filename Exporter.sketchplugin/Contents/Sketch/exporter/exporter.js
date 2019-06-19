@@ -31,6 +31,7 @@ class Exporter {
     this.page = page;
     this.context = context;
     this.customArtboardFrame = undefined
+    this.siteIconLayer = undefined
     this.myLayers = []
     this.jsStory = '';
     this.pagesDict = []
@@ -517,6 +518,11 @@ class Exporter {
 
     // Build image small previews for Gallery
     this.buildPreviews()
+
+    // Save site icon
+    if(this.siteIconLayer!=undefined){        
+        this.siteIconLayer.exportSiteIcon()
+    }
 
     // Dump document layers to JSON file
     this.saveToJSON()

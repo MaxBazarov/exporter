@@ -100,6 +100,9 @@ class MyLayer {
                 break
             }
         }   
+        if(this.name.indexOf(Constants.INT_LAYER_NAME_SITEICON)>=0){
+            exporter.siteIconLayer = this
+        }
         
     }
 
@@ -195,6 +198,33 @@ class MyLayer {
         for(var l of this.childs){
             l.clearRefsBeforeJSON()
         }
+    }
+
+    exportSiteIcon(){
+        const nlayer = this.nlayer
+        const layer = this
+        
+        const imageName = "icon.png"
+        const imagePath = exporter._outputPath+"/resources/"+imageName;
+
+        log("imagePath:"+imagePath)
+        let slice = null
+
+        slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
+        
+        slice.scale = 1;
+        slice.saveForWeb = false;
+        slice.format = "png";
+        exporter.ndoc.saveArtboardOrSlice_toFile(slice, imagePath);
+
+        /*const options = { 
+            scales: [1],
+            output: imagePath,
+            overwriting: true,
+            'save-for-web': true, 
+            formats: 'png' 
+        }
+        Sketch.export(this.slayer, options)       */
     }
 
 }
