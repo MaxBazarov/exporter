@@ -96,5 +96,6 @@ var SettingKeys = {
   LAYER_OVERLAY_TYPE : "layerOverlayType",
   LAYER_DIV_ID: 'layerDivID',
   LAYER_EXTERNAL_LINK: "externalLink",  
-  LAYER_EXTERNAL_LINK_BLANKWIN: "layerNewWindow"
+  LAYER_EXTERNAL_LINK_BLANKWIN: "layerNewWindow",
+  LAYER_COMMENT: 'layerComment'
 };

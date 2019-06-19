@@ -102,6 +102,7 @@ class SymbolViewer{
             
             var symName = layer.symbolMasterName
             var styleName = layer.styleName
+            var comment = layer.comment
             var frameX = layer.frame.x
             var frameY = layer.frame.y
             var frameWidth = layer.frame.width
@@ -110,6 +111,9 @@ class SymbolViewer{
             var info = ""
             if(symName!=undefined) info = "Symbol: "+symName
             if(styleName!=undefined) info = "Style: "+styleName
+            
+            if(comment!=undefined) info += "\n\nComment: "+comment
+
             info += "\n\n X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
 
             if(layer.text!=undefined && layer.text!=''){

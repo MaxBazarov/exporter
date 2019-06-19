@@ -62,6 +62,13 @@ class MyLayer {
                 this.styleName = sharedStyle.name()+""
                 this.text = this.slayer.text+""
         }
+
+        var comment = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_COMMENT)
+        if(undefined!=comment && ''!=comment){
+            this.comment = comment
+        }
+
+
         
         this.childs = []  
         this.hotspots = [] 
