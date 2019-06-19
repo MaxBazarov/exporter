@@ -1,5 +1,7 @@
 # Change Log
 
+##  Version 6.2.0 (17 Jun 2019)
+
 ##  Version 6.1.1 (17 Jun 2019)
 - Added modals and overlays to Element Inspector
 - Viewer constructs Layout Grid on the first call, not on page creation
