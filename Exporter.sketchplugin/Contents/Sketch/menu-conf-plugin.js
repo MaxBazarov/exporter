@@ -15,13 +15,13 @@ var onRun = function(context) {
   if(position==undefined || position=="") position = 0
 
   let sortRule = Settings.settingForKey(SettingKeys.PLUGIN_SORT_RULE)
-  if(sortRule==undefined || sortRule=="") position = 0
+  if(sortRule==undefined || sortRule=="") sortRule = 0
 
   const dontRetina = Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)==1
   const disableZoom = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)==1
   const hideNav = Settings.settingForKey(SettingKeys.PLUGIN_HIDE_NAV)==1
   const disableHotspots = Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS)==1
-  const saveJSON = Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+  const dontSaveElements = Settings.settingForKey(SettingKeys.PLUGIN_DONT_SAVE_ELEMENTS)==1
 
 
   let commentsURL = Settings.settingForKey(SettingKeys.PLUGIN_COMMENTS_URL)
@@ -45,7 +45,7 @@ var onRun = function(context) {
   dialog.addCheckbox("zoom","Enable auto-scale", !disableZoom)
   dialog.addCheckbox("hidenav","Show navigation", !hideNav)
   dialog.addCheckbox("disableHotspots","Highlight hotspots on mouse over", !disableHotspots)
-  dialog.addCheckbox("savejson","Dump layers into JSON file", saveJSON)
+  dialog.addCheckbox("dontSaveElements","Don't save data for Element Inspector", dontSaveElements)
 
   dialog.addTextInput("googleCode","Google Code", googleCode,'e.g. UA-XXXXXXXX-X')  
   dialog.addTextInput("shareiFrameSize","Embed Code iFrame Size", shareiFrameSize,'e.g. 400:225')  
@@ -64,7 +64,7 @@ var onRun = function(context) {
     Settings.setSettingForKey(SettingKeys.PLUGIN_SHARE_IFRAME_SIZE, dialog.views['shareiFrameSize'].stringValue()+"")  
     Settings.setSettingForKey(SettingKeys.PLUGIN_HIDE_NAV, dialog.views['hidenav'].state() != 1)     
     Settings.setSettingForKey(SettingKeys.PLUGIN_DISABLE_HOTSPOTS, dialog.views['disableHotspots'].state() != 1)     
-    Settings.setSettingForKey(SettingKeys.PLUGIN_SAVE_JSON, dialog.views['savejson'].state() == 1)     
+    Settings.setSettingForKey(SettingKeys.PLUGIN_DONT_SAVE_ELEMENTS, dialog.views['dontSaveElements'].state() == 1)     
   }
   dialog.finish()
 

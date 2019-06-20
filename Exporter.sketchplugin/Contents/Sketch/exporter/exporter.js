@@ -66,7 +66,7 @@ class Exporter {
     }
 
     this.retinaImages = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_RETINA_IMAGES)!=1
-    this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_SAVE_JSON)==1
+    this.enabledJSON = this.Settings.settingForKey(SettingKeys.PLUGIN_DONT_SAVE_ELEMENTS)!=1
     this.disableFixedLayers = this.customArtboardFrame || this.Settings.documentSettingForKey(this.doc,SettingKeys.DOC_DISABLE_FIXED_LAYERS)==1
 
     let pluginSortRule = this.Settings.settingForKey(SettingKeys.PLUGIN_SORT_RULE)
@@ -228,7 +228,7 @@ class Exporter {
     const buildOptions = {
         docName:            this.docName,
         backColor:          this.backColor,
-        isPositionCenter:   this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER.Constants,
+        centerContent:      this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER,
         loadLayers:         this.enabledJSON
     }    
 

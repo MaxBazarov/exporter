@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 6.2.1 (20 Jun 2019)
+- Fixed Artboard Alignment configuration option behaviour
+- Renamed "Enable JSON" plugin configuration optio to ""Don't save data for Element Inspector"
+
 ##  Version 6.2.0 (19 Jun 2019)
 - Support for custom favicon (see https://github.com/MaxBazarov/exporter/tree/master/tests/Favicon)
 - Added layer comments (edit in Configure Layer, show in Element Inspector)

@@ -65,7 +65,7 @@ var SettingKeys = {
   PLUGIN_HIDE_NAV: "hideNavigation",    
   PLUGIN_SORT_RULE: "pluginSortRule",    
   PLUGIN_DISABLE_HOTSPOTS: "pluginDisableHotspots",    
-  PLUGIN_SAVE_JSON: "pluginSaveJSON",     
+  PLUGIN_DONT_SAVE_ELEMENTS: "pluginDontSaveElements",     
   PLUGIN_PUBLISH_LOGIN: "publishLogin",
   PLUGIN_PUBLISH_SITEROOT: "publishSiteRoot",
   PLUGIN_EXPORTING_URL: "pluginExportingURL", 
