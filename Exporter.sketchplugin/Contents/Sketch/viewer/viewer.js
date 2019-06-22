@@ -192,6 +192,15 @@ function createViewer(story, files) {
             setTimeout(doBlinkHotspots,500)
         },
 
+        onContentClick: function(){
+            // If the current page has some overlay open then close it
+            const page = story.pages[this.currentPage]            
+            if(page.hideCurrentOverlay()){
+                return
+            }
+            this.blinkHotspots()
+        },
+
         share: function(){
             var srcHref =  document.location.href
             var href = ''            
@@ -661,7 +670,12 @@ function createViewer(story, files) {
 			if(gallery.isVisible()){
 				gallery.toogle()
 				return
-			}
+            }
+            // If the current page has some overlay open then close it
+            const page = story.pages[this.currentPage]            
+            if(page.hideCurrentOverlay()){
+                return
+            }
 			// If the current page is modal then close it and go to the last non-modal page
 			if(this.currentPageModal){
                 if(this.prevPageModalIndex>=0){

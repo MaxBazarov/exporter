@@ -5,11 +5,14 @@ class ViewerPage {
 
     hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
-        
-        if(this.currentOverlayPage!=undefined){
-            this.currentOverlayPage.hide()
-            this.currentOverlayPage = undefined
-        }
+        this.hideCurrentOverlay()
+    }
+
+    hideCurrentOverlay(){
+        if(undefined==this.currentOverlayPage) return false
+        this.currentOverlayPage.hide()
+        this.currentOverlayPage = undefined
+        return true
     }
     
 

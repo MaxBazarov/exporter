@@ -106,7 +106,7 @@ function buildMainHTML(options) {
   `;
   s += ' <div id="container">\n';
   s += ' <div id="marker"></div>\n';
-  s += ' <div id="content" onclick="viewer.blinkHotspots()">\n';
+  s += ' <div id="content" onclick="viewer.onContentClick()">\n';
   s += ' </div>\n'; 
   s += ' <div id="content-shadow" class="hidden"></div>\n';
   s += ' <div id="content-modal" class="contentModal hidden"></div>\n';
