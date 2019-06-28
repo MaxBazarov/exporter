@@ -53,9 +53,8 @@ class MyArtboard extends MyLayer {
         super(nlayer, undefined)
         
         this.oldFrame = needResize?oldframe:undefined
-
+        this.overlayLayers = []
         this.fixedLayers = [] // list of layers which are configured as fixed
-
         this.nextLinkIndex = 0 // we need it to generate uniq id of the every link
 
         // check if the page name is unique in document
@@ -114,6 +113,7 @@ class MyArtboard extends MyLayer {
     export(){        
         this._exportImages()
         this._findFixedPanelHotspots()
+        //this._exportOverlayLayers()
         this._pushIntoJSStory(this.pageIndex)
     }
 
@@ -359,9 +359,8 @@ class MyArtboard extends MyLayer {
         return Utils.toFilename(this.name, false) + panelPostix +  suffix + ".png";
       }
 
-    _exportImage(scale,layer,panelPostix="",addToExported = true) {
-        exporter.log("   exportImage() for "+layer.name);
-        const  nlayer = layer.nlayer
+    _exportImage(scale,layer,nlayer,panelPostix="",addToExported = true) {
+        exporter.log("   exportImage() for "+nlayer.name())
         
         const imageName = this._getImageName(scale,panelPostix)
         const imagePath = exporter.imagesPath + imageName
@@ -371,7 +370,7 @@ class MyArtboard extends MyLayer {
 
         if (nlayer.isKindOfClass(MSArtboardGroup)) {
             slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
-        } else if (layer.isFixed) {
+        } else if (layer && layer.isFixed) {
             let frame = layer.frame.copy()
             frame.x += layer.artboard.slayer.frame.x
             frame.y += layer.artboard.slayer.frame.y
@@ -416,7 +415,7 @@ class MyArtboard extends MyLayer {
         this._exportFixedLayersToImages(scales)
 
         for(var scale of scales){                     
-            this._exportImage(scale,this,'',Constants.ARTBOARD_TYPE_OVERLAY != this.artboardType)
+            this._exportImage(scale,this,this.nlayer,'',Constants.ARTBOARD_TYPE_OVERLAY != this.artboardType)
         }
         
         // show fixed panels back
@@ -425,6 +424,25 @@ class MyArtboard extends MyLayer {
 
         log("  exportArtboardImages: done!")
     }
+
+
+    _exportOverlayLayers(){
+        log('_exportOverlayLayers: running')  
+        let scales = exporter.retinaImages?[1,2]:[1]  
+        for(const layer of this.overlayLayers){         
+            log('_exportOverlayLayers: '+layer.name)               
+            // need 
+            const artboard = this._findArtboardByName(layer.name+"@")
+            if(!artboard) continue
+            //
+            for(var scale of scales){                     
+                this._exportImage(scale,undefined,artboard.sketchObject,"-"+layer.name,false)
+            }            
+            //
+        }
+        log('_exportOverlayLayers: done!')  
+    }
+
 
     _exportFixedLayersToImages(scales){
         for(var layer of this.fixedLayers){               
@@ -444,9 +462,9 @@ class MyArtboard extends MyLayer {
                 layer.slayer.hidden = false
 
                 //this._exportImage2('1, 2',layer.parent.slayer)         
-                for(var scale of scales){                                         
-                    this._exportImage(scale,layer.parent.isSymbolInstance?layer:layer,"-"+layer.fixedIndex,false)
-                    //this._exportImage(scale,layer,"-"+layer.fixedIndex)                    
+                for(var scale of scales){                                       
+                    const l = layer.parent.isSymbolInstance?layer:layer
+                    this._exportImage(scale,l,l.nlayer,"-"+layer.fixedIndex,false)
                 }                 
 
                 layer.slayer.hidden = true

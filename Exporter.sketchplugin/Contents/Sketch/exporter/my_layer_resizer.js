@@ -105,6 +105,20 @@ class MyLayerResizer {
         }
 
         this._processLayerOverrides(l,prefix + " ",lostOverrides)
+
+        if(l.name=='Customers@OverlayOnhover@'){
+            log('=--------------- Customers@OverlayOnhover@ ----------------') //--
+        }
+
+        if(l.hasHoverOverlay){
+            const hoverHotsport = {
+                r:          l.frame.copy(),
+                linkType:   'artboard',
+                artboardID: l.hoverOverlayArtboardID
+            }
+            this.currentArtboard.hotspots.push(hoverHotsport)
+            log(prefix+"_processLayerLinks: [[[hasHoverOverlay]]]"+l.hoverOverlayArtboardID) //--
+        }
         
         while(true){               
             // check custom link from parent overrides

@@ -89,6 +89,7 @@ class MyLayer {
         }
 
          // check special internal properties
+         // check: if this layer provides browser window background color
          if(""==exporter.backColor){            
             while(true){
                 if(this.name.indexOf(Constants.INT_LAYER_NAME_BACKCOLOR)<0) break
@@ -100,8 +101,14 @@ class MyLayer {
                 break
             }
         }   
+        // check: if this layer provides browser favicon
         if(this.name.indexOf(Constants.INT_LAYER_NAME_SITEICON)>=0){
             exporter.siteIconLayer = this
+        }
+        // check: if this layer contains special overlay
+        if(!this.isArtboard && this.name.indexOf(Constants.INT_LAYER_NAME_OVERLAYONHOVER)>=0){
+            this.hasHoverOverlay = true
+            this.artboard.overlayLayers.push(this)
         }
         
     }
@@ -242,8 +249,55 @@ class MyLayerCollector {
             myLayers.push(this.getCollectLayer(prefix+" ",artboard,undefined,{}))
         }, this);
 
+        // do we need to add some artboards from libraries ?
+        const overlayedArtboards = this._findOverlayArtboardsFromLibraries(myLayers)
+        for(const nArtboard of overlayedArtboards){
+            myLayers.push(this.getCollectLayer(prefix+" ",nArtboard,undefined,{}))
+        }
+
         exporter.myLayers = myLayers
+
         log( prefix+"collectArtboardsLayers: done!")
+    }
+
+    _findOverlayArtboardsFromLibraries(knownArtboards){
+        let result = []
+        log('_addOverlayArtboardsFromLibraries: running')  
+
+        for(const artboard of knownArtboards){
+            for(const layer of artboard.overlayLayers){
+                const sLibraryArtboard = this._findLibraryArtboardByName(layer.name+"@")
+                if(!sLibraryArtboard) continue
+                layer.hoverOverlayArtboardID = sLibraryArtboard.sketchObject.objectID()
+                log('hoverOverlayArtboardID---------------+++ '+sLibraryArtboard.id )  //--
+                log('hoverOverlayArtboardID---------------+++ '+layer.hoverOverlayArtboardID )  //--
+                result.push(sLibraryArtboard.sketchObject)
+            }
+        }
+    
+        log('_addOverlayArtboardsFromLibraries: done!')  
+        return result
+    }
+
+
+    // return wrappedObject
+    _findLibraryArtboardByName(name){
+        var libraries = require('sketch/dom').getLibraries()    
+        log('_findLibraryArtboardByName.1')
+        log(libraries)
+        for(const lib of libraries){           
+            log('_findLibraryArtboardByName.3')
+            const doc = lib.getDocument() 
+            const artboards = doc.getLayersNamed(name)
+            if(artboards.length){
+                log('_findLibraryArtboardByName.3.1 SUCCESS')
+                return artboards[0]
+            }
+            log('_findLibraryArtboardByName.4')
+
+        }
+        log('_findLibraryArtboardByName.10 FAILED')
+        return undefined
     }
 
     getCollectLayer(prefix,nlayerOrg,myParent,symbolOverrides){

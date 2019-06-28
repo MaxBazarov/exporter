@@ -462,12 +462,18 @@ class Exporter {
   }
 
   _findMainLibraryPath(){
+    log('_findMainLibraryPath.1')
     var libraries = require('sketch/dom').getLibraries()    
+    log('_findMainLibraryPath.2')
+    log(libraries)
     for(const lib of libraries){
         if("ux1-ui" != lib.name) continue
+        log('_findMainLibraryPath.3')
         const doc = lib.getDocument() 
+        log('_findMainLibraryPath.4')
         return doc.path+""
     }
+    log('_findMainLibraryPath.10')
     return undefined
   }
 
@@ -520,9 +526,9 @@ class Exporter {
     this.buildPreviews()
 
     // Save site icon
-    /*if(this.siteIconLayer!=undefined){        
+    if(this.siteIconLayer!=undefined){        
         this.siteIconLayer.exportSiteIcon()
-    }*/
+    }
 
     // Dump document layers to JSON file
     this.saveToJSON()
