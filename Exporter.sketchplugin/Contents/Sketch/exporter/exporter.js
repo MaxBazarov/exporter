@@ -520,9 +520,9 @@ class Exporter {
     this.buildPreviews()
 
     // Save site icon
-    if(this.siteIconLayer!=undefined){        
+    /*if(this.siteIconLayer!=undefined){        
         this.siteIconLayer.exportSiteIcon()
-    }
+    }*/
 
     // Dump document layers to JSON file
     this.saveToJSON()
