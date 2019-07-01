@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 6.3.0 (1 Jul 2019)
+- Expremintal sypport for shared overlay artboards
+
 ##  Version 6.2.1 (20 Jun 2019)
 - Fixed Artboard Alignment configuration option behaviour
 - Renamed "Enable JSON" plugin configuration optio to ""Don't save data for Element Inspector"

@@ -267,10 +267,13 @@ class MyLayerCollector {
         for(const artboard of knownArtboards){
             for(const layer of artboard.overlayLayers){
                 const sLibraryArtboard = this._findLibraryArtboardByName(layer.name+"@")
-                if(!sLibraryArtboard) continue
-                layer.hoverOverlayArtboardID = sLibraryArtboard.sketchObject.objectID()
-                log('hoverOverlayArtboardID---------------+++ '+sLibraryArtboard.id )  //--
-                log('hoverOverlayArtboardID---------------+++ '+layer.hoverOverlayArtboardID )  //--
+                if(!sLibraryArtboard){
+                    exporter.logError("Can't find artboard with name: "+layer.name+"@")
+                    continue
+                }
+                layer.hoverOverlayArtboardID = sLibraryArtboard.sketchObject.objectID()+""
+                //log('hoverOverlayArtboardID---------------+++ '+sLibraryArtboard.id )  //--
+                //log('hoverOverlayArtboardID---------------+++ '+layer.hoverOverlayArtboardID )  //--
                 result.push(sLibraryArtboard.sketchObject)
             }
         }
@@ -285,9 +288,21 @@ class MyLayerCollector {
         var libraries = require('sketch/dom').getLibraries()    
         log('_findLibraryArtboardByName.1')
         log(libraries)
-        for(const lib of libraries){           
-            log('_findLibraryArtboardByName.3')
+        for(const lib of libraries){
+            log('_findLibraryArtboardByName.3: '+lib.name)
+            if(!lib.enabled){
+                log("_findLibraryArtboardByName.3.0.0 skip disabled library")
+                continue
+            }
+            if(!lib.valid){
+                log("_findLibraryArtboardByName.3.0.1 skip INVALID library")
+                continue
+            }
             const doc = lib.getDocument() 
+            if(!doc){
+                log("Can't find get library as document")
+                continue
+            }
             const artboards = doc.getLayersNamed(name)
             if(artboards.length){
                 log('_findLibraryArtboardByName.3.1 SUCCESS')
@@ -296,6 +311,7 @@ class MyLayerCollector {
             log('_findLibraryArtboardByName.4')
 
         }
+        exporter.logError("Can't find artboard '"+name+"' in enabled libraries")
         log('_findLibraryArtboardByName.10 FAILED')
         return undefined
     }

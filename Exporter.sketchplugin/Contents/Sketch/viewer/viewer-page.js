@@ -79,6 +79,10 @@ class ViewerPage {
                 div.addClass('divPanel')
             }
 
+            if(undefined!=this.overlayShadowX){
+                posX -= this.overlayShadowX
+            }
+
             this.currentX = posX
             this.currentY = posY
             
@@ -91,6 +95,18 @@ class ViewerPage {
 
             var extURL = '/o/'+linkIndex
             viewer.refresh_url(newParentPage.index,extURL)
+
+            if(10==this.overlayAlign){ // for overlay on hotspot top left position
+                var func = function(event){
+                    var page = story.pages[viewer.currentPage];
+                    if(undefined!=page){
+                        page.hideCurrentOverlay()
+                    }
+                }
+                this.imageDiv.mouseleave(func)
+            }
+
+
         }else{
             if(this == newParentPage.currentOverlayPage){
                 newParentPage.currentOverlayPage = undefined
@@ -371,12 +387,14 @@ class ViewerPage {
                         }
 
                         // check page right side
-                        const fullWidth = newPage.width + offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
-                        if( (linkPosX+fullWidth)>currentPage.width )
-                            linkPosX = currentPage.width - fullWidth
+                        if(10!=newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
+                            const fullWidth = newPage.width + offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                            if( (linkPosX+fullWidth)>currentPage.width )
+                                linkPosX = currentPage.width - fullWidth
 
-                        if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
-                            linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                            if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
+                                linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                            }
                         }
 
                         if(linkPosY<0) linkPosY = 0
@@ -397,11 +415,16 @@ class ViewerPage {
                 }
                 return false
             }
-            if(1==eventType){
-                a.mouseenter(func)
-                a.mouseleave(func)
-                a.click(function(){return false})
-            }else{
+            
+            if(1==eventType){ // for Mouse over event
+                a.mouseenter(func)            
+                if(10==newPage.overlayAlign){ // for overlay on hotspot top left position
+                    
+                }else{
+                    a.mouseleave(func)
+                    a.click(function(){return false})
+                }
+            }else{ // for On click event
                 a.click(func)
             }
             

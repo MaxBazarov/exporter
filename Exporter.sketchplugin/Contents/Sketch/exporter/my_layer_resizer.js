@@ -107,7 +107,7 @@ class MyLayerResizer {
         this._processLayerOverrides(l,prefix + " ",lostOverrides)
 
         if(l.name=='Customers@OverlayOnhover@'){
-            log('=--------------- Customers@OverlayOnhover@ ----------------') //--
+            //log('=--------------- Customers@OverlayOnhover@ ----------------') //--
         }
 
         if(l.hasHoverOverlay){
@@ -117,7 +117,7 @@ class MyLayerResizer {
                 artboardID: l.hoverOverlayArtboardID
             }
             this.currentArtboard.hotspots.push(hoverHotsport)
-            log(prefix+"_processLayerLinks: [[[hasHoverOverlay]]]"+l.hoverOverlayArtboardID) //--
+            //log(prefix+"_processLayerLinks: [[[hasHoverOverlay]]]"+l.hoverOverlayArtboardID) //--
         }
         
         while(true){               

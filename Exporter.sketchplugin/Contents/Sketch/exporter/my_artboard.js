@@ -202,6 +202,12 @@ class MyArtboard extends MyLayer {
                     js += "'overlayShadow':'"+shadowInfo.style+"',\n"
                     js += "'overlayShadowX':"+shadowInfo.x+",\n"
                 }
+            }else if(Constants.ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT == this.overlayAlign) {
+                const layerWithShadow = this._getOverlayShadowLayer()                
+                if(layerWithShadow){
+                    const shadowInfo = layerWithShadow.getShadowAsStyle()                    
+                    js += "'overlayShadowX':"+shadowInfo.x+",\n"
+                }
             }
             js += "'overlayByEvent': "+this.overlayByEvent+",\n";
             js += "'overlayAlign': "+this.overlayAlign+",\n";
