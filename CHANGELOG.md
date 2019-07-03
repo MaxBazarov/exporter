@@ -2,7 +2,7 @@
 
 ##  Version 6.3.1 (1 Jul 2019)
 - Fixed wrong aligment of on-click overlays
-- Improved behavour of on-hover overlays
+- Improved behavour of on-hover overlays for "hotspot top left position" case (See latest example here - https://github.com/MaxBazarov/exporter/blob/master/tests/OverlayOnMouseOver/test.sketch)
 
 ##  Version 6.3.0 (1 Jul 2019)
 - Experimental support for shared overlay artboards
