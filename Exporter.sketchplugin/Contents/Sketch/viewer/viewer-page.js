@@ -5,13 +5,20 @@ class ViewerPage {
 
     hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
-        this.hideCurrentOverlay()
+        
+        if(undefined != this.parentPage){ // current page is overlay
+            const parent = this.parentPage
+            viewer.refresh_url(parent.index)
+            parent.currentOverlayPage = undefined
+            this.parentPage = undefined
+        }else if( undefined != this.currentOverlayPage ){ // current page is parent of some overlay
+            this.currentOverlayPage.hide()
+        }
     }
 
     hideCurrentOverlay(){
         if(undefined==this.currentOverlayPage) return false
         this.currentOverlayPage.hide()
-        this.currentOverlayPage = undefined
         return true
     }
     
@@ -79,7 +86,7 @@ class ViewerPage {
                 div.addClass('divPanel')
             }
 
-            if(undefined!=this.overlayShadowX){
+            if(undefined!=this.overlayShadowX && 10==this.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
                 posX -= this.overlayShadowX
             }
 
@@ -92,12 +99,13 @@ class ViewerPage {
             
             this.show()
             newParentPage.currentOverlayPage = this
+            this.parentPage = newParentPage
 
             var extURL = '/o/'+linkIndex
             viewer.refresh_url(newParentPage.index,extURL)
 
             if(10==this.overlayAlign){ // for overlay on hotspot top left position
-                var func = function(event){
+                var func = function(event){                    
                     var page = story.pages[viewer.currentPage];
                     if(undefined!=page){
                         page.hideCurrentOverlay()
@@ -376,8 +384,8 @@ class ViewerPage {
                         }else if(9==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
                             linkPosX = currentPage.width - newPage.width
                             linkPosY = currentPage.height - newPage.height
-                        }else if(10==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
-                            linkPosY = linkPosY - newPage.height - linkHeight
+                        }else if(10==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT                        
+                            linkPosY -= linkHeight
                         }else if(11==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
                             linkPosY = linkPosY - newPage.height - linkHeight
                             linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
@@ -387,16 +395,17 @@ class ViewerPage {
                         }
 
                         // check page right side
-                        if(10!=newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
-                            const fullWidth = newPage.width + offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
+                        if(10!=newPage.overlayAlign){// NOTARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
+                            const fullWidth = newPage.width + offsetX // + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                             if( (linkPosX+fullWidth)>currentPage.width )
                                 linkPosX = currentPage.width - fullWidth
 
-                            if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
+                            /*if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
                                 linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
-                            }
+                            }*/
                         }
 
+                        if(linkPosX<0) linkPosX = 0
                         if(linkPosY<0) linkPosY = 0
                                 
                         newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed,linkPageType)

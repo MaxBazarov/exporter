@@ -1,7 +1,11 @@
 # Change Log
 
+##  Version 6.3.1 (1 Jul 2019)
+- Fixed wrong aligment of on-click overlays
+- Improved behavour of on-hover overlays
+
 ##  Version 6.3.0 (1 Jul 2019)
-- Expremintal sypport for shared overlay artboards
+- Experimental support for shared overlay artboards
 
 ##  Version 6.2.1 (20 Jun 2019)
 - Fixed Artboard Alignment configuration option behaviour
