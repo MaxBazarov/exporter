@@ -30,28 +30,37 @@ waitCompressor(){
 
 prepareMockups()
 {	
-	rm -rf "${tmpFolder}"*
-	mkdir "$tmpFolder"$ver
+    if [$ver == "-1"]; then
+        verFolder = ""
+    else
+        verFolder = "$ver/"
+    fi
 
-	echo $tmpFolder$ver
+	rm -rf "${tmpFolder}"*
+	mkdir "$tmpFolder"$verFolder
+
+	echo $tmpFolder$verFolder
 	                
 
 	# copy to version
 	echo "-- prepare temp folder"
-	cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}${ver}/"
-	# inject version
-	sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
-	sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
-	sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
+	cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}${verFolder}"
 	
-	if [ "$skipLive" == "" ]; then
-		# copy version to live
-		cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}live"
-        sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})';/g" "${tmpFolder}live/viewer/viewer.js"
-		sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}live/viewer/story.js"
-		sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/viewer/story.js"
+    # inject version
+    if [$ver != "live"]; then
+        sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
+        sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
+        sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
+        
+        if [ "$skipLive" == "" ]; then
+            # copy version to live
+            cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}live"
+            sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})';/g" "${tmpFolder}live/viewer/viewer.js"
+            sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}live/viewer/story.js"
+            sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/viewer/story.js"
 
-	fi
+        fi
+    fi
 }
 
 #arguments: remoteFolder (nextcp/ux-framework/providercp)

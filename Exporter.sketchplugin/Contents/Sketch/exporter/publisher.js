@@ -59,7 +59,7 @@ class Publisher {
             if(runResult.result){
                 // open browser
                 if(this.siteRoot!=''){
-                    const openURL = this.siteRoot + destFolder + "/"+version+"/index.html"
+                    const openURL = this.siteRoot + destFolder + (version=="-1"?"":(version+"/")) +"/index.html"
                     const openResult = Utils.runCommand('/usr/bin/open', [openURL])
                     
                     if(openResult.result){
@@ -153,9 +153,10 @@ class Publisher {
 			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_REMOTE_FOLDER,this.remoteFolder )    
 
 			// save new version into document settings
-			let ver =  dialog.views['version'].stringValue()+""
-			this.ver = parseInt(ver)+""
-			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION, (parseInt(ver)+1)+"")
+            let ver =  dialog.views['version'].stringValue()+""
+            let verInt =  parseInt(ver)
+			this.ver = ver
+			Settings.setDocumentSettingForKey(this.doc,SettingKeys.DOC_PUBLISH_VERSION, (verInt>=0?verInt+1:verInt)+"")
 
 		  return true
 		}
