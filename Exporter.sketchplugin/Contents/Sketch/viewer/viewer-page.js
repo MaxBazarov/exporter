@@ -33,7 +33,7 @@ class ViewerPage {
 
         if(!this.imageObj){        
             // load image     
-            this.loadImages()						
+            this.loadImages(true)						
         }            
 
         this.imageDiv.removeClass("hidden")

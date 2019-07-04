@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 6.3.2 (1 Jul 2019)
+- Force overlay image loading (critical for low bandwith connection)
+
 ##  Version 6.3.1 (1 Jul 2019)
 - Fixed wrong aligment of on-click overlays
 - Improved behavour of on-hover overlays for "hotspot top left position" case (See latest example here - https://github.com/MaxBazarov/exporter/blob/master/tests/OverlayOnMouseOver/test.sketch)
