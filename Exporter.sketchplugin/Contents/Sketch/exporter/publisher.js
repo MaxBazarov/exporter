@@ -59,7 +59,7 @@ class Publisher {
             if(runResult.result){
                 // open browser
                 if(this.siteRoot!=''){
-                    const openURL = this.siteRoot + destFolder + (version=="-1"?"":(version+"/")) +"/index.html"
+                    const openURL = this.siteRoot + destFolder + (version=="-1"?"":("/"+version)) +"/index.html"
                     const openResult = Utils.runCommand('/usr/bin/open', [openURL])
                     
                     if(openResult.result){
