@@ -30,24 +30,22 @@ waitCompressor(){
 
 prepareMockups()
 {	
-    if [$ver == "-1"]; then
-        verFolder = ""
-    else
-        verFolder = "$ver/"
+    verFolder="${ver}/"
+    if [ "$ver" == "-1" ]; then
+        verFolder=""
     fi
 
-	rm -rf "${tmpFolder}"*
-	mkdir "$tmpFolder"$verFolder
+    echo $tmpFolder$verFolder
 
-	echo $tmpFolder$verFolder
-	                
+	rm -rf "${tmpFolder}"
+	mkdir -p "$tmpFolder"$verFolder	            
 
 	# copy to version
 	echo "-- prepare temp folder"
 	cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}${verFolder}"
 	
     # inject version
-    if [$ver != "live"]; then
+    if [$ver != "-1"]; then
         sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
         sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
         sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
@@ -92,4 +90,3 @@ fi
 #waitCompressor
 prepareMockups
 uploadReadyMockups
-

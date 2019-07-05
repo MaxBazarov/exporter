@@ -1,6 +1,9 @@
 # Change Log
 
-##  Version 6.3.2 (1 Jul 2019)
+##  Version 6.3.3 (5 Jul 2019)
+- Fixed publishing procedure for versioned mockups
+
+##  Version 6.3.2 (4 Jul 2019)
 - Force overlay image loading (critical for low bandwith connection)
 
 ##  Version 6.3.1 (1 Jul 2019)
