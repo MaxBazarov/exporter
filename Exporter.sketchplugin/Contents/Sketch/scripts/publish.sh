@@ -7,12 +7,14 @@ remoteFolder="$4"
 docPathValue="$5"
 mirror1="$6"
 mirror2="$7"
+skipLive = ""
 
 docPathPlaceholder="P_P_P"
 docVerPlaceholder="V_V_V"
 storyVerPlaceholder='VERSION_INJECT=""'
 
 orgTmpFolder="$(mktemp -d)/"
+#orgTmpFolder="/Users/Baza/Temp/"
 tmpFolder="${orgTmpFolder}${remoteFolder}/"
 mkdir -p "${tmpFolder}"
 
@@ -45,7 +47,7 @@ prepareMockups()
 	cp -R "${allMockupsFolder}/${docFolder}/" "${tmpFolder}${verFolder}"
 	
     # inject version
-    if [$ver != "-1"]; then
+    if [ "$ver" != "-1" ]; then
         sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
         sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
         sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
