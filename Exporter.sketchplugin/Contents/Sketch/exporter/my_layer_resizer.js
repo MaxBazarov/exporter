@@ -16,8 +16,17 @@ class MyLayerResizer {
     
     resizeLayers(prefix){
         log( prefix+"resizeLayers: running...")
+        
         this.childFinder = new ChildFinder()
+        exporter.newLibArtboards = [] // prepare special list for found library artboards
+        
         this._resizeLayers(prefix+" ",exporter.myLayers)
+        // scan new found library artboards and process it
+        while(exporter.newLibArtboards.length!=0){
+            this._resizeLayers(prefix+" ",exporter.newLibArtboards)
+            Array.prototype.push.apply(exporter.myLayers,exporter.newLibArtboards)
+            exporter.newLibArtboards = []
+        }
         log( prefix+"resizeLayers: done!")
     }
 
@@ -201,20 +210,22 @@ class MyLayerResizer {
     _specifyHotspot(prefix,l,finalHotspot){        
         const layer = l.nlayer
         const flow = exporter.Sketch.fromNative(layer.flow());
-        const target = flow.target;
+        const targetArtboardID = flow.targetId;
     
         if(flow.isBackAction()){
             // hande Back action
             finalHotspot.linkType = "back";
             exporter.log(prefix+"hotspot: back")                             
-        }else if(target!=null){
+        }else if(targetArtboardID!=null && targetArtboardID!=""){
             // hande direct link
-            let targetArtboardID = flow.targetId
             let targetArtboard = exporter.pageIDsDict[targetArtboardID]
 
             if(undefined==targetArtboard){
-                exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
-                return false
+                //let libArtboard = exporter.findLibraryArtboardByID(targetArtboardID)
+                //if(!libArtboard){
+                    exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
+                    return false
+                //}
             }
 
             if(targetArtboard.externalArtboardURL!=undefined){                
