@@ -54,7 +54,7 @@ class ViewerPage {
     showAsOverlayIn(newParentPage,linkIndex,posX,posY,linkParentFixed,linkPageType){
 
         if( !this.imageDiv ){
-            this.loadImages()
+            this.loadImages(true)
         }
 
         // check if we need to hide any other already visible overlay

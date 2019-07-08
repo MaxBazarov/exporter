@@ -1,4 +1,6 @@
 # Change Log
+##  Version 6.3.4 (8 Jul 2019)
+- Fixed publishing procedure for versioned mockups
 
 ##  Version 6.3.3 (5 Jul 2019)
 - Fixed publishing procedure for versioned mockups

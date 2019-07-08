@@ -286,16 +286,16 @@ class MyLayerCollector {
     // return wrappedObject
     _findLibraryArtboardByName(name){
         var libraries = require('sketch/dom').getLibraries()    
-        log('_findLibraryArtboardByName.1')
-        log(libraries)
+        //log('_findLibraryArtboardByName.1') 
+        //log(libraries)
         for(const lib of libraries){
-            log('_findLibraryArtboardByName.3: '+lib.name)
+            //log('_findLibraryArtboardByName.3: '+lib.name)
             if(!lib.enabled){
-                log("_findLibraryArtboardByName.3.0.0 skip disabled library")
+                //log("_findLibraryArtboardByName.3.0.0 skip disabled library")
                 continue
             }
             if(!lib.valid){
-                log("_findLibraryArtboardByName.3.0.1 skip INVALID library")
+                //log("_findLibraryArtboardByName.3.0.1 skip INVALID library")
                 continue
             }
             const doc = lib.getDocument() 
@@ -305,14 +305,14 @@ class MyLayerCollector {
             }
             const artboards = doc.getLayersNamed(name)
             if(artboards.length){
-                log('_findLibraryArtboardByName.3.1 SUCCESS')
+                //log('_findLibraryArtboardByName.3.1 SUCCESS')
                 return artboards[0]
             }
-            log('_findLibraryArtboardByName.4')
+            //log('_findLibraryArtboardByName.4')
 
         }
         exporter.logError("Can't find artboard '"+name+"' in enabled libraries")
-        log('_findLibraryArtboardByName.10 FAILED')
+        //log('_findLibraryArtboardByName.10 FAILED')
         return undefined
     }
 
