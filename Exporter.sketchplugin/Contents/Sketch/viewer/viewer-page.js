@@ -62,14 +62,14 @@ class ViewerPage {
         && newParentPage.currentOverlayPage!=undefined 
             && newParentPage.currentOverlayPage!=this)
         {
-            newParentPage.currentOverlayPage.hide()
 
             if('overlay'==linkPageType){
                 posX = newParentPage.currentOverlayPage.currentX
                 posY = newParentPage.currentOverlayPage.currentY
             }
 
-            newParentPage.currentOverlayPage = undefined
+            newParentPage.currentOverlayPage.hide()         
+            //newParentPage.currentOverlayPage = undefined
 
         }
 
@@ -335,12 +335,14 @@ class ViewerPage {
                 var linkPageType = $(this).attr("pageType")
         
 
-                // close overlay on clock
-                if('overlay'==linkPageType && link_page!=null){
+                // close overlay on click
+                if('overlay'==linkPageType && link_page!=null || null==link_page_src){
                     var page =  story.pages[ $(this).attr("pageIndex") ]
-                    page.hide()
-                    // don't do anything if link follows to overlay itseld
-                    if(link_page == page.index) return false
+                    if(link_page == page.index){
+                        page.hide()
+                        return false                     
+                    }
+                    // don't do anything if link follows to overlay itseld                   
                 }
 
                 if(link_page_src != null) {			

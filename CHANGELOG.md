@@ -1,4 +1,7 @@
 # Change Log
+##  Version 6.3.5 (9 Jul 2019)
+- Fixed positioning of overlay called from other overlay
+
 ##  Version 6.3.4 (8 Jul 2019)
 - Fixed publishing procedure for versioned mockups
 

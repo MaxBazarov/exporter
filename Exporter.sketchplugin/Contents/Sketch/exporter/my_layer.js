@@ -30,7 +30,7 @@ class MyLayer {
         this.symbolMaster = undefined
         this.slayer = Sketch.fromNative(nlayer)
         this.artboard = myParent ? myParent.artboard : this
-        this.isParentFixed = myParent && (myParent.isFixed || myParent.isParentFixed)
+        this.isParentFixed = undefined!=myParent && (myParent.isFixed || myParent.isParentFixed)
     
         // define type    
         this.isArtboard = false
@@ -39,7 +39,7 @@ class MyLayer {
 
         this.customLink = undefined
 
-        //log('+++++ this.name: ' + this.name + " symbol: "+(nlayer.isKindOfClass(MSSymbolInstance)))
+        //log('+++++ this.name: ' + this.name + " isParentFixed: "+this.isParentFixed+ " parent:"+(undefined!=myParent?myParent.name:"none"))
 
         if(nlayer.isKindOfClass(MSLayerGroup)) this.isGroup = true
         if(nlayer.isKindOfClass(MSSymbolInstance)){
@@ -328,17 +328,17 @@ class MyLayerCollector {
 
         let newMaster = undefined
 
-        exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
+        //exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
 
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             const objectID = nlayer.objectID()
             while(objectID in symbolOverrides){
                 const over = symbolOverrides[objectID] 
-                exporter.log("getCollectLayer found override for "+objectID + "  newMaster = "+over['newMaster']   )
+                //exporter.log("getCollectLayer found override for "+objectID + "  newMaster = "+over['newMaster']   )
 
                 if(over['path']!=undefined){
                     if(over['path'].length>1){
-                        exporter.log("getCollectLayer shifted override path")
+                        //("getCollectLayer shifted override path")
                         over['path'].shift()
                         const newID =  over['path'][0]
                         // replace ID in symbolOverrides dictionary
@@ -366,7 +366,7 @@ class MyLayerCollector {
             }                     
         }
         
-        exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
+        //exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
 
         if(myLayer.isSymbolInstance){      
             var newSymbolOverrides = this._extendSymbolOverrides(myLayer,symbolOverrides)   
@@ -413,7 +413,7 @@ class MyLayerCollector {
             }
 
             if(oldID.indexOf("/")>0){
-                exporter.log("_extendSymbolOverrides() found complex override: "+oldID)    
+                //xporter.log("_extendSymbolOverrides() found complex override: "+oldID)    
                 overStruct['path'] = oldID.split("/")
                 oldID = overStruct['path'][0]
             }
@@ -431,7 +431,7 @@ class MyLayerCollector {
 
             symbolOverrides[oldID] = overStruct
 
-            exporter.log("_extendSymbolOverrides() overrided old="+oldID+" overStruct="+overStruct)    
+            //exporter.log("_extendSymbolOverrides() overrided old="+oldID+" overStruct="+overStruct)    
         }        
         return symbolOverrides
     }

@@ -18,12 +18,12 @@ class ChildFinder {
         }
 
         for (var layer of l.childs) {
-            exporter.log(prefix + "scan layer.id=" + layer.objectID + "  seekID=" + seekId)
+            //exporter.log(prefix + "scan layer.id=" + layer.objectID + "  seekID=" + seekId)
             if (layer.objectID == seekId || layer.originalID == seekId) {
-                exporter.log(prefix + "found!")
+                //exporter.log(prefix + "found!")
                 if (index == lastIndex) {
                     foundLayer = layer
-                    exporter.log(prefix + "found last")
+                    //exporter.log(prefix + "found last")
                     return foundLayer
                 }
                 foundLayer = this.findChildInPath(prefix + " ", layer, path, index + 1)
