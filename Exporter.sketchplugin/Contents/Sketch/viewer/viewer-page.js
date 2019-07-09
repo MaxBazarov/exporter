@@ -51,7 +51,7 @@ class ViewerPage {
         link.a.click()    
     }
 
-    showAsOverlayIn(newParentPage,linkIndex,posX,posY,linkParentFixed,linkPageType){
+    showAsOverlayIn(newParentPage,link,posX,posY,linkParentFixed,linkPageType){
 
         if( !this.imageDiv ){
             this.loadImages(true)
@@ -101,7 +101,9 @@ class ViewerPage {
             newParentPage.currentOverlayPage = this
             this.parentPage = newParentPage
 
-            var extURL = '/o/'+linkIndex
+            this.currentLink = link
+
+            var extURL = '/o/'+link.Index
             viewer.refresh_url(newParentPage.index,extURL)
 
             if(10==this.overlayAlign){ // for overlay on hotspot top left position
@@ -112,6 +114,10 @@ class ViewerPage {
                     }
                 }
                 this.imageDiv.mouseleave(func)
+            }else{
+                //link.this.mousemove(function(event){return viewer.onHotspotMouseMove(event)})
+                //newParentPage.imageDiv.mousemove(function(event){return viewer.onImageDivMouseMove(event)})
+                //this.imageDiv.mousemove(function(event){return viewer.onOverlayMouseMove(event)})                
             }
 
 
@@ -281,7 +287,7 @@ class ViewerPage {
     _loadSingleImage(sizeSrc,idPrefix){
         var hasRetinaImages = story.hasRetina
         var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? sizeSrc.image2x : sizeSrc.image;	
-        var unCachePostfix = "V_V_V"==viewer.docVersion?"":("?"+viewer.docVersion)
+        var unCachePostfix = "V_V_V"==story.docVersion?"":("?"+story.docVersion)
 
         var img = $('<img/>', {
             id : idPrefix+this.index,
@@ -345,19 +351,23 @@ class ViewerPage {
                     var newPage = story.pages[newPageIndex];
 
                     if('overlay'==newPage.type){
-
-                        var linkPosX = parseInt($( this ).attr("linkPosX"))
-                        var linkPosY = parseInt($( this ).attr("linkPosY"))
-                        var linkIndex = $( this ).attr("linkIndex")
-                        var linkWidth = parseInt($( this ).attr("linkWidth"))
-                        var linkHeight = parseInt($( this ).attr("linkHeight"))
+                        var orgLink = {
+                            this:  $( this ),
+                            posX : parseInt($( this ).attr("linkPosX")),
+                            posY : parseInt($( this ).attr("linkPosY")),
+                            width: parseInt($( this ).attr("linkWidth")),
+                            height:  parseInt($( this ).attr("linkHeight")),
+                            index:   $( this ).attr("linkIndex")     
+                        }
+                        var linkPosX = orgLink.posX
+                        var linkPosY = orgLink.posY
                         var offsetX = newPage.overlayAlign <= 2 ? 5 : 0
 
                         if(0==newPage.overlayAlign){ // align on hotspot left                                                                            
                         }else if(1==newPage.overlayAlign){ // align on hotspot center                                                
-                            linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
+                            linkPosX = linkPosX + parseInt(orgLink.width/2) - parseInt(newPage.width/2)
                         }else if(2==newPage.overlayAlign){// align on hotpost right
-                            linkPosX = linkPosX + linkWidth  - newPage.width
+                            linkPosX = linkPosX + orgLink.width  - newPage.width
                         }else if(3==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_LEFT
                             linkPosX = 0
                             linkPosY = 0
@@ -380,13 +390,13 @@ class ViewerPage {
                             linkPosX = currentPage.width - newPage.width
                             linkPosY = currentPage.height - newPage.height
                         }else if(10==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT                        
-                            linkPosY -= linkHeight
+                            linkPosY -= orgLink.height
                         }else if(11==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
-                            linkPosY = linkPosY - newPage.height - linkHeight
-                            linkPosX = linkPosX + parseInt(linkWidth/2) - parseInt(newPage.width/2)
+                            linkPosY = linkPosY - newPage.height - orgLink.height
+                            linkPosX = linkPosX + parseInt(orgLink.width/2) - parseInt(newPage.width/2)
                         }else if(12==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT
-                            linkPosY = linkPosY - newPage.height - linkHeight
-                            linkPosX = linkPosX + linkWidth  - newPage.width
+                            linkPosY = linkPosY - newPage.height - orgLink.height
+                            linkPosX = linkPosX + orgLink.width  - newPage.width
                         }
 
                         // check page right side
@@ -403,7 +413,7 @@ class ViewerPage {
                         if(linkPosX<0) linkPosX = 0
                         if(linkPosY<0) linkPosY = 0
                                 
-                        newPage.showAsOverlayIn(currentPage,linkIndex,linkPosX,linkPosY,linkParentFixed,linkPageType)
+                        newPage.showAsOverlayIn(currentPage,orgLink,linkPosX,linkPosY,linkParentFixed,linkPageType)
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }
@@ -431,11 +441,11 @@ class ViewerPage {
             }
             
             if(1==eventType){ // for Mouse over event
-                a.mouseenter(func)            
+                a.mouseenter(func)
                 if(10==newPage.overlayAlign){ // for overlay on hotspot top left position
                     
                 }else{
-                    a.mouseleave(func)
+                    //a.mouseleave(func)
                     a.click(function(){return false})
                 }
             }else{ // for On click event

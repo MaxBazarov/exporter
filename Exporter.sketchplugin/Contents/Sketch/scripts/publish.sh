@@ -51,6 +51,7 @@ prepareMockups()
         sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})'/g" "${tmpFolder}${ver}/viewer/viewer.js"	
         sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}${ver}/viewer/story.js"
         sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/viewer/story.js"	
+        sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}${ver}/index.html"	
         
         if [ "$skipLive" == "" ]; then
             # copy version to live
@@ -58,6 +59,7 @@ prepareMockups()
             sed -i '' "s/${storyVerPlaceholder}/${storyVerPlaceholderCode}(v${ver})';/g" "${tmpFolder}live/viewer/viewer.js"
             sed -i '' "s/${docPathPlaceholder}/${docPathValue}/g" "${tmpFolder}live/viewer/story.js"
             sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/viewer/story.js"
+            sed -i '' "s/${docVerPlaceholder}/${ver}/g" "${tmpFolder}live/index.html"
 
         fi
     fi

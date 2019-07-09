@@ -1,4 +1,8 @@
 # Change Log
+##  Version 6.4.0 (10 Jul 2019)
+- Improved hover overlays
+- Added static content version postfix to publishing procedure (to improve caching on HTTPD)
+
 ##  Version 6.3.5 (9 Jul 2019)
 - Fixed positioning of overlay called from other overlay
 

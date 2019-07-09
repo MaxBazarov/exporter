@@ -1,34 +1,36 @@
 
 function buildMainHTML(options) {
   
+    const verPostfix = "?"+Constants.DOCUMENT_VERSION_PLACEHOLDER
+
   let s = "";
   s += '<!DOCTYPE html>\n<html>\n<head>\n<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n';
   s += '<meta name="generator" content="Generated using Exporter plugin for Sketch.app - https://github.com/MaxBazarov/exporter">\n';
   s += '<title>'+options.docName+'</title>\n';
-  s += '<link rel="shortcut icon"  type="image/png" href="resources/icon.png">\n';
+  s += '<link rel="shortcut icon"  type="image/png?" href="resources/icon.png'+verPostfix+'">\n';
   // s += '<link rel="mask-icon" href="https://sketch.cloud/favicon.svg?v=4" color="rgb(252, 177, 0)">\n';
-  s += '<link rel="stylesheet" type="text/css" href="resources/viewer.css">\n';
+  s += '<link rel="stylesheet" type="text/css" href="resources/viewer.css'+verPostfix+'">\n';
   if(options.centerContent){
-    s += '<link rel="stylesheet" type="text/css" href="resources/viewer-center.css">\n';
+    s += '<link rel="stylesheet" type="text/css" href="resources/viewer-center.css'+verPostfix+'">\n';
   }else{
-    s += '<link rel="stylesheet" type="text/css" href="resources/viewer-top.css">\n';
+    s += '<link rel="stylesheet" type="text/css" href="resources/viewer-top.css'+verPostfix+'">\n';
   }
-  s += '<script type="text/javascript" src="resources/jquery-3.3.1.min.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery-3.3.1.min.js'+verPostfix+'" charset="UTF-8"></script>\n';
 //  s += '<script type="text/javascript" src="resources/jquery-migrate-1.4.1.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery.hotkeys.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="viewer/viewer-page.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="viewer/story.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="viewer/gallery.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="viewer/viewer.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery.hotkeys.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="viewer/viewer-page.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="viewer/story.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="viewer/gallery.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="viewer/viewer.js'+verPostfix+'" charset="UTF-8"></script>\n';
   if(options.loadLayers){
-    s += '<script type="text/javascript" src="viewer/LayersData.js" charset="UTF-8"></script>\n';
-    s += '<script type="text/javascript" src="viewer/SymbolViewer.js" charset="UTF-8"></script>\n';
+    s += '<script type="text/javascript" src="viewer/LayersData.js'+verPostfix+'" charset="UTF-8"></script>\n';
+    s += '<script type="text/javascript" src="viewer/SymbolViewer.js'+verPostfix+'" charset="UTF-8"></script>\n';
   }
   if(options.commentsURL!=''){
-    s += '<link rel="stylesheet" type="text/css" href="'+options.commentsURL+'/EasyPageComments.css"/>\n';
-    s += '<script type="text/javascript" src="'+options.commentsURL+'/EasyPageComments.js"></script>\n';
-    s += '<script type="text/javascript" src="'+options.commentsURL+'/comments.js" charset="UTF-8"></script>\n';
+    s += '<link rel="stylesheet" type="text/css" href="'+options.commentsURL+'/EasyPageComments.css'+verPostfix+'"/>\n';
+    s += '<script type="text/javascript" src="'+options.commentsURL+'/EasyPageComments.js'+verPostfix+'"></script>\n';
+    s += '<script type="text/javascript" src="'+options.commentsURL+'/comments.js'+verPostfix+'" charset="UTF-8"></script>\n';
   }
   s += '<script type="text/javascript">\n';
   s += '  var viewer = createViewer(story, "images");\n';

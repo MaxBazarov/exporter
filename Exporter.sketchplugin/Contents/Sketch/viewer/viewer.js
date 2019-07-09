@@ -105,7 +105,7 @@ function createViewer(story, files) {
             }
 
             this.addHotkeys();
-            this.initializeHighDensitySupport();	            		
+            this.initializeHighDensitySupport();                       
         },
         initParseGetParams : function() {
             var s = document.location.search
@@ -191,6 +191,30 @@ function createViewer(story, files) {
             this.toggleLinks()
             setTimeout(doBlinkHotspots,500)
         },
+
+        onHotspotMouseMove: function(event){            
+            console.log("onHotspotMouseMove")
+            return true
+        }, 
+        
+        onOverlayMouseMove: function(event){            
+            console.log("onOverlayMouseMove")
+            return true
+        },        
+
+
+        // user moved moused out of hotspost or overlay -> need to close overlay
+        onImageDivMouseMove: function(event){            
+            var page = story.pages[viewer.currentPage];
+            if(!page) return true   
+            if(undefined==page.currentOverlayPage) return true
+
+
+            console.log("onImageDivMouseMove")
+            //page.currentOverlayPage.hide()
+            
+            return true
+        },        
 
         onContentClick: function(){
             // If the current page has some overlay open then close it
