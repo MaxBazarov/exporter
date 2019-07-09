@@ -193,7 +193,7 @@ class Exporter {
     'var story = {\n'+
     '"docName": "'+ Utils.toFilename(this.docName)+'",\n'+
     '"docPath": "P_P_P",\n'+
-    '"docVersion": "V_V_V",\n'+
+    '"docVersion": "'+Constants.DOCUMENT_VERSION_PLACEHOLDER+'",\n'+
     '"hasRetina": '+(this.retinaImages?'true':'false') + ',\n'+
     '"disableHotspots": '+(disableHotspots?'true':'false') + ',\n'+
     '"pages": [\n';

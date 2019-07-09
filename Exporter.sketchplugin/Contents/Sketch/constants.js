@@ -1,5 +1,6 @@
 var Constants = {    
   DOCUMENT_VERSION: "docVersion",  
+  DOCUMENT_VERSION_PLACEHOLDER : "V_V_V",
   TAB_SIZE: 2,
   HOTSPOT_PADDING: 0,
   LAYER_LOGGING: false,

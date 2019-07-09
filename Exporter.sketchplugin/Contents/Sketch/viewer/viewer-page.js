@@ -281,11 +281,12 @@ class ViewerPage {
     _loadSingleImage(sizeSrc,idPrefix){
         var hasRetinaImages = story.hasRetina
         var imageURI = hasRetinaImages && viewer.isHighDensityDisplay() ? sizeSrc.image2x : sizeSrc.image;	
+        var unCachePostfix = "V_V_V"==viewer.docVersion?"":("?"+viewer.docVersion)
 
         var img = $('<img/>', {
             id : idPrefix+this.index,
             class: "pageImage",
-            src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI),		
+            src : encodeURIComponent(viewer.files) + '/' + encodeURIComponent(imageURI)+unCachePostfix,		
         }).attr('width', sizeSrc.width).attr('height', sizeSrc.height);
 
         img.preload(function(perc, done) {
@@ -333,17 +334,9 @@ class ViewerPage {
                 var link_action = $( this ).attr("link_action")
                 var linkParentFixed = $( this ).attr("linkParentFixed")=='1'
                 var linkPageType = $(this).attr("pageType")
-        
 
-                // close overlay on click
-                if('overlay'==linkPageType && link_page!=null || null==link_page_src){
-                    var page =  story.pages[ $(this).attr("pageIndex") ]
-                    if(link_page == page.index){
-                        page.hide()
-                        return false                     
-                    }
-                    // don't do anything if link follows to overlay itseld                   
-                }
+                var page =  story.pages[ $(this).attr("pageIndex") ]
+                       
 
                 if(link_page_src != null) {			
                     // title = story.pages[link.page].title;
@@ -424,6 +417,16 @@ class ViewerPage {
                     //document.location = link_url
                     //target = link.target!=null?link.target:null;		
                 }
+
+                // close last current overlay if it still has parent
+                if('overlay'==linkPageType && undefined!=page.parentPage){
+                    //if(link_page == page.index){
+                        page.hide()
+                       // return false                     
+                    //}
+                    // don't do anything if link follows to overlay itseld                   
+                }
+
                 return false
             }
             
