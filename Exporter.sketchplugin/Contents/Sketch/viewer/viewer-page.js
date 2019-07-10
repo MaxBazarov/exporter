@@ -81,6 +81,9 @@ class ViewerPage {
             if(linkParentFixed && this.overlayAlsoFixed){
                 div.removeClass('divPanel')
                 div.addClass('fixedPanelFloat')
+            }else if("modal" == newParentPage.type){
+                div.removeClass('divPanel')
+                div.removeClass('fixedPanelFloat')        
             }else{                
                 div.removeClass('fixedPanelFloat')
                 div.addClass('divPanel')
@@ -103,7 +106,7 @@ class ViewerPage {
 
             this.currentLink = link
 
-            var extURL = '/o/'+link.Index
+            var extURL = '/o/'+link.index
             viewer.refresh_url(newParentPage.index,extURL)
 
             if(10==this.overlayAlign){ // for overlay on hotspot top left position

@@ -453,7 +453,7 @@ class Exporter {
     for(var l of this.myLayers) l.clearRefsBeforeJSON()
 
     log(" SaveToJSON: running...")
-    const layersJSON = JSON.stringify(this.myLayers,replacer,4)
+    const layersJSON = JSON.stringify(this.myLayers,replacer,null)
     const pathJSFile = this.createViewerFile('LayersData.js')
     Utils.writeToFile(symbolTokens+"var layersData = "+layersJSON, pathJSFile)
     log(" SaveToJSON: done!")

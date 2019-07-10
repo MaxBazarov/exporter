@@ -7,7 +7,7 @@ remoteFolder="$4"
 docPathValue="$5"
 mirror1="$6"
 mirror2="$7"
-skipLive = ""
+skipLive=""
 
 docPathPlaceholder="P_P_P"
 docVerPlaceholder="V_V_V"

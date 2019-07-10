@@ -15,10 +15,10 @@ function buildMainHTML(options) {
   }else{
     s += '<link rel="stylesheet" type="text/css" href="resources/viewer-top.css'+verPostfix+'">\n';
   }
-  s += '<script type="text/javascript" src="resources/jquery-3.3.1.min.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery-3.3.1.min.js" charset="UTF-8"></script>\n';
 //  s += '<script type="text/javascript" src="resources/jquery-migrate-1.4.1.min.js" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery.hotkeys.js'+verPostfix+'" charset="UTF-8"></script>\n';
-  s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js'+verPostfix+'" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery.hotkeys.js" charset="UTF-8"></script>\n';
+  s += '<script type="text/javascript" src="resources/jquery.ba-hashchange.min.js" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/viewer-page.js'+verPostfix+'" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/story.js'+verPostfix+'" charset="UTF-8"></script>\n';
   s += '<script type="text/javascript" src="viewer/gallery.js'+verPostfix+'" charset="UTF-8"></script>\n';
