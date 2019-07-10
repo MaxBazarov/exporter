@@ -105,6 +105,11 @@
 	display: grid;
 	margin: auto;
     align-items: center; 
+    pointer-events: none; 
+}
+
+.contentModal > div {
+    pointer-events: auto; 
 }
 
 #content-shadow.shadow {

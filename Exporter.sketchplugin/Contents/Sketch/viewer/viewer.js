@@ -192,17 +192,19 @@ function createViewer(story, files) {
             setTimeout(doBlinkHotspots,500)
         },
 
+        // experimental
         onHotspotMouseMove: function(event){            
             console.log("onHotspotMouseMove")
             return true
         }, 
         
+        // experimental
         onOverlayMouseMove: function(event){            
             console.log("onOverlayMouseMove")
             return true
         },        
 
-
+        // experimental
         // user moved moused out of hotspost or overlay -> need to close overlay
         onImageDivMouseMove: function(event){            
             var page = story.pages[viewer.currentPage];
@@ -217,13 +219,13 @@ function createViewer(story, files) {
         },        
 
         onContentClick: function(){
-            // If the current page has some overlay open then close it
-            const page = story.pages[this.currentPage]            
-            if(page.hideCurrentOverlay()){
-                return
-            }
+            if(this.onKeyEscape()) return
             this.blinkHotspots()
         },
+        onModalClick: function(){           
+            this.blinkHotspots()
+        },
+
 
         share: function(){
             var srcHref =  document.location.href
@@ -693,22 +695,25 @@ function createViewer(story, files) {
 			// If gallery is enabled then close it
 			if(gallery.isVisible()){
 				gallery.toogle()
-				return
+				return true
             }
             // If the current page has some overlay open then close it
             const page = story.pages[this.currentPage]            
             if(page.hideCurrentOverlay()){
-                return
+                return true
             }
 			// If the current page is modal then close it and go to the last non-modal page
 			if(this.currentPageModal){
-                if(this.prevPageModalIndex>=0){
+                if(this.lastRegularPage>=0){
+                    viewer.goTo(this.lastRegularPage)
+                }else if(this.prevPageModalIndex>=0){
                     viewer.goTo(this.prevPageModalIndex)
                 }else{
                     viewer.goBack()
                 }
-				return
-			}
+				return true
+            }
+            return false
 		},
 		next: function() {
             var page = this.getNextUserPage( story.pages[this.currentPage] )

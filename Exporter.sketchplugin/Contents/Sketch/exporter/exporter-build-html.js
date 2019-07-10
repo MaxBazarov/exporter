@@ -110,8 +110,8 @@ function buildMainHTML(options) {
   s += ' <div id="marker"></div>\n';
   s += ' <div id="content" onclick="viewer.onContentClick()">\n';
   s += ' </div>\n'; 
-  s += ' <div id="content-shadow" class="hidden"></div>\n';
-  s += ' <div id="content-modal" class="contentModal hidden"></div>\n';
+  s += ' <div id="content-shadow" class="hidden"  onclick="viewer.onContentClick()"></div>\n';
+  s += ' <div id="content-modal" class="contentModal hidden" onclick="viewer.onModalClick()"></div>\n';
   if(options.commentsURL!=''){
     s += ' <div id="commenting" class="hidden">\n';
     s += '  <h1>EasyPageComments example page</h1>\n';
