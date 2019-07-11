@@ -1,4 +1,9 @@
 # Change Log
+
+##  Version 6.4.2 (11 Jul 2019)
+- Fixed external link in overlay initiator
+- Click outside of modal closes it
+
 ##  Version 6.4.1 (10 Jul 2019)
 - One more fix for hover overlays
 - Improved content caching tweaks
