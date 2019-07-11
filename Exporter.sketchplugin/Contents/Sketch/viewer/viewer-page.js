@@ -427,6 +427,7 @@ class ViewerPage {
                     //title = link.url;
                     var target = $( this ).attr("target")
                     window.open(link_url,target!=undefined?target:"_self")
+                    return false
                     //document.location = link_url
                     //target = link.target!=null?link.target:null;		
                 }
