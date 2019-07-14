@@ -110,6 +110,7 @@ function buildMainHTML(options) {
   s += ' <div id="marker"></div>\n';
   s += ' <div id="content" onclick="viewer.onContentClick()">\n';
   s += ' </div>\n'; 
+  s += ' <div id="sidebar" class="hidden">Sidebar</div>\n';
   s += ' <div id="content-shadow" class="hidden"  onclick="viewer.onContentClick()"></div>\n';
   s += ' <div id="content-modal" class="contentModal hidden" onclick="viewer.onModalClick()"></div>\n';
   if(options.commentsURL!=''){
@@ -121,8 +122,8 @@ function buildMainHTML(options) {
     s += '  <div id="CommentForm"></div>\n';
     s += ' </div>\n';
     }    
-s += '<div id="gallery" class="hidden" onclick="gallery.hide(); return false;"></div>\n';
-s += "        <div id=\"nav\" class=\""+(options.hideNav?"hidden":"nav")+"\">";
+s += '    <div id="gallery" class="hidden" onclick="gallery.hide(); return false;"></div>\n';
+s += "    <div id=\"nav\" class=\""+(options.hideNav?"hidden":"nav")+"\">";
 s += "            <div class=\"navLeft\">";
 s += "                <div id=\"menu\" class=\"menu\">";
 s += "                            <div class=\"groupe\">";

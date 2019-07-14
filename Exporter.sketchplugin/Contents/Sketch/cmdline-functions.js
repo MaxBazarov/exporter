@@ -39,15 +39,12 @@ function showError(error){
 }
 
 
-function saveDocument(document,close){
+function saveDocument(document){
     log(" SAVING DOCUMENT...")
     document.save(err => {
         if (err) {
             log(" Failed to save a document. Error: "+err)
-        }
-        if(close){
-            closeDocument(document)
-        }
+        }       
     })
 }
 
@@ -93,8 +90,8 @@ var cmdRun = function(context) {
         if(cmds.sync)       syncDocument(document)
         if(cmds.export)     exportDocument(context,runOptions)  
         if(cmds.publish)    publishDocument(context,document)
-        if(cmds.save)       saveDocument(document,cmds.close)
-        else if(cmds.close) closeDocument(document)
+        if(cmds.save)       saveDocument(document)
+        if(cmds.close)      closeDocument(document)
         
     })
    

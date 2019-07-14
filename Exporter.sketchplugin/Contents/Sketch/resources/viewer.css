@@ -235,6 +235,19 @@ svg {
 	height: 24px;
 }
 
+#sidebar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100px;
+    display: flex;
+    justify-content: space-between;
+    margin: 12px;
+    user-select: none;
+    pointer-events: none;
+    z-index: 60;
+}
+
 .nav {
     position: fixed;
     left: 0;
@@ -518,3 +531,6 @@ area {
 
 	}
 }
+
+
+

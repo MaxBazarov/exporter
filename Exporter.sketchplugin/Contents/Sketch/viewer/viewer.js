@@ -92,6 +92,7 @@ function createViewer(story, files) {
         files: files,
         userStoryPages: [],
         zoomEnabled: story.zoomEnabled,
+        sidebarVisible: false,
 
 		transQueue : [],
 		
@@ -287,11 +288,26 @@ function createViewer(story, files) {
             var contentModal= $('#content-modal')
             var elems = [content,contentModal] //,contentShadow
  
-            var markerWidth = marker.innerWidth()
+            var fullWidth = marker.innerWidth()
+            var availableWidth = fullWidth
             var zoom = ""
             var scale = ""
-            if(this.zoomEnabled && markerWidth<page.width){                
-                zoom = markerWidth / page.width
+
+            // check sidebar
+            var sidebarWidth = 0
+            if(this.sidebarVisible){
+                var sidebar = $("#sidebar")        
+
+                sidebarWidth = 100
+                availableWidth -= sidebarWidth                   
+                
+                sidebar.css("margin-left",(fullWidth - sidebarWidth)+"px")
+                sidebar.css("margin-top",(0)+"px")                
+            }
+
+
+            if(this.zoomEnabled && availableWidth<page.width){                
+                zoom = availableWidth / page.width
                 scale = "scale("+zoom+")"
             } 
                         
@@ -300,8 +316,17 @@ function createViewer(story, files) {
                 el.css("-moz-transform",scale)                
             }
             content.css("-moz-transform-origin","left top")
-            //contentShadow.css("-moz-transform-origin","left top")
             contentModal.css("-moz-transform-origin","center top")
+
+            this.currentZoom  = zoom!=''?(zoom+0):1
+                   
+            // Calculate left position
+            this.currentMarginLeft = availableWidth / 2 - page.width / 2 * this.currentZoom
+
+            // Set content to new left positions
+            content.css("margin-left",this.currentMarginLeft+"px")
+            contentModal.css("margin-left",this.currentMarginLeft+"px")       
+
         },
 
 		getPageHash: function(index) {

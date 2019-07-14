@@ -22,6 +22,11 @@ class SymbolViewer{
         contentDiv.removeClass("contentSymbolsVisible")        
 
         this.visible = false
+
+        // hide sidebar
+        viewer.sidebarVisible=false
+        $('#sidebar').addClass("hidden")
+        viewer.zoomContent()
     }
 
     show(){
@@ -37,6 +42,11 @@ class SymbolViewer{
         const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
         contentDiv.addClass("contentSymbolsVisible")
  
+        // show sidebar
+        viewer.sidebarVisible=true
+        $('#sidebar').removeClass("hidden")
+        viewer.zoomContent()
+
         this.visible = true
     }
 

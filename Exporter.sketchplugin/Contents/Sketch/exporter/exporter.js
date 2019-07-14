@@ -419,6 +419,7 @@ class Exporter {
      '"zoomEnabled": '+ (this.Settings.settingForKey(SettingKeys.PLUGIN_DISABLE_ZOOM)!=1?'true':'false')+',\n'+
      '"title": "'+this.docName+'",\n'+
      '"layersExist": ' + ( this.enabledJSON ? "true":"false") +',\n'+
+     '"centerContent":  '+(this.Settings.settingForKey(SettingKeys.PLUGIN_POSITION) === Constants.POSITION_CENTER) +',\n'+
      '"totalImages": '+this.totalImages+',\n'+
      '"highlightLinks": false\n'
     if(undefined!=iFrameSize){
