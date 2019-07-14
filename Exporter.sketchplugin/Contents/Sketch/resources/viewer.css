@@ -45,19 +45,25 @@
 
 .symbolDiv {
 	position: absolute;
-    opacity: 0;
-    transition: opacity 0.5s;
-    z-index:30;
-    pointer-events: none;
-    background-color:#FF0000;   
+	display: none;
+    z-index: 30;
 }
 
-.contentSymbolsVisible .symbolDiv{
-    opacity: 0.1;
-    transition: all 0.5s;
-    cursor: pointer;	
-    pointer-events: auto;
+.contentSymbolsVisible .symbolDiv:hover {
+	opacity: 1;
+    border: 1px dashed red;   
+    background-color:rgba(255,0,0,.05);
+    transition: all 0.3s;
 }
+
+.contentSymbolsVisible .symbolDiv {
+	opacity: .3;
+	display: block;
+    cursor: pointer;	
+    border: 1px dashed red;   
+    transition: all 0.3s;
+}
+
 
 /******************/
 
