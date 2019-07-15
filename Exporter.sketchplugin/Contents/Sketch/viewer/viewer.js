@@ -312,15 +312,20 @@ function createViewer(story, files) {
                 zoom = availableWidth / page.width
                 scale = "scale("+zoom+")"
             } 
-                        
-            for(var el of elems){
-                el.css("zoom",zoom)
-                el.css("-moz-transform",scale)                
-            }
-            content.css("-moz-transform-origin","left top")
-            contentModal.css("-moz-transform-origin","center top")
 
-            this.currentZoom  = zoom!=''?(zoom+0):1
+            var newZoom = zoom!=''?(zoom+0):1
+                        
+            if(undefined==this.currentZoom || this.currentZoom!=newZoom){
+                for(var el of elems){
+                    el.css("zoom",zoom)
+                    el.css("-moz-transform",scale)                
+                }
+                content.css("-moz-transform-origin","left top")
+                contentModal.css("-moz-transform-origin","center top")
+    
+            }
+
+            this.currentZoom  = newZoom
                    
             // Calculate left position
             this.currentMarginLeft = availableWidth / 2 - page.width / 2 * this.currentZoom
@@ -328,8 +333,7 @@ function createViewer(story, files) {
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")
             contentModal.css("margin-left",this.currentMarginLeft+"px")      
-            content.css("transform","translate3d(0,0,0)")
-            contentModal.css("transform","translate3d(0,0,0)")
+
 
         },
 

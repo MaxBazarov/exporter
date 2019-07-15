@@ -64,6 +64,19 @@
     transition: all 0.3s;
 }
 
+#symbol_viewer {
+    margin: 10px;
+}
+
+
+#symbol_viewer .title {    
+    font-weight: 900;
+}
+
+#symbol_viewer_content .head {
+    font-weight: 900;
+}
+
 
 /******************/
 
@@ -241,8 +254,6 @@ svg {
     bottom: 0;
     display: flex;
     text-align:left;
-    user-select: none;
-    pointer-events: none;
     z-index: 60;
 }
 

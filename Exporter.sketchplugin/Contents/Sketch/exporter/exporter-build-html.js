@@ -100,19 +100,24 @@ function buildMainHTML(options) {
     </svg> </div>\n';
   s +=  '<!-- load indicator -->\n';
   s +=  '<div id="loading" >\n';
-  s += `
-    <div class="shaft1"></div><div class="shaft2"></div><div class="shaft3"></div>
-    <div class="shaft4"></div><div class="shaft5"></div><div class="shaft6"></div><div class="shaft7"></div>
-  </div>    
-  <!--/load indicator-->
-  `;
-  s += ' <div id="container">\n';
-  s += ' <div id="marker"></div>\n';
-  s += ' <div id="content" onclick="viewer.onContentClick()">\n';
-  s += ' </div>\n'; 
-  s += ' <div id="sidebar" class="hidden">Sidebar</div>\n';
-  s += ' <div id="content-shadow" class="hidden"  onclick="viewer.onContentClick()"></div>\n';
-  s += ' <div id="content-modal" class="contentModal hidden" onclick="viewer.onModalClick()"></div>\n';
+  s += '\
+    div class="shaft1"></div><div class="shaft2"></div><div class="shaft3"></div>\
+    <div class="shaft4"></div><div class="shaft5"></div><div class="shaft6"></div><div class="shaft7"></div>\
+  </div>    \
+  <!--/load indicator-->\
+     <div id="container">\
+        <div id="marker"></div>\
+        <div id="content" onclick="viewer.onContentClick()"></div>\
+        <div id="sidebar" class="hidden">\
+            <div id="symbol_viewer" class="hidden">\
+                <p class="title">ELEMENT INSPECTOR</p>\
+                <div id="symbol_viewer_content">\
+                </div>\
+            </div>\
+        </div>\
+        <div id="content-shadow" class="hidden"  onclick="viewer.onContentClick()"></div>\
+        <div id="content-modal" class="contentModal hidden" onclick="viewer.onModalClick()"></div>\
+  ';
   if(options.commentsURL!=''){
     s += ' <div id="commenting" class="hidden">\n';
     s += '  <h1>EasyPageComments example page</h1>\n';

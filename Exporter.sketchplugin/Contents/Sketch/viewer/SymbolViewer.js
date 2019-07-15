@@ -26,6 +26,7 @@ class SymbolViewer{
         // hide sidebar
         viewer.sidebarVisible=false
         $('#sidebar').addClass("hidden")
+        $('#symbol_viewer').addClass("hidden")
         viewer.zoomContent()
     }
 
@@ -44,6 +45,7 @@ class SymbolViewer{
  
         // show sidebar
         viewer.sidebarVisible=true
+        $('#symbol_viewer').removeClass("hidden")        
         $('#sidebar').removeClass("hidden")
         viewer.zoomContent()
 
@@ -119,36 +121,41 @@ class SymbolViewer{
             var frameHeight = layer.frame.height
 
             var info = ""
-            if(symName!=undefined) info = "Symbol: "+symName
-            if(styleName!=undefined) info = "Style: "+styleName
+            if(symName!=undefined) info = "<p class='head'>Symbol</p>"+symName
+            if(styleName!=undefined) info = "<p class='head'>Style</p> "+styleName
             
-            if(comment!=undefined) info += "<br/><br/>Comment: "+comment
+            if(comment!=undefined) info += "<p class='head'>Comment</p> "+comment
 
-            info += "<br/><br/> X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
+            info += "<p class='head'>Position (left x top)</p>" + frameX + " x " + frameY
+            info += "<p class='head'>Size (width x height)</p>" + frameWidth + " x " + frameHeight
 
             if(layer.text!=undefined && layer.text!=''){
-                info+="<br/><br/>Text: "+layer.text
+                info+="<p class='head'>Text</p> "+layer.text
             }
 
             if(symName!=undefined && symName in symbolsData){
                 const symInfo = symbolsData[symName]
-                info+="<br/><br/>Symbol layers and @tokens:"
+                info+="<p class='head'>Symbol layers and Tokens</p>"
+                var layerCounter = 0
                 for(const layerName of Object.keys(symInfo.layers)){
-                    info+="<br/>&nbsp;&nbsp;"+layerName
+                    if(layerCounter)
+                        info+="<br/>"    
+                    info+=layerName + "<br/>"
                     for(const tokenName of Object.keys(symInfo.layers[layerName].tokens)){
-                        info+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;"+tokenName
+                        info+=tokenName+"<br/>"
                     }
+                    layerCounter++
                 }                
             }
             if(styleName!=undefined && styleName in  symbolsData.styles){
                 const styleInfo = symbolsData.styles[styleName]
-                info+="<br/><br/>Style @tokens:"     
+                info+="<p class='head'>Style Tokens</p>"     
                 for(const tokenName of Object.keys(styleInfo.tokens)){
-                    info+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;"+tokenName
+                    info+=tokenName+"<br/>"
                 }                                
             }
             
-            $("#sidebar").html(info)
+            $("#symbol_viewer_content").html(info)
             //alert(info)
         })
 
