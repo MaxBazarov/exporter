@@ -19,8 +19,8 @@ Viewer features:
 - Async pre-loading of all page images
 - Auto-scale of large pages to fit into small browser window
 - Ability to get <iframe> code to embed you prototypes into external web pages (with special UI) or get lightweight code with just <a href...><img...></a/>
-- [NEW] Ability to show page layout if it was enabled for a page
-- [NEW] Ability to show shared symbols on a current page (with possible integration with Design System plugin to show used design tokens)
+- Page layout viewer (if it was enabled for a page)
+- [NEW] Element Inspector to see symbols, styles and design tokens(requires integration with Design System plugin) ([Picture](https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Link-ModalArtboard/Screenshot.png))
 
 Publisher features:
 - Increasing of version counter and injecting it into HTML
