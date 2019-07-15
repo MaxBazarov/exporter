@@ -66,6 +66,7 @@
 
 #symbol_viewer {
     margin: 10px;
+    overflow-y: auto;
 }
 
 
