@@ -122,33 +122,34 @@ class SymbolViewer{
             if(symName!=undefined) info = "Symbol: "+symName
             if(styleName!=undefined) info = "Style: "+styleName
             
-            if(comment!=undefined) info += "\n\nComment: "+comment
+            if(comment!=undefined) info += "<br/><br/>Comment: "+comment
 
-            info += "\n\n X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
+            info += "<br/><br/> X,Y: " + frameX + "," + frameY + " Width,Height: "  + frameWidth + "," + frameHeight
 
             if(layer.text!=undefined && layer.text!=''){
-                info+="\n\nText: "+layer.text
+                info+="<br/><br/>Text: "+layer.text
             }
 
             if(symName!=undefined && symName in symbolsData){
                 const symInfo = symbolsData[symName]
-                info+="\n\nSymbol layers and @tokens:"
+                info+="<br/><br/>Symbol layers and @tokens:"
                 for(const layerName of Object.keys(symInfo.layers)){
-                    info+="\n    "+layerName
+                    info+="<br/>&nbsp;&nbsp;"+layerName
                     for(const tokenName of Object.keys(symInfo.layers[layerName].tokens)){
-                        info+="\n        "+tokenName
+                        info+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;"+tokenName
                     }
                 }                
             }
             if(styleName!=undefined && styleName in  symbolsData.styles){
                 const styleInfo = symbolsData.styles[styleName]
-                info+="\n\nStyle @tokens:"     
+                info+="<br/><br/>Style @tokens:"     
                 for(const tokenName of Object.keys(styleInfo.tokens)){
-                    info+="\n     "+tokenName
+                    info+="<br/>&nbsp;&nbsp;&nbsp;&nbsp;"+tokenName
                 }                                
             }
             
-            alert(info)
+            $("#sidebar").html(info)
+            //alert(info)
         })
 
         a.appendTo(currentPanel.linksDiv)

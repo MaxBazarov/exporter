@@ -1,6 +1,13 @@
 
 ///
 
+function inViewport($el) {
+    var elH = $el.outerHeight(),
+        H   = $(window).height(),
+        r   = $el[0].getBoundingClientRect(), t=r.top, b=r.bottom;
+    return Math.max(0, t>0? Math.min(elH, H-t) : Math.min(b, H));
+}
+
 class ViewerPage {
 
     hide(preloadhide=false){             
@@ -24,17 +31,20 @@ class ViewerPage {
     
 
     show(){
-        // prepare modal div
-        var isModal = this.type==="modal";			
-        if(isModal){
-            var contentModal = $('#content-modal');		
-            //contentModal.width(this.width);
-        }
-
         if(!this.imageObj){        
             // load image     
             this.loadImages(true)						
-        }            
+        } 
+
+        // prepare modal div
+        var isModal = this.type==="modal";			        
+        if(isModal){
+            var regPage = story.pages[viewer.lastRegularPage]
+            this.currentLeft = regPage.width /2 - this.width / 2
+            this.currentTop = inViewport(regPage.imageDiv) /2 - this.height / 2
+            this.imageDiv.css("margin-left",this.currentLeft+"px")
+            this.imageDiv.css("margin-top",this.currentTop+"px")
+        }                  
 
         this.imageDiv.removeClass("hidden")
     }
@@ -70,7 +80,9 @@ class ViewerPage {
 
             newParentPage.currentOverlayPage.hide()         
             //newParentPage.currentOverlayPage = undefined
-
+        }else if("modal"==newParentPage.type){            
+            posX += newParentPage.currentLeft
+            posY += newParentPage.currentTop
         }
 
         // Show overlay on the new position
@@ -82,8 +94,8 @@ class ViewerPage {
                 div.removeClass('divPanel')
                 div.addClass('fixedPanelFloat')
             }else if("modal" == newParentPage.type){
-                div.removeClass('divPanel')
-                div.removeClass('fixedPanelFloat')        
+                //div.removeClass('divPanel')
+                //div.removeClass('fixedPanelFloat')        
             }else{                
                 div.removeClass('fixedPanelFloat')
                 div.addClass('divPanel')
@@ -109,18 +121,18 @@ class ViewerPage {
             var extURL = '/o/'+link.index
             viewer.refresh_url(newParentPage.index,extURL)
 
-            if(10==this.overlayAlign){ // for overlay on hotspot top left position
+            if(1==this.overlayByEvent){ //mouse hover
                 var func = function(event){                    
                     var page = story.pages[viewer.currentPage];
                     if(undefined!=page){
                         page.hideCurrentOverlay()
                     }
+                }            
+                if(10==this.overlayAlign){ // for overlay on hotspot top left position
+                    this.imageDiv.mouseleave(func)
+                }else{
+                    link.this.mouseleave(func)
                 }
-                this.imageDiv.mouseleave(func)
-            }else{
-                //link.this.mousemove(function(event){return viewer.onHotspotMouseMove(event)})
-                //newParentPage.imageDiv.mousemove(function(event){return viewer.onImageDivMouseMove(event)})
-                //this.imageDiv.mousemove(function(event){return viewer.onOverlayMouseMove(event)})                
             }
 
 

@@ -298,11 +298,13 @@ function createViewer(story, files) {
             if(this.sidebarVisible){
                 var sidebar = $("#sidebar")        
 
-                sidebarWidth = 100
+                sidebarWidth = 300
                 availableWidth -= sidebarWidth                   
                 
                 sidebar.css("margin-left",(fullWidth - sidebarWidth)+"px")
-                sidebar.css("margin-top",(0)+"px")                
+                sidebar.css("margin-top",(0)+"px")
+                sidebar.css("width",sidebarWidth+"px")
+                sidebar.css("height","100%")
             }
 
 
@@ -325,7 +327,9 @@ function createViewer(story, files) {
 
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")
-            contentModal.css("margin-left",this.currentMarginLeft+"px")       
+            contentModal.css("margin-left",this.currentMarginLeft+"px")      
+            content.css("transform","translate3d(0,0,0)")
+            contentModal.css("transform","translate3d(0,0,0)")
 
         },
 
