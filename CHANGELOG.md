@@ -2,7 +2,7 @@
 
 ##  Version 7.0.0 (16 Jul 2019)
 - Redesigned regular page and modal dialogs centering
-- Moved Element Inspector to right sidebar
+- Moved Element Inspector to right sidebar (see https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Link-ModalArtboard/Screenshot.png)
 
 ##  Version 6.4.2 (11 Jul 2019)
 - Fixed external link in overlay initiator
