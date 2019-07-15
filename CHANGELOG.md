@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 7.0.0 (16 Jul 2019)
+- Redesigned regular page and modal dialogs centering
+- Moved Element Inspector to right sidebar
+
 ##  Version 6.4.2 (11 Jul 2019)
 - Fixed external link in overlay initiator
 - Click outside of modal closes it
