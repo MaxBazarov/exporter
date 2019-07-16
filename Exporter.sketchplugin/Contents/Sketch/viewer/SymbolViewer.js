@@ -26,7 +26,7 @@ class SymbolViewer{
         // hide sidebar
         viewer.sidebarVisible=false
         $('#sidebar').addClass("hidden")
-        $('#symbol_viewer').addClass("hidden")
+        $('#symbol_viewer').addClass("hidden")        
         viewer.zoomContent()
     }
 
@@ -45,8 +45,12 @@ class SymbolViewer{
  
         // show sidebar
         viewer.sidebarVisible=true
+        
+        $("#symbol_viewer_content").html("")
+        $('#symbol_viewer #empty').removeClass("hidden")
+        
         $('#symbol_viewer').removeClass("hidden")        
-        $('#sidebar').removeClass("hidden")
+        $('#sidebar').removeClass("hidden")        
         viewer.zoomContent()
 
         this.visible = true
@@ -155,6 +159,7 @@ class SymbolViewer{
                 }                                
             }
             
+            $('#symbol_viewer #empty').addClass("hidden")
             $("#symbol_viewer_content").html(info)
             //alert(info)
         })

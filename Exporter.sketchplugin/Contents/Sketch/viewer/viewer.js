@@ -296,10 +296,14 @@ function createViewer(story, files) {
             // check sidebar
             var sidebarWidth = 0
             if(this.sidebarVisible){
-                var sidebar = $("#sidebar")        
+                var sidebar = $("#sidebar")
+                var defSidebarWidth = 300
 
-                sidebarWidth = 300
-                availableWidth -= sidebarWidth                   
+                sidebarWidth = (fullWidth - page.width) / 2
+                if(sidebarWidth<defSidebarWidth){
+                    sidebarWidth = defSidebarWidth
+                    availableWidth = fullWidth - sidebarWidth
+                }                
                 
                 sidebar.css("margin-left",(fullWidth - sidebarWidth)+"px")
                 sidebar.css("margin-top",(0)+"px")
