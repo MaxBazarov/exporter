@@ -101,7 +101,7 @@ function buildMainHTML(options) {
   s +=  '<!-- load indicator -->\n';
   s +=  '<div id="loading" >\n';
   s += '\
-    div class="shaft1"></div><div class="shaft2"></div><div class="shaft3"></div>\
+    <div class="shaft1"></div><div class="shaft2"></div><div class="shaft3"></div>\
     <div class="shaft4"></div><div class="shaft5"></div><div class="shaft6"></div><div class="shaft7"></div>\
   </div>    \
   <!--/load indicator-->\
