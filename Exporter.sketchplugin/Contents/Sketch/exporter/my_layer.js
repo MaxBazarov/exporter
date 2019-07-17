@@ -214,7 +214,6 @@ class MyLayer {
         const imageName = "icon.png"
         const imagePath = exporter._outputPath+"/resources/"+imageName;
 
-        log("imagePath:"+imagePath)
         let slice = null
 
         slice = MSExportRequest.exportRequestsFromExportableLayer(nlayer).firstObject();
@@ -238,27 +237,35 @@ class MyLayer {
 
 class MyLayerCollector {
     constructor() {        
+        this.childFinder = new ChildFinder()        
     }
     
     collectArtboardsLayers(prefix){                
         log( prefix+"collectArtboardsLayers: running...")
-        this.childFinder = new ChildFinder()        
-        const myLayers = []
+        
         exporter.artboardGroups.forEach(function (artboardGroup) {
             const artboard = artboardGroup[0].artboard;
-            myLayers.push(this.getCollectLayer(prefix+" ",artboard,undefined,{}))
+            this.collectSingleArtboardLayers(prefix + " ",artboard)
         }, this);
 
         // do we need to add some artboards from libraries ?
-        const overlayedArtboards = this._findOverlayArtboardsFromLibraries(myLayers)
+        const overlayedArtboards = this._findOverlayArtboardsFromLibraries(exporter.myLayers)
         for(const nArtboard of overlayedArtboards){
-            myLayers.push(this.getCollectLayer(prefix+" ",nArtboard,undefined,{}))
+            exporter.myLayers.push(this.getCollectLayer(prefix+" ",nArtboard,undefined,{}))
         }
-
-        exporter.myLayers = myLayers
 
         log( prefix+"collectArtboardsLayers: done!")
     }
+
+    collectSingleArtboardLayers(prefix,snArtboard){
+        log( prefix+"collectSingleArtboardLayers: running...")
+        const artboard = this.getCollectLayer(prefix+" ",snArtboard,undefined,{})
+        exporter.myLayers.push(artboard)
+        log( prefix+"collectSingleArtboardLayers: done!")
+        return artboard
+    }
+
+
 
     _findOverlayArtboardsFromLibraries(knownArtboards){
         let result = []

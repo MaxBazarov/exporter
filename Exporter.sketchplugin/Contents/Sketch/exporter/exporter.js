@@ -38,7 +38,7 @@ class Exporter {
     this.pageIDsDict = []
     this.errors = []
     this.exportedImages = []
-    
+    this.libs = undefined
 
     // workaround for Sketch 52s
     this.docName = this._clearCloudName(this.ndoc.cloudName())
@@ -78,6 +78,75 @@ class Exporter {
     if(undefined==backColor) backColor = ""
     this.backColor = backColor
   }
+
+
+  // return Sketch native object
+  findLibraryArtboardByID(artboardID){
+    log("findLibraryArtboardByID running...  artboardID:"+artboardID)
+    if(undefined==this.libs) this._initLibraries()
+
+    // find Sketch Artboard
+    var jsArtboard = undefined
+    for(const lib of this.libs){
+        jsArtboard = lib.doc.getLayerWithID(artboardID)
+        if(jsArtboard) break
+    }
+    if(!jsArtboard){
+        log("findLibraryArtboardByID FAILED")
+        return false
+    }
+
+    // Process Sketch artboard
+    const layerCollector  = new MyLayerCollector()
+    const artboard = layerCollector.collectSingleArtboardLayers(" ",jsArtboard.sketchObject)
+
+    // Resize internal parts
+    const layerResizer  = new MyLayerResizer()
+    layerResizer._resizeLayers(" ",[artboard])
+
+    log("findLibraryArtboardByID SUCCESS")
+    return artboard
+  }
+ 
+
+
+  _initLibraries(){
+    log("_initLibraries: start")
+    this.libs = []
+
+    var libraries = require('sketch/dom').getLibraries()    
+    for(const lib of libraries){
+        if(!lib.enabled) continue
+
+        const doc = lib.getDocument() 
+        if(!doc){
+            log("_initLibraries: can't load document for library "+doc.path+"")
+        }
+        this.libs.push({
+            lib: lib,
+            doc: doc
+        })
+    }
+    log("_initLibraries: finish")
+  }
+
+
+  _findMainLibraryPath(){
+    log('_findMainLibraryPath.1')
+    var libraries = require('sketch/dom').getLibraries()    
+    log('_findMainLibraryPath.2')
+    //log(libraries)
+    for(const lib of libraries){
+        if("ux1-ui" != lib.name) continue
+        log('_findMainLibraryPath.3')
+        const doc = lib.getDocument() 
+        log('_findMainLibraryPath.4')
+        return doc.path+""
+    }
+    log('_findMainLibraryPath.10')
+    return undefined
+  }
+
 
   
   collectArtboardGroups(){
@@ -257,6 +326,7 @@ class Exporter {
     return true
   }
 
+  
 
 
   getArtboardGroups(context) {
@@ -460,22 +530,6 @@ class Exporter {
     log(" SaveToJSON: done!")
 
     return true
-  }
-
-  _findMainLibraryPath(){
-    log('_findMainLibraryPath.1')
-    var libraries = require('sketch/dom').getLibraries()    
-    log('_findMainLibraryPath.2')
-    log(libraries)
-    for(const lib of libraries){
-        if("ux1-ui" != lib.name) continue
-        log('_findMainLibraryPath.3')
-        const doc = lib.getDocument() 
-        log('_findMainLibraryPath.4')
-        return doc.path+""
-    }
-    log('_findMainLibraryPath.10')
-    return undefined
   }
 
   exportArtboards() {        

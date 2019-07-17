@@ -12,21 +12,12 @@ var ResizingType = {
 
 class MyLayerResizer {
     constructor() {        
+        this.childFinder = new ChildFinder()
     }
     
     resizeLayers(prefix){
         log( prefix+"resizeLayers: running...")
-        
-        this.childFinder = new ChildFinder()
-        exporter.newLibArtboards = [] // prepare special list for found library artboards
-        
         this._resizeLayers(prefix+" ",exporter.myLayers)
-        // scan new found library artboards and process it
-        while(exporter.newLibArtboards.length!=0){
-            this._resizeLayers(prefix+" ",exporter.newLibArtboards)
-            Array.prototype.push.apply(exporter.myLayers,exporter.newLibArtboards)
-            exporter.newLibArtboards = []
-        }
         log( prefix+"resizeLayers: done!")
     }
 
@@ -221,11 +212,11 @@ class MyLayerResizer {
             let targetArtboard = exporter.pageIDsDict[targetArtboardID]
 
             if(undefined==targetArtboard){
-                //let libArtboard = exporter.findLibraryArtboardByID(targetArtboardID)
-                //if(!libArtboard){
+                targetArtboard= exporter.findLibraryArtboardByID(targetArtboardID)
+                if(!targetArtboard){
                     exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
                     return false
-                //}
+                }
             }
 
             if(targetArtboard.externalArtboardURL!=undefined){                
