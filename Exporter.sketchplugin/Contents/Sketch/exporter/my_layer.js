@@ -247,13 +247,7 @@ class MyLayerCollector {
             const artboard = artboardGroup[0].artboard;
             this.collectSingleArtboardLayers(prefix + " ",artboard)
         }, this);
-
-        // do we need to add some artboards from libraries ?
-        const overlayedArtboards = this._findOverlayArtboardsFromLibraries(exporter.myLayers)
-        for(const nArtboard of overlayedArtboards){
-            exporter.myLayers.push(this.getCollectLayer(prefix+" ",nArtboard,undefined,{}))
-        }
-
+     
         log( prefix+"collectArtboardsLayers: done!")
     }
 
@@ -265,63 +259,6 @@ class MyLayerCollector {
         return artboard
     }
 
-
-
-    _findOverlayArtboardsFromLibraries(knownArtboards){
-        let result = []
-        log('_addOverlayArtboardsFromLibraries: running')  
-
-        for(const artboard of knownArtboards){
-            for(const layer of artboard.overlayLayers){
-                const sLibraryArtboard = this._findLibraryArtboardByName(layer.name+"@")
-                if(!sLibraryArtboard){
-                    exporter.logError("Can't find artboard with name: "+layer.name+"@")
-                    continue
-                }
-                layer.hoverOverlayArtboardID = sLibraryArtboard.sketchObject.objectID()+""
-                //log('hoverOverlayArtboardID---------------+++ '+sLibraryArtboard.id )  //--
-                //log('hoverOverlayArtboardID---------------+++ '+layer.hoverOverlayArtboardID )  //--
-                result.push(sLibraryArtboard.sketchObject)
-            }
-        }
-    
-        log('_addOverlayArtboardsFromLibraries: done!')  
-        return result
-    }
-
-
-    // return wrappedObject
-    _findLibraryArtboardByName(name){
-        var libraries = require('sketch/dom').getLibraries()    
-        //log('_findLibraryArtboardByName.1') 
-        //log(libraries)
-        for(const lib of libraries){
-            //log('_findLibraryArtboardByName.3: '+lib.name)
-            if(!lib.enabled){
-                //log("_findLibraryArtboardByName.3.0.0 skip disabled library")
-                continue
-            }
-            if(!lib.valid){
-                //log("_findLibraryArtboardByName.3.0.1 skip INVALID library")
-                continue
-            }
-            const doc = lib.getDocument() 
-            if(!doc){
-                log("Can't find get library as document")
-                continue
-            }
-            const artboards = doc.getLayersNamed(name)
-            if(artboards.length){
-                //log('_findLibraryArtboardByName.3.1 SUCCESS')
-                return artboards[0]
-            }
-            //log('_findLibraryArtboardByName.4')
-
-        }
-        exporter.logError("Can't find artboard '"+name+"' in enabled libraries")
-        //log('_findLibraryArtboardByName.10 FAILED')
-        return undefined
-    }
 
     getCollectLayer(prefix,nlayerOrg,myParent,symbolOverrides){
         let nlayer = nlayerOrg
@@ -335,13 +272,13 @@ class MyLayerCollector {
 
         let newMaster = undefined
 
-        //exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
+        //exporter.logMsg(prefix + nlayer.name()+ " "+nlayer.objectID())
 
         if(nlayer.isKindOfClass(MSSymbolInstance)){
             const objectID = nlayer.objectID()
             while(objectID in symbolOverrides){
                 const over = symbolOverrides[objectID] 
-                //exporter.log("getCollectLayer found override for "+objectID + "  newMaster = "+over['newMaster']   )
+                //exporter.logMsg("getCollectLayer found override for "+objectID + "  newMaster = "+over['newMaster']   )
 
                 if(over['path']!=undefined){
                     if(over['path'].length>1){
@@ -373,7 +310,7 @@ class MyLayerCollector {
             }                     
         }
         
-        //exporter.log(prefix + nlayer.name()+ " "+nlayer.objectID())
+        //exporter.logMsg(prefix + nlayer.name()+ " "+nlayer.objectID())
 
         if(myLayer.isSymbolInstance){      
             var newSymbolOverrides = this._extendSymbolOverrides(myLayer,symbolOverrides)   
@@ -438,7 +375,7 @@ class MyLayerCollector {
 
             symbolOverrides[oldID] = overStruct
 
-            //exporter.log("_extendSymbolOverrides() overrided old="+oldID+" overStruct="+overStruct)    
+            //exporter.logMsg("_extendSymbolOverrides() overrided old="+oldID+" overStruct="+overStruct)    
         }        
         return symbolOverrides
     }

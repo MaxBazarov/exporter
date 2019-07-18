@@ -39,7 +39,7 @@ class MyLayerResizer {
         const parent = l.parent
         const e = this.e
 
-        exporter.log( prefix+l.name+" id="+l.nlayer.objectID())
+        exporter.logMsg( prefix+l.name+" id="+l.nlayer.objectID())
         
         l.frame = Utils.copyRectToRectangle(layer.absoluteRect())        
         l.orgFrame = Utils.copyRectToRectangle(layer.frame())        
@@ -84,7 +84,7 @@ class MyLayerResizer {
         this._processLayerLinks(l,prefix+" ",lostOverrides)
         if(l.tempOverrides!=undefined){
             lostOverrides = Object.assign({}, lostOverrides, l.tempOverrides);
-            exporter.log(prefix+" _resizeLayer, newOverrides="+Object.keys(lostOverrides).length) 
+            exporter.logMsg(prefix+" _resizeLayer, newOverrides="+Object.keys(lostOverrides).length) 
         }
 
         exporter.logLayer(prefix+"- frame="+l.frame+ " topOffset: "+topOffset + " absoluteRect="+layer.absoluteRect() )
@@ -148,7 +148,7 @@ class MyLayerResizer {
             // No any link on layer
             return
         }
-        exporter.log(prefix+"_processLayerLinks: finalHotspot type="+finalHotspot.linkType)
+        exporter.logMsg(prefix+"_processLayerLinks: finalHotspot type="+finalHotspot.linkType)
         hotspots.push(finalHotspot);          
 
         // finalization
@@ -158,7 +158,7 @@ class MyLayerResizer {
     }
 
     _specifyExternalURLHotspot(prefix,finalHotspot,externalLink){           
-        exporter.log(prefix+"_specifyExternalURLHotspothotspot: href")
+        exporter.logMsg(prefix+"_specifyExternalURLHotspothotspot: href")
         // found external link
         const regExp = new RegExp("^http(s?)://");
         var href= externalLink.href
@@ -175,24 +175,24 @@ class MyLayerResizer {
     }
 
     _specifyCustomizedHotspot(prefix,l,finalHotspot){     
-        exporter.log(prefix+"CUSTOM hotspot: " + l.customLink.linkType)  
+        exporter.logMsg(prefix+"CUSTOM hotspot: " + l.customLink.linkType)  
         finalHotspot.linkType = l.customLink.linkType                
         
         if(l.customLink.linkType=="back"){                    
             // linkType copied already, nothing more to do for Back link
         }else if(l.customLink.linkType=="href"){
-            exporter.log("_specifyCustomizedHotspot: href name="+l.name+" "+l.customLink.artboardID)
+            exporter.logMsg("_specifyCustomizedHotspot: href name="+l.name+" "+l.customLink.artboardID)
             finalHotspot.href = l.customLink.href 
             finalHotspot.target = l.customLink.target
         }else if(l.customLink.linkType=="artboard"){
             const targetArtboardID = l.customLink.artboardID
-            const targetArtboard = exporter.pageIDsDict[targetArtboardID]
-            exporter.log("_specifyCustomizedHotspot: artboard name="+l.name+" "+l.customLink.artboardID)
+            const targetArtboard = exporter.findArtboardByID(targetArtboardID)
+            exporter.logMsg("_specifyCustomizedHotspot: artboard name="+l.name+" "+l.customLink.artboardID)
             finalHotspot.artboardID = targetArtboardID
             finalHotspot.artboardName = targetArtboard.name
             finalHotspot.href = Utils.toFilename(targetArtboard.name) + ".html";
         }else{
-            exporter.log(prefix+"CUSTOM hotspot: " + l.customLink.linkType)  
+            exporter.logMsg(prefix+"CUSTOM hotspot: " + l.customLink.linkType)  
             return false            
         }
         return true
@@ -206,17 +206,14 @@ class MyLayerResizer {
         if(flow.isBackAction()){
             // hande Back action
             finalHotspot.linkType = "back";
-            exporter.log(prefix+"hotspot: back")                             
-        }else if(targetArtboardID!=null && targetArtboardID!=""){
+            exporter.logMsg(prefix+"hotspot: back")        
+        }else if(targetArtboardID!=null && targetArtboardID!="" && targetArtboardID!="null"){
             // hande direct link
-            let targetArtboard = exporter.pageIDsDict[targetArtboardID]
+            let targetArtboard = exporter.findArtboardByID(targetArtboardID)
 
-            if(undefined==targetArtboard){
-                targetArtboard= exporter.findLibraryArtboardByID(targetArtboardID)
-                if(!targetArtboard){
-                    exporter.log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
-                    return false
-                }
+            if(!targetArtboard){
+                log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"' for layer='"+l.name+"'")
+                return false
             }
 
             if(targetArtboard.externalArtboardURL!=undefined){                
@@ -232,10 +229,10 @@ class MyLayerResizer {
                 finalHotspot.href = Utils.toFilename(targetArtboard.name) + ".html";
             }
 
-            exporter.log(prefix+"hotspot: artboard ")
+            exporter.logMsg(prefix+"hotspot: artboard ")
             
         }else{                    
-            exporter.log(prefix+"hotspot: none  l.isSymbolInstance="+l.isSymbolInstance)
+            exporter.logMsg(prefix+"hotspot: none  l.isSymbolInstance="+l.isSymbolInstance)
             return false
         }
         return true
@@ -260,18 +257,18 @@ class MyLayerResizer {
             if( !(customProperty.property==='flowDestination' && !customProperty.isDefault && customProperty.value!='') ) return;        
 
             let sourceID =  customProperty.path
-            exporter.log(prefix+"found custom property / sourceID="+sourceID +  " customProperty.value="+customProperty.value)
+            exporter.logMsg(prefix+"found custom property / sourceID="+sourceID +  " customProperty.value="+customProperty.value)
 
             let srcLayer = undefined            
             if(sourceID.indexOf("/")>0){
                 // found nested symbols
                 const splitedPath = sourceID.split("/")
                 // find override owner
-                exporter.log(prefix+"override owner path="+sourceID)            
+                exporter.logMsg(prefix+"override owner path="+sourceID)            
                 srcLayer = this.childFinder.findChildInPath(prefix+" ",l,splitedPath,0)                
                 if(srcLayer==undefined && !(l.objectID in lostOverrides) )
                 {          
-                    exporter.log(prefix+"pushed to newLostOverrides")         
+                    exporter.logMsg(prefix+"pushed to newLostOverrides")         
 
                     if(newLostOverrides==undefined) 
                         newLostOverrides = []
@@ -280,16 +277,16 @@ class MyLayerResizer {
                         newLostOverrides[firstID] = []
                     newLostOverrides[firstID].push(customProperty)
 
-                    exporter.log(prefix+" pushed newOverrides="+(newLostOverrides?newLostOverrides[firstID].length:" undefined"))
+                    exporter.logMsg(prefix+" pushed newOverrides="+(newLostOverrides?newLostOverrides[firstID].length:" undefined"))
                 }
             }else{       
                 srcLayer = this.childFinder.findChildByID(l,sourceID)
             }
                        
-            if(srcLayer) exporter.log(prefix+"found srcLayer: "+srcLayer.name)
+            if(srcLayer) exporter.logMsg(prefix+"found srcLayer: "+srcLayer.name)
 
             if(srcLayer==undefined){
-                exporter.log(prefix+"ERROR! can't find child by ID="+sourceID)
+                exporter.logMsg(prefix+"ERROR! can't find child by ID="+sourceID)
                 return
             }
             
@@ -304,14 +301,17 @@ class MyLayerResizer {
                 srcLayer.customLink = {
                     linkType: "back"
                 }
-                exporter.log(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType)
+                exporter.logMsg(prefix+"srcLayer.customLink.linkType="+srcLayer.customLink.linkType)
                 return
             }else{       
+                const targetArtboardID = customProperty.value
+                const targetArtboard = exporter.findArtboardByID(targetArtboardID)
+
                 // handle link to artboard
-                if(!(customProperty.value in exporter.pageIDsDict)){
+                if(!targetArtboard){
+                    log("_specifyHotspot() Can't find artboard with ID='"+targetArtboardID+"'")
                     return
                 }
-                const targetArtboard = exporter.pageIDsDict[customProperty.value]
 
                 // handle link to External Artboard
                 if(targetArtboard.externalArtboardURL!=undefined){                
@@ -336,7 +336,7 @@ class MyLayerResizer {
 
         },this);       
         
-        exporter.log(prefix+" _processLayerOverrides, newLostOverrides="+newLostOverrides) 
+        exporter.logMsg(prefix+" _processLayerOverrides, newLostOverrides="+newLostOverrides) 
         l.tempOverrides = newLostOverrides
     }
 
@@ -431,9 +431,9 @@ class MyLayerResizer {
         }
         newFrame.round()
 
-        //exporter.log(prefix+" getAbsoluteRect() 99 old "+l.frame + " const=")
+        //exporter.logMsg(prefix+" getAbsoluteRect() 99 old "+l.frame + " const=")
         l.frame = newFrame        
-        //exporter.log(prefix+" getAbsoluteRect() 99 new "+newFrame)
+        //exporter.logMsg(prefix+" getAbsoluteRect() 99 new "+newFrame)
             
     }
     

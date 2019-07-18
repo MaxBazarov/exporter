@@ -81,14 +81,21 @@ class Exporter {
 
 
   // return Sketch native object
-  findLibraryArtboardByID(artboardID){
+  findArtboardByID(artboardID){
+      let artboard = this.pageIDsDict[artboardID]
+      if(artboard) return artboard
+      return this._findLibraryArtboardByID(artboardID)
+  }
+
+  // return Sketch native object
+  _findLibraryArtboardByID(artboardID){
     log("findLibraryArtboardByID running...  artboardID:"+artboardID)
     if(undefined==this.libs) this._initLibraries()
 
     // find Sketch Artboard
     var jsArtboard = undefined
     for(const lib of this.libs){
-        jsArtboard = lib.doc.getLayerWithID(artboardID)
+        jsArtboard = lib.jsDoc.getLayerWithID(artboardID)
         if(jsArtboard) break
     }
     if(!jsArtboard){
@@ -115,16 +122,16 @@ class Exporter {
     this.libs = []
 
     var libraries = require('sketch/dom').getLibraries()    
-    for(const lib of libraries){
-        if(!lib.enabled) continue
+    for(const jsLib of libraries){
+        if(!jsLib.enabled) continue
 
-        const doc = lib.getDocument() 
-        if(!doc){
-            log("_initLibraries: can't load document for library "+doc.path+"")
+        const jsDoc = jsLib.getDocument() 
+        if(!jsDoc){
+            log("_initLibraries: can't load document for library "+jsDoc.path+"")
         }
         this.libs.push({
-            lib: lib,
-            doc: doc
+            jsLib: jsLib,
+            jsDoc: jsDoc
         })
     }
     log("_initLibraries: finish")
@@ -132,16 +139,15 @@ class Exporter {
 
 
   _findMainLibraryPath(){
+    if(undefined==this.libs) this._initLibraries()
+
     log('_findMainLibraryPath.1')
-    var libraries = require('sketch/dom').getLibraries()    
-    log('_findMainLibraryPath.2')
-    //log(libraries)
-    for(const lib of libraries){
-        if("ux1-ui" != lib.name) continue
+    for(const lib of this.libs){
+        if("ux1-ui" != lib.jsLib.name) continue
         log('_findMainLibraryPath.3')
-        const doc = lib.getDocument() 
+        const jsDoc = lib.jsLib.getDocument() 
         log('_findMainLibraryPath.4')
-        return doc.path+""
+        return jsDoc.path+""
     }
     log('_findMainLibraryPath.10')
     return undefined
@@ -174,7 +180,7 @@ class Exporter {
 
   getCollectLayerChilds(layers,myParent){
     const myLayers = []
-   
+   f
     layers.forEach(function (childLayer) {
       myLayers.push( this.getCollectLayer(childLayer,myParent) )
     }, this);
@@ -182,7 +188,7 @@ class Exporter {
     return myLayers
   }
 
-  log(msg){
+  logMsg(msg){
     if(!Constants.LOGGING) return
     log(msg)
   }

@@ -148,7 +148,7 @@ class MyArtboard extends MyLayer {
     _pushIntoJSStory(pageIndex) {
         const mainName = this.name
 
-        exporter.log("process main artboard " + mainName);
+        exporter.logMsg("process main artboard " + mainName);
         exporter.totalImages++
 
         let js = pageIndex ? ',' : '';
@@ -332,7 +332,7 @@ class MyArtboard extends MyLayer {
             } else if (hotspot.linkType == 'artboard') {
                 const targetPage = exporter.pageIDsDict[hotspot.artboardID]
                 if (targetPage == undefined) {
-                    exporter.log("undefined artboard: '" + hotspot.artboardName + '"');
+                    exporter.logMsg("undefined artboard: '" + hotspot.artboardName + '"');
                     continue
                 }
                 const targetPageIndex = targetPage.pageIndex;
@@ -342,7 +342,7 @@ class MyArtboard extends MyLayer {
             } else if (hotspot.target != undefined) {
                 newHotspot.target = hotspot.target
             } else {
-                exporter.log("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
+                exporter.logMsg("_pushHotspotIntoJSStory: Uknown hotspot link type: '" + hotspot.linkType + "'")
             }
 
             if (hotspot.target != undefined) {
@@ -366,7 +366,7 @@ class MyArtboard extends MyLayer {
       }
 
     _exportImage(scale,layer,nlayer,panelPostix="",addToExported = true) {
-        exporter.log("   exportImage() for "+nlayer.name())
+        exporter.logMsg("   exportImage() for "+nlayer.name())
         
         const imageName = this._getImageName(scale,panelPostix)
         const imagePath = exporter.imagesPath + imageName
@@ -394,7 +394,7 @@ class MyArtboard extends MyLayer {
     // new experimental code to export images
     // we don't use it because it doesn't allow to set a file name
     _exportImage2(scales,slayer) {
-        exporter.log("exportImage()");
+        exporter.logMsg("exportImage()");
         
         const imagePath = exporter.imagesPath // + this._getImageName(scales)
         log('_exportImage2 name='+slayer.name)
