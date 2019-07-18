@@ -68,14 +68,16 @@ class ViewerPage {
         }
 
         // check if we need to hide any other already visible overlay
-        if( ("currentOverlayPage" in newParentPage) 
-        && newParentPage.currentOverlayPage!=undefined 
-            && newParentPage.currentOverlayPage!=this)
+        var positionCloned = false
+        const currentOverlay = newParentPage.currentOverlayPage
+        if( currentOverlay!=undefined 
+            && currentOverlay!=this)
         {
 
             if('overlay'==linkPageType){
-                posX = newParentPage.currentOverlayPage.currentX
-                posY = newParentPage.currentOverlayPage.currentY
+                posX = currentOverlay.currentX
+                posY = currentOverlay.currentY
+                positionCloned = true
             }
 
             newParentPage.currentOverlayPage.hide()         
@@ -101,7 +103,7 @@ class ViewerPage {
                 div.addClass('divPanel')
             }
 
-            if(undefined!=this.overlayShadowX && 10==this.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
+            if(!positionCloned && undefined!=this.overlayShadowX && 10==this.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
                 posX -= this.overlayShadowX
             }
 
@@ -420,7 +422,7 @@ class ViewerPage {
                             if( (linkPosX+fullWidth)>currentPage.width )
                                 linkPosX = currentPage.width - fullWidth
 
-                            /*if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){
+                            /*if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){  
                                 linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
                             }*/
                         }
@@ -429,6 +431,7 @@ class ViewerPage {
                         if(linkPosY<0) linkPosY = 0
                                 
                         newPage.showAsOverlayIn(currentPage,orgLink,linkPosX,linkPosY,linkParentFixed,linkPageType)
+                        return true
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }
@@ -446,11 +449,7 @@ class ViewerPage {
 
                 // close last current overlay if it still has parent
                 if('overlay'==linkPageType && undefined!=page.parentPage){
-                    //if(link_page == page.index){
                         page.hide()
-                       // return false                     
-                    //}
-                    // don't do anything if link follows to overlay itseld                   
                 }
 
                 return false
