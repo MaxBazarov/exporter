@@ -431,7 +431,7 @@ class ViewerPage {
                         if(linkPosY<0) linkPosY = 0
                                 
                         newPage.showAsOverlayIn(currentPage,orgLink,linkPosX,linkPosY,linkParentFixed,linkPageType)
-                        return true
+                        return false
                     }else{
                         viewer.goTo(parseInt(link_page))
                     }

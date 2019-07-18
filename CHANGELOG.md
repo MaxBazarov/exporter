@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 7.1.0 (18 Jul 2019)
+- Improved Element Inspector
+- Suppor for links between library symbols and libary artboards (you can put shared overlays into library)
+
 ##  Version 7.0.0 (16 Jul 2019)
 - Redesigned regular page and modal dialogs centering
 - Moved Element Inspector to right sidebar (see https://raw.githubusercontent.com/MaxBazarov/exporter/master/tests/Link-ModalArtboard/Screenshot.png)
