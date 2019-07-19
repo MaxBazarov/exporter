@@ -80,7 +80,7 @@ class ViewerPage {
                 positionCloned = true
             }
 
-            newParentPage.currentOverlayPage.hide()         
+            newParentPage.currentOverlayPage.hide()                     
             //newParentPage.currentOverlayPage = undefined
         }else if("modal"==newParentPage.type){            
             posX += newParentPage.currentLeft
@@ -117,20 +117,23 @@ class ViewerPage {
             this.show()
             newParentPage.currentOverlayPage = this
             this.parentPage = newParentPage
+            
 
             this.currentLink = link
 
             var extURL = '/o/'+link.index
-            viewer.refresh_url(newParentPage.index,extURL)
+            viewer.refresh_url(newParentPage.index,extURL)            
 
             if(1==this.overlayByEvent){ //mouse hover
-                var func = function(event){                    
+                var func = function(event){      
                     var page = story.pages[viewer.currentPage];
-                    if(undefined!=page){
+                    var link_page = parseInt( $( this ).attr("link_page") )
+                    if(undefined!=page && undefined!=page.currentOverlayPage  && link_page==page.currentOverlayPage.index){                        
                         page.hideCurrentOverlay()
                     }
                 }            
                 if(10==this.overlayAlign){ // for overlay on hotspot top left position
+                    this.imageDiv.attr("link_page",this.index)
                     this.imageDiv.mouseleave(func)
                 }else{
                     link.this.mouseleave(func)
@@ -434,14 +437,17 @@ class ViewerPage {
                         return false
                     }else{
                         viewer.goTo(parseInt(link_page))
+                        return false
                     }
                 } else if(link_action != null && link_action== 'back') {
                     //title = "Go Back";
                     viewer.goBack()
+                    return false
                 } else if(link_url != null){
                     //title = link.url;
+                    //page.hide()
                     var target = $( this ).attr("target")
-                    window.open(link_url,target!=undefined?target:"_self")
+                    window.open(link_url,target!=undefined?target:"_self")                    
                     return false
                     //document.location = link_url
                     //target = link.target!=null?link.target:null;		
@@ -449,7 +455,7 @@ class ViewerPage {
 
                 // close last current overlay if it still has parent
                 if('overlay'==linkPageType && undefined!=page.parentPage){
-                        page.hide()
+                    page.hide()
                 }
 
                 return false

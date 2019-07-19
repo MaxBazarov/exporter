@@ -1,8 +1,11 @@
 # Change Log
 
+##  Version 7.1.1 (19 Jul 2019)
+- Several fixes in overlays support
+
 ##  Version 7.1.0 (18 Jul 2019)
 - Improved Element Inspector
-- Suppor for links between library symbols and libary artboards (you can put shared overlays into library)
+- Support for links between library symbols and libary artboards (you can put shared overlays into library)
 
 ##  Version 7.0.0 (16 Jul 2019)
 - Redesigned regular page and modal dialogs centering
