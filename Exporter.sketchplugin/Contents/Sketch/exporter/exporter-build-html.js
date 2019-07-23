@@ -111,6 +111,7 @@ function buildMainHTML(options) {
         <div id="sidebar" class="hidden">\
             <div id="symbol_viewer" class="hidden">\
                 <p class="title">ELEMENT INSPECTOR</p>\
+                <select id="lib_selector"></select>\
                 <div id="empty">\
                     Click to some element to inspect\
                 </div>\

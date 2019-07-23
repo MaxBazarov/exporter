@@ -8,7 +8,7 @@
 
 var exporter = undefined
 
-const replaceValidKeys = ["frame","x","y","width","height","childs","constrains","symbolMasterName","styleName","text","comment"]
+const replaceValidKeys = ["frame","x","y","width","height","childs","constrains","smName","styleName","text","comment","smLib"]
 function replacer(key, value) {
   // Pass known keys and array indexes
   if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
@@ -136,23 +136,6 @@ class Exporter {
     }
     log("_initLibraries: finish")
   }
-
-
-  _findMainLibraryPath(){
-    if(undefined==this.libs) this._initLibraries()
-
-    log('_findMainLibraryPath.1')
-    for(const lib of this.libs){
-        if("ux1-ui" != lib.jsLib.name) continue
-        log('_findMainLibraryPath.3')
-        const jsDoc = lib.jsLib.getDocument() 
-        log('_findMainLibraryPath.4')
-        return jsDoc.path+""
-    }
-    log('_findMainLibraryPath.10')
-    return undefined
-  }
-
 
   
   collectArtboardGroups(){
@@ -515,16 +498,18 @@ class Exporter {
   saveToJSON(){
     if( !this.enabledJSON ) return true
 
-    let loadedSmbolTokens = undefined
-    while(true){
-        let pathToSymbolTokens = this._findMainLibraryPath()
-        if(undefined == pathToSymbolTokens) break
-        pathToSymbolTokens = Utils.cutLastPathFolder(pathToSymbolTokens)+"/skins/currentskin-symboltokens.json"
-        log('pathToSymbolTokens='+pathToSymbolTokens)
-        loadedSmbolTokens =  Utils.readFile(pathToSymbolTokens)
-        break
+    // load library inspector file
+    let inspectors = ""
+    for(const lib of this.libs){
+        let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
+        log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
+        const inspectorData =  Utils.readFile(pathToSymbolTokens)
+        if(inspectors!="") inspectors+=","
+        inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")
     }
-    let symbolTokens = "var symbolsData = "+(undefined!=loadedSmbolTokens?loadedSmbolTokens:'{}')+";"
+
+
+    let symbolTokens = "var symbolsData = {"+inspectors+"};")
 
     log(" SaveToJSON: cleanup before saving...")
     for(var l of this.myLayers) l.clearRefsBeforeJSON()

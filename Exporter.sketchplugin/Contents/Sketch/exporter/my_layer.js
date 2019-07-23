@@ -48,11 +48,12 @@ class MyLayer {
 
             // prepare data for Element Inspector
             const lib = this.slayer.master.getLibrary()            
-            if(lib && UX1LibraryName==lib.name||true){
-                this.symbolMasterName = this.symbolMaster.name()+""                
+            if(lib){
+                this.smName = this.symbolMaster.name()+""                
+                this.smLib = lib.name
             }
         }else{
-            this.symbolMasterName = undefined
+            this.smName = undefined
         }
         if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
         if(nlayer.isKindOfClass(MSTextLayer)){
@@ -196,8 +197,8 @@ class MyLayer {
         //l.nlayer = undefined
         this.customLink = undefined
 
-        //log('---- this.symbolMasterName:')
-        //log( this.symbolMasterName )
+        //log('---- this.smName:')
+        //log( this.smName )
         //log('---- this.name:')
         //log( this.name)
 
@@ -300,11 +301,11 @@ class MyLayerCollector {
                 
                 const lib =   Sketch.fromNative(newMaster).getLibrary()            
                 if(lib && UX1LibraryName==lib.name){
-                    myLayer.symbolMasterName = myLayer.symbolMaster.name()+""
+                    myLayer.smName = myLayer.symbolMaster.name()+""
                 }        
                 
-                //log('myLayer.symbolMasterName:')
-                //log(myLayer.symbolMasterName)
+                //log('myLayer.smName:')
+                //log(myLayer.smName)
                 delete symbolOverrides[objectID] 
                 break                                              
             }                     

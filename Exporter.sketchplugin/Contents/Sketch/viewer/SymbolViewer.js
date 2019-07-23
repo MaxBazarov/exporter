@@ -2,10 +2,36 @@ class SymbolViewer{
     constructor (){
         this.visible = false
         this.createdPages = {}
+        this.inited = false
+        this.currentLib = ""
     }
 
-    initialize(){
-        
+    initialize(force=false){
+        if(!force && this.inited) return
+                
+        // populate library select
+        const libSelect =  $('#symbol_viewer #lib_selector')
+        libSelect.append($('<option>', {
+            value: "",
+            text: 'Library autoselection'
+        }));
+        for(const libName of Object.keys(symbolsData)){
+            libSelect.append($('<option>', {
+                value: libName,
+                text: libName
+            }));
+        }  
+        libSelect.change(function(){
+            var libName = ('#symbol_viewer #lib_selector:selected').val            
+            viewer.symbolViewer._selectLib(libName)
+
+        })
+
+        this.inited = true
+    }
+
+    _selectLib(libName){
+        this.currentLib = libName
     }
 
 
@@ -31,6 +57,7 @@ class SymbolViewer{
     }
 
     show(){
+        if(!this.inited) this.initialize()
         
         viewer.toggleLinks(false)
         viewer.toogleLayout(false)
@@ -41,8 +68,8 @@ class SymbolViewer{
         }
 
         const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
-        contentDiv.addClass("contentSymbolsVisible")
- 
+        contentDiv.addClass("contentSymbolsVisible")         
+
         // show sidebar
         viewer.sidebarVisible=true
         
@@ -82,10 +109,10 @@ class SymbolViewer{
 
     _processLayerList(layers,isParentSymbol=false){
         for(var l of layers){
-            if(l.symbolMasterName!=undefined || (!isParentSymbol && l.styleName!=undefined)){
+            if(l.smName!=undefined || (!isParentSymbol && l.styleName!=undefined)){
                 this._showElement(l)
             }
-            this._processLayerList(l.childs,l.symbolMasterName!=undefined)
+            this._processLayerList(l.childs,l.smName!=undefined)
         }
     }
 
@@ -116,7 +143,7 @@ class SymbolViewer{
             const layerIndex =  $( this ).attr("li")
             const layer = viewer.symbolViewer.createdPages[pageIndex].layerArray[layerIndex]
             
-            var symName = layer.symbolMasterName
+            var symName = layer.smName
             var styleName = layer.styleName
             var comment = layer.comment
             var frameX = layer.frame.x
@@ -137,26 +164,31 @@ class SymbolViewer{
                 info+="<p class='head'>Text</p> "+layer.text
             }
 
-            if(symName!=undefined && symName in symbolsData){
-                const symInfo = symbolsData[symName]
-                info+="<p class='head'>Symbol layers and Tokens</p>"
-                var layerCounter = 0
-                for(const layerName of Object.keys(symInfo.layers)){
-                    if(layerCounter)
-                        info+="<br/>"    
-                    info+=layerName + "<br/>"
-                    for(const tokenName of Object.keys(symInfo.layers[layerName].tokens)){
-                        info+=tokenName+"<br/>"
+         
+            if(symName!=undefined){
+                const symInfo = viewer.symbolViewer._findSymbolByName( symName )                
+                if(symInfo!=undefined){
+                    info+="<p class='head'>Symbol layers and Tokens</p>"
+                    var layerCounter = 0
+                    for(const layerName of Object.keys(symInfo.layers)){
+                        if(layerCounter)
+                            info+="<br/>"    
+                        info+=layerName + "<br/>"
+                        for(const tokenName of Object.keys(symInfo.layers[layerName].tokens)){
+                            info+=tokenName+"<br/>"
+                        }
+                        layerCounter++
                     }
-                    layerCounter++
                 }                
             }
-            if(styleName!=undefined && styleName in  symbolsData.styles){
-                const styleInfo = symbolsData.styles[styleName]
-                info+="<p class='head'>Style Tokens</p>"     
-                for(const tokenName of Object.keys(styleInfo.tokens)){
-                    info+=tokenName+"<br/>"
-                }                                
+            if(styleName!=undefined){
+                const styleInfo = viewer.symbolViewer._findStyleByName( styleName )                
+                if(styleInfo!=undefined){
+                    info+="<p class='head'>Style Tokens</p>"     
+                    for(const tokenName of Object.keys(styleInfo.tokens)){
+                        info+=tokenName+"<br/>"
+                    }
+                }
             }
             
             $('#symbol_viewer #empty').addClass("hidden")
@@ -173,5 +205,21 @@ class SymbolViewer{
                     
         symbolDiv.appendTo(a) 
 
+    }
+
+    _findSymbolByName(symName){
+        for(const lib of Object.values(symbolsData)){
+            if(!(symName in lib)) continue
+            return lib[symName]
+        }        
+        return undefined
+    }
+
+    _findStyleByName(styleName){
+        for(const lib of Object.values(symbolsData)){
+            if(!(styleName in lib.styles)) continue
+            return lib.styles[styleName]
+        }
+        return undefined
     }
 }

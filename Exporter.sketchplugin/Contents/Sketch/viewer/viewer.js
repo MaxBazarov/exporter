@@ -102,7 +102,6 @@ function createViewer(story, files) {
 
             if(story.layersExist){
                 this.symbolViewer = new SymbolViewer()
-                this.symbolViewer.initialize()
             }
 
             this.addHotkeys();
