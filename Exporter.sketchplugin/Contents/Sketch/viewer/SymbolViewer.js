@@ -22,7 +22,7 @@ class SymbolViewer{
             }));
         }  
         libSelect.change(function(){
-            var libName = ('#symbol_viewer #lib_selector:selected').val            
+            var libName = $(this).children("option:selected").val();
             viewer.symbolViewer._selectLib(libName)
 
         })
@@ -32,6 +32,19 @@ class SymbolViewer{
 
     _selectLib(libName){
         this.currentLib = libName
+
+        // remove existing symbol links        
+        this.page.linksDiv.children(".modalSymbolLink,.symbolLink").remove()
+        for(const panel of this.page.fixedPanels){
+            panel.linksDiv.children(".modalSymbolLink,.symbolLink").remove()
+        }
+        delete this.createdPages[viewer.currentPage]
+
+        // redraw inspector
+        this._showEmptyContent()
+
+        // rebuild links
+        this._buildSymbolLinks()
     }
 
 
@@ -48,8 +61,9 @@ class SymbolViewer{
         contentDiv.removeClass("contentSymbolsVisible")        
 
         this.visible = false
+        viewer.linksDisabled = false
 
-        // hide sidebar
+        // hide sidebar        
         viewer.sidebarVisible=false
         $('#sidebar').addClass("hidden")
         $('#symbol_viewer').addClass("hidden")        
@@ -61,20 +75,17 @@ class SymbolViewer{
         
         viewer.toggleLinks(false)
         viewer.toogleLayout(false)
+        viewer.linksDisabled = true
+            
+        this._buildSymbolLinks()
         
-        this._showPage(viewer.currentPage)
-        if(this.page.currentOverlayPage){
-            this._showPage(this.page.currentOverlayPage.index)
-        }
-
         const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
         contentDiv.addClass("contentSymbolsVisible")         
 
         // show sidebar
         viewer.sidebarVisible=true
         
-        $("#symbol_viewer_content").html("")
-        $('#symbol_viewer #empty').removeClass("hidden")
+        this._showEmptyContent()
         
         $('#symbol_viewer').removeClass("hidden")        
         $('#sidebar').removeClass("hidden")        
@@ -82,6 +93,19 @@ class SymbolViewer{
 
         this.visible = true
     }
+
+    _showEmptyContent(){
+        $("#symbol_viewer_content").html("")
+        $('#symbol_viewer #empty').removeClass("hidden")
+    }
+
+    _buildSymbolLinks(){
+        this._showPage(viewer.currentPage)
+        if(this.page.currentOverlayPage){
+            this._showPage(this.page.currentOverlayPage.index)
+        }
+    }
+
 
     _showPage(pageIndex){
         this.pageIndex = pageIndex
@@ -109,8 +133,15 @@ class SymbolViewer{
 
     _processLayerList(layers,isParentSymbol=false){
         for(var l of layers){
-            if(l.smName!=undefined || (!isParentSymbol && l.styleName!=undefined)){
-                this._showElement(l)
+            if(this.currentLib!=""){
+                if( l.smLib == this.currentLib){
+                    this._showElement(l)
+                    continue
+                }
+            }else{
+                if(l.smName!=undefined || (!isParentSymbol && l.styleName!=undefined)){
+                    this._showElement(l)
+                }
             }
             this._processLayerList(l.childs,l.smName!=undefined)
         }
@@ -128,6 +159,8 @@ class SymbolViewer{
                 break
             }
         }
+        
+  
 
         const layerIndex = this.pageInfo.layerArray.length
         this.pageInfo.layerArray.push(l)
@@ -217,7 +250,7 @@ class SymbolViewer{
 
     _findStyleByName(styleName){
         for(const lib of Object.values(symbolsData)){
-            if(!(styleName in lib.styles)) continue
+            if(!(styles in lib) || !(styleName in lib.styles)) continue
             return lib.styles[styleName]
         }
         return undefined

@@ -126,6 +126,8 @@ class ViewerPage {
 
             if(1==this.overlayByEvent){ //mouse hover
                 var func = function(event){      
+                    if(viewer.linksDisabled) return false
+                    
                     var page = story.pages[viewer.currentPage];
                     var link_page = parseInt( $( this ).attr("link_page") )
                     if(undefined!=page && undefined!=page.currentOverlayPage  && link_page==page.currentOverlayPage.index){                        
@@ -354,6 +356,9 @@ class ViewerPage {
             }
 
             var func = function(event){
+
+                if(viewer.linksDisabled) return false
+
                 var link_url = $( this ).attr("link_url")
                 var link_page_src =  $( this ).attr("link_page")
                 var link_page = parseInt( $( this ).attr("link_page") )

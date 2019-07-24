@@ -8,7 +8,8 @@
 
 var exporter = undefined
 
-const replaceValidKeys = ["frame","x","y","width","height","childs","constrains","smName","styleName","text","comment","smLib"]
+const replaceValidKeys = ["frame","x","y","width","height","childs","constrains","smName","styleName","text","comment","smLib"]  
+// smName: symbol master Name
 function replacer(key, value) {
   // Pass known keys and array indexes
   if (value!=undefined && (replaceValidKeys.indexOf(key)>=0 ||  !isNaN(key))) {
@@ -500,16 +501,18 @@ class Exporter {
 
     // load library inspector file
     let inspectors = ""
-    for(const lib of this.libs){
-        let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
-        log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
-        const inspectorData =  Utils.readFile(pathToSymbolTokens)
-        if(inspectors!="") inspectors+=","
-        inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")
+    if(this.libs){
+        for(const lib of this.libs){
+            let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
+            log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
+            const inspectorData =  Utils.readFile(pathToSymbolTokens)
+            if(inspectors!="") inspectors+=","
+            inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")
+        }
     }
 
 
-    let symbolTokens = "var symbolsData = {"+inspectors+"};")
+    let symbolTokens = "var symbolsData = {"+inspectors+"};"
 
     log(" SaveToJSON: cleanup before saving...")
     for(var l of this.myLayers) l.clearRefsBeforeJSON()
