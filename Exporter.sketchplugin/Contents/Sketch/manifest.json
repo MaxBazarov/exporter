@@ -54,19 +54,21 @@
     },
     {
       "script" : "menu-export-html-adv.js",
-      "handler" : "onRun",
+      "handler" : "onRun",      
       "name" : "✈️ Export selected to HTML",
       "identifier" : "exportToHTMLAdv"
     },
     {
       "script" : "menu-export-html.js",
       "handler" : "onRun",
+      "shortcut" : "command alt e", 
       "name" : "✈️ Export to HTML",
       "identifier" : "exportToHTML"
     },
     {
       "script" : "menu-cmd-publish.js",
       "handler" : "onRun",
+      "shortcut" : "command alt p", 
       "name" : "📡 Publish HTML",
       "identifier" : "publish"
     }
