@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 7.2.0 (25 Jul 2019)
+- Added experimental library switcher to inspector viewer
+- Fixed vertical scrolling of large modals
+
 ##  Version 7.1.1 (19 Jul 2019)
 - Several fixes in overlays support
 

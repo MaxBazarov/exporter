@@ -298,7 +298,7 @@ function createViewer(story, files) {
                 var sidebar = $("#sidebar")
                 var defSidebarWidth = 300
 
-                sidebarWidth = (fullWidth - page.width) / 2
+                sidebarWidth = Math.round((fullWidth - page.width) / 2)
                 if(sidebarWidth<defSidebarWidth){
                     sidebarWidth = defSidebarWidth
                     availableWidth = fullWidth - sidebarWidth
@@ -331,7 +331,7 @@ function createViewer(story, files) {
             this.currentZoom  = newZoom
                    
             // Calculate left position
-            this.currentMarginLeft = availableWidth / 2 - page.width / 2 * this.currentZoom
+            this.currentMarginLeft =  Math.round(availableWidth / 2 )  -  Math.round(page.width / 2 * this.currentZoom)
 
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")

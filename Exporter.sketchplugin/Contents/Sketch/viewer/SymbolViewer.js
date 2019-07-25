@@ -250,7 +250,7 @@ class SymbolViewer{
 
     _findStyleByName(styleName){
         for(const lib of Object.values(symbolsData)){
-            if(!(styles in lib) || !(styleName in lib.styles)) continue
+            if(!("styles" in lib) || !(styleName in lib.styles)) continue
             return lib.styles[styleName]
         }
         return undefined
