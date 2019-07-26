@@ -85,7 +85,7 @@ class ViewerPage {
             newParentPage.currentOverlayPage.hide()                     
             //newParentPage.currentOverlayPage = undefined
         }else if("modal"==newParentPage.type){            
-            posX += newParentPage.currentLeft
+            //posX += newParentPage.currentLeft
             posY += newParentPage.currentTop
         }
 
