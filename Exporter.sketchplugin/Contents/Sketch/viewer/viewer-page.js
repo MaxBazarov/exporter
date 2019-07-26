@@ -31,24 +31,23 @@ class ViewerPage {
     
 
     show(){
-        if(!this.imageObj){        
-            // load image     
-            this.loadImages(true)						
-        } 
-
-        // prepare modal div
-        var isModal = this.type==="modal";			        
-        if(isModal){
-            var regPage = story.pages[viewer.lastRegularPage]
-            this.currentLeft =  Math.round(regPage.width / 2) -  Math.round(this.width / 2)
-            this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2)
-            if(this.currentTop<0) this.currentTop = 0
-            if(this.currentLeft<0) this.currentLeft = 0
-            this.imageDiv.css("margin-left",this.currentLeft+"px")
-            this.imageDiv.css("margin-top",this.currentTop+"px")
-        }                  
+        if(!this.imageObj) this.loadImages(true)						
+        
+        if( "modal" === this.type ) this.updateModalPosition()
 
         this.imageDiv.removeClass("hidden")
+    }
+
+    updateModalPosition(){
+        var regPage = story.pages[viewer.lastRegularPage]
+        this.currentLeft =  viewer.currentMarginLeft + Math.round(regPage.width / 2) -  Math.round(this.width / 2)
+        this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2)
+        if(this.currentTop<0) this.currentTop = 0
+        if(this.currentLeft<0) this.currentLeft = 0
+        
+        var contentModal = $('#content-modal');
+        contentModal.css("margin-left",this.currentLeft+"px")
+        contentModal.css("margin-top",this.currentTop+"px")
     }
 
     showOverlayByLinkIndex(linkIndex){
@@ -86,7 +85,7 @@ class ViewerPage {
             //newParentPage.currentOverlayPage = undefined
         }else if("modal"==newParentPage.type){            
             //posX += newParentPage.currentLeft
-            posY += newParentPage.currentTop
+            //posY += newParentPage.currentTop
         }
 
         // Show overlay on the new position

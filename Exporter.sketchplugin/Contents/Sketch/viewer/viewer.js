@@ -335,8 +335,9 @@ function createViewer(story, files) {
 
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")
-            contentModal.css("margin-left",this.currentMarginLeft+"px")      
-
+            if(this.currentMarginLeft){
+                story.pages[this.currentPage].updateModalPosition()
+            }            
 
         },
 
