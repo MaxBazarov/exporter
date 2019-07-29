@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 7.2.1 (29 Jul 2019)
+- Fixed overlays in modal behaviour
+- Added keyboard shortcuts Cmd+Alt+E (Export) and Cmd+Alt+P (Publish)
+
 ##  Version 7.2.0 (25 Jul 2019)
 - Added experimental library switcher to inspector viewer
 - Fixed vertical scrolling of large modals
