@@ -451,9 +451,12 @@ class ViewerPage {
                     return false
                 } else if(link_url != null){
                     //title = link.url;
-                    //page.hide()
+                    
                     var target = $( this ).attr("target")
-                    window.open(link_url,target!=undefined?target:"_self")                    
+                    if(target!=undefined)
+                        window.open(link_url,target!=undefined?target:"_self")                    
+                    else    
+                        document.location.href = link_url
                     return false
                     //document.location = link_url
                     //target = link.target!=null?link.target:null;		
