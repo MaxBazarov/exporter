@@ -23,7 +23,7 @@ var onRun = function(context) {
   // Get current settings for this layer (and reset to default if undefined)
   //--------------------------------------------------------------------
   var link = ""
-  var openNewWindow = true
+  var openNewWindow = false
 
   if(layers.length==1){
     var layer = layers[0]
