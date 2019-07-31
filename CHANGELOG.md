@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 7.2.2 (31 Jul 2019)
+- fixed window.open() issue in Safari
+
 ##  Version 7.2.1 (29 Jul 2019)
 - Fixed overlays in modal behaviour
 - Added keyboard shortcuts Cmd+Alt+E (Export) and Cmd+Alt+P (Publish)
