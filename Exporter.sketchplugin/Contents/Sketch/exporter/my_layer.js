@@ -253,10 +253,10 @@ class MyLayerCollector {
     }
 
     collectSingleArtboardLayers(prefix,snArtboard){
-        log( prefix+"collectSingleArtboardLayers: running...")
+        //log( prefix+"collectSingleArtboardLayers: running...")
         const artboard = this.getCollectLayer(prefix+" ",snArtboard,undefined,{})
         exporter.myLayers.push(artboard)
-        log( prefix+"collectSingleArtboardLayers: done!")
+        //log( prefix+"collectSingleArtboardLayers: done!")
         return artboard
     }
 

@@ -90,7 +90,7 @@ class Exporter {
 
   // return Sketch native object
   _findLibraryArtboardByID(artboardID){
-    log("findLibraryArtboardByID running...  artboardID:"+artboardID)
+    //log("findLibraryArtboardByID running...  artboardID:"+artboardID)
     if(undefined==this.libs) this._initLibraries()
 
     // find Sketch Artboard
@@ -100,7 +100,7 @@ class Exporter {
         if(jsArtboard) break
     }
     if(!jsArtboard){
-        log("findLibraryArtboardByID FAILED")
+        //log("findLibraryArtboardByID FAILED")
         return false
     }
 
@@ -112,7 +112,7 @@ class Exporter {
     const layerResizer  = new MyLayerResizer()
     layerResizer._resizeLayers(" ",[artboard])
 
-    log("findLibraryArtboardByID SUCCESS")
+    //log("findLibraryArtboardByID SUCCESS")
     return artboard
   }
  
@@ -504,7 +504,7 @@ class Exporter {
     if(this.libs){
         for(const lib of this.libs){
             let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
-            log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
+            //log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
             const inspectorData =  Utils.readFile(pathToSymbolTokens)
             if(inspectors!="") inspectors+=","
             inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")

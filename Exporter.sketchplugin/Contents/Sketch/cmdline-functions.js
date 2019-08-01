@@ -6,9 +6,20 @@ const example=`
 
 `
 
+function syncDocumentStyles(styles){
+    log(" SYNCING "+styles.length+" STYLES ...")
+    for(var style of styles){
+        if(null == style.getLibrary()) continue // we need only library-based style
+        if(!style.syncWithLibrary()){
+            log("  Failed to sync symbol "+style.name)           
+        }
+    }
+}
+
 function syncDocument(document){
-    log(" SYNCING SYMBOLS...")
-    for(var master of document.getSymbols()){
+    const jSymbols = document.getSymbols()
+    log(" SYNCING "+jSymbols.length+" SYMBOLS ...")
+    for(var master of jSymbols){
         if(null == master.getLibrary()) continue // we need only library-based master
 
         if(!master.syncWithLibrary()){
@@ -17,7 +28,9 @@ function syncDocument(document){
                 log("     instance: "+i.name)
             }
         }
-    }
+    }    
+    syncDocumentStyles(document.sharedTextStyles)
+    syncDocumentStyles(document.sharedLayerStyles)
 }
 
 function exportDocument(context,runOptions){    
