@@ -39,7 +39,7 @@ class Exporter {
     this.pageIDsDict = []
     this.errors = []
     this.exportedImages = []
-    this.libs = undefined
+    this.jsLibs = undefined
 
     // workaround for Sketch 52s
     this.docName = this._clearCloudName(this.ndoc.cloudName())
@@ -91,11 +91,9 @@ class Exporter {
   // return Sketch native object
   _findLibraryArtboardByID(artboardID){
     //log("findLibraryArtboardByID running...  artboardID:"+artboardID)
-    if(undefined==this.libs) this._initLibraries()
-
     // find Sketch Artboard
     var jsArtboard = undefined
-    for(const lib of this.libs){
+    for(const lib of this._getLibraries()){
         jsArtboard = lib.jsDoc.getLayerWithID(artboardID)
         if(jsArtboard) break
     }
@@ -118,9 +116,11 @@ class Exporter {
  
 
 
-  _initLibraries(){
-    log("_initLibraries: start")
-    this.libs = []
+  _getLibraries(){
+    if(undefined!=this.jsLibs) return this.jsLibs
+    
+    log("_getLibraries: start")
+    this.jsLibs = []
 
     var libraries = require('sketch/dom').getLibraries()    
     for(const jsLib of libraries){
@@ -128,14 +128,15 @@ class Exporter {
 
         const jsDoc = jsLib.getDocument() 
         if(!jsDoc){
-            log("_initLibraries: can't load document for library "+jsDoc.path+"")
+            log("_getLibraries: can't load document for library "+jsDoc.path+"")
         }
-        this.libs.push({
+        this.jsLibs.push({
             jsLib: jsLib,
             jsDoc: jsDoc
         })
     }
-    log("_initLibraries: finish")
+    log("_getLibraries: finish")
+    return this.jsLibs
   }
 
   
@@ -501,16 +502,14 @@ class Exporter {
 
     // load library inspector file
     let inspectors = ""
-    if(this.libs){
-        for(const lib of this.libs){
-            let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
-            //log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
-            const inspectorData =  Utils.readFile(pathToSymbolTokens)
-            if(inspectors!="") inspectors+=","
-            inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")
-        }
+    const libs = this._getLibraries()
+    for(const lib of libs){
+        let pathToSymbolTokens = Utils.cutLastPathFolder(lib.jsDoc.path)+"/"+ lib.jsLib.name +  "-inspector.json"
+        //log('pathToSymbolTokens = '+pathToSymbolTokens+" name="+lib.jsLib.name)        
+        const inspectorData =  Utils.readFile(pathToSymbolTokens)
+        if(inspectors!="") inspectors+=","
+        inspectors += "'"+lib.jsLib.name+"':"+(inspectorData?inspectorData:"{}")
     }
-
 
     let symbolTokens = "var symbolsData = {"+inspectors+"};"
 

@@ -1,5 +1,8 @@
 # Change Log
 
+##  Version 7.2.4 (12 Aug 2019)
+- fixed exporting of library symbols information
+
 ##  Version 7.2.3 (12 Aug 2019)
 - fixed modal positioning in embedded mode
 - fixed back navigation for modal opened by direct URL
