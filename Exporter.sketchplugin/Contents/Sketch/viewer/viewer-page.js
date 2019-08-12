@@ -41,7 +41,7 @@ class ViewerPage {
     updateModalPosition(){
         var regPage = story.pages[viewer.lastRegularPage]
         this.currentLeft =  viewer.currentMarginLeft + Math.round(regPage.width / 2) -  Math.round(this.width / 2)
-        this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2)
+        this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2 * viewer.currentZoom)
         if(this.currentTop<0) this.currentTop = 0
         if(this.currentLeft<0) this.currentLeft = 0
         

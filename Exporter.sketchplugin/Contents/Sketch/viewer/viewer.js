@@ -396,7 +396,9 @@ function createViewer(story, files) {
 		goBack: function() { 
 			if(this.backStack.length>0){
 				this.goTo(this.backStack[this.backStack.length-1]);
-				this.backStack.shift();
+                this.backStack.shift();
+            }else if (this.currentPageModal  && this.lastRegularPage>=0){
+                this.goTo(this.lastRegularPage);
 			}else{
 				window.history.back();
 			}
@@ -433,7 +435,8 @@ function createViewer(story, files) {
 				if(this.currentPage==-1){
 					parentIndex = this.getModalFirstParentPageIndex(index);					
 					this.goTo(parentIndex,false);
-					this.prevPageModalIndex = parentIndex;
+                    this.prevPageModalIndex = parentIndex;
+                    this.zoomContent()
 				}else{
 					this.prevPageModalIndex = this.currentPage;
 				}
@@ -741,14 +744,8 @@ function createViewer(story, files) {
             }
 			// If the current page is modal then close it and go to the last non-modal page
 			if(this.currentPageModal){
-                if(this.lastRegularPage>=0){
-                    viewer.goTo(this.lastRegularPage)
-                }else if(this.prevPageModalIndex>=0){
-                    viewer.goTo(this.prevPageModalIndex)
-                }else{
-                    viewer.goBack()
-                }
-				return true
+                viewer.goBack()               
+			    return true
             }
             return false
 		},

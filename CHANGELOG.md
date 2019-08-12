@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 7.2.3 (12 Aug 2019)
+- fixed modal positioning in embedded mode
+- fixed back navigation for modal opened by direct URL
+
 ##  Version 7.2.2 (31 Jul 2019)
 - fixed window.open() issue in Safari
 
