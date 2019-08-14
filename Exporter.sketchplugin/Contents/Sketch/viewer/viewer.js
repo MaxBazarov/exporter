@@ -341,17 +341,12 @@ function createViewer(story, files) {
 
         },
 
-		getPageHash: function(index) {
-			var image = story.pages[index].image;
-			return image.substring(0, image.length - 4); // strip .png suffix
-		},
 		getPageHashes: function() {
 			if(this.pageHashes == null) {
 				var hashes = {};
-				var pages = story.pages;
-				for(var i = 0; i < pages.length; i ++) {
-					hashes[this.getPageHash(i)] = i;
-				}
+                for(var page of story.pages){
+                    hashes[page.getHash()] = page.index;
+                }
 				this.pageHashes = hashes;
 			}
 			return this.pageHashes;
@@ -595,7 +590,7 @@ function createViewer(story, files) {
             if(null==extURL) extURL = ''
 
             location.hash = '#' 
-                + encodeURIComponent(this.getPageHash(page.index))
+                + encodeURIComponent(page.getHash())
                 + extURL
 
 		},

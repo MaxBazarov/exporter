@@ -10,6 +10,28 @@ function inViewport($el) {
 
 class ViewerPage {
 
+    constructor(){
+        this.currentOverlayPage = undefined
+        this.parentPage = undefined
+    
+        this.image = undefined
+        this.imageDiv = undefined
+        this.imageObj = undefined
+
+        this.currentLeft = undefined
+        this.currentTop = undefined
+
+        this.currentX = undefined
+        this.currentY = undefined
+
+        this.overlayByEvent = undefined
+    }
+    
+	getHash(){
+        var image = this.image;
+        return image.substring(0, image.length - 4); // strip .png suffix
+    }
+
     hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
         
@@ -83,7 +105,7 @@ class ViewerPage {
 
             newParentPage.currentOverlayPage.hide()                     
             //newParentPage.currentOverlayPage = undefined
-        }else if("modal"==newParentPage.type){            
+        }else if(newParentPage.isModal){            
             //posX += newParentPage.currentLeft
             //posY += newParentPage.currentTop
         }
@@ -96,7 +118,7 @@ class ViewerPage {
             if(linkParentFixed && this.overlayAlsoFixed){
                 div.removeClass('divPanel')
                 div.addClass('fixedPanelFloat')
-            }else if("modal" == newParentPage.type){
+            }else if(newParentPage.isModal){
                 //div.removeClass('divPanel')
                 //div.removeClass('fixedPanelFloat')        
             }else{                
