@@ -15,7 +15,7 @@ class ViewerPage {
         
         if(undefined != this.parentPage){ // current page is overlay
             const parent = this.parentPage
-            viewer.refresh_url(parent.index)
+            viewer.refresh_url(parent)
             parent.currentOverlayPage = undefined
             this.parentPage = undefined
         }else if( undefined != this.currentOverlayPage ){ // current page is parent of some overlay
@@ -39,7 +39,7 @@ class ViewerPage {
     }
 
     updateModalPosition(){
-        var regPage = story.pages[viewer.lastRegularPage]
+        var regPage = viewer.lastRegularPage
         this.currentLeft =  viewer.currentMarginLeft + Math.round(regPage.width / 2) -  Math.round(this.width / 2)
         this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2 * viewer.currentZoom)
         if(this.currentTop<0) this.currentTop = 0
@@ -123,13 +123,13 @@ class ViewerPage {
             this.currentLink = link
 
             var extURL = '/o/'+link.index
-            viewer.refresh_url(newParentPage.index,extURL)            
+            viewer.refresh_url(newParentPage,extURL)            
 
             if(1==this.overlayByEvent){ //mouse hover
                 var func = function(event){      
                     if(viewer.linksDisabled) return false
 
-                    var page = story.pages[viewer.currentPage];
+                    var page = viewer.currentPage
                     var link_page = parseInt( $( this ).attr("link_page") )
                     if(undefined!=page && undefined!=page.currentOverlayPage  && link_page==page.currentOverlayPage.index){                        
                         page.hideCurrentOverlay()
@@ -149,7 +149,7 @@ class ViewerPage {
                 newParentPage.currentOverlayPage = undefined
             }
             this.hide()
-            viewer.refresh_url(newParentPage.index)
+            viewer.refresh_url(newParentPage)
         }       
     }
 
@@ -372,9 +372,9 @@ class ViewerPage {
 
                 if(link_page_src != null) {			
                     // title = story.pages[link.page].title;
-                    var currentPage = story.pages[viewer.currentPage]
+                    var currentPage = viewer.currentPage
                     var newPageIndex = viewer.getPageIndex(link_page)
-                    var newPage = story.pages[newPageIndex];
+                    var newPage = story.pages[newPageIndex]
 
                     if('overlay'==newPage.type){
                         var orgLink = {

@@ -81,12 +81,12 @@ function createViewer(story, files) {
         symbolViewer: null,
         showLayout: false,
         isEmbed: false,
-		prevPageIndex: -1,
-		lastRegularPage: -1,
-		currentPage : -1,
-		currentPageModal : false,
-		prevPageModalIndex : -1,
-		backStack: [],
+
+		prevPage: undefined,
+        currentPage: undefined,
+        lastRegularPage: undefined,
+        
+        backStack: [],
         urlLastIndex: -1,
         handleURLRefresh : true,
         files: files,
@@ -175,7 +175,7 @@ function createViewer(story, files) {
             
 			$(document).bind('keydown', 's', function() {
                 var first = v.getFirstUserPage()
-                if(first && first.index!=v.currentPage) v.goToPage( first.index );
+                if(first && first.index!=v.currentPage.index) v.goToPage( first.index );
 			});			
 			$(document).keydown(function(event) {
 				var ch = event.which
@@ -207,7 +207,7 @@ function createViewer(story, files) {
         // experimental
         // user moved moused out of hotspost or overlay -> need to close overlay
         onImageDivMouseMove: function(event){            
-            var page = story.pages[viewer.currentPage];
+            var page = viewer.currentPage;
             if(!page) return true   
             if(undefined==page.currentOverlayPage) return true
 
@@ -237,8 +237,7 @@ function createViewer(story, files) {
                 href = srcHref.split('#')[0] + '?embed' + document.location.hash
             }            
 
-            var currentPageIndex = undefined==this.lastRegularPage || this.lastRegularPage<0 ? this.currentPage : this.lastRegularPage
-            var page = story.pages[currentPageIndex]
+            var page = undefined==this.lastRegularPage ? this.currentPage : this.lastRegularPage
 
             var iframe = '<iframe src="'+href+'" style="border: none;" noborder="0"'
             iframe += ' width="'+(story.iFrameSizeWidth?story.iFrameSizeWidth:page.width) + '"'
@@ -274,8 +273,9 @@ function createViewer(story, files) {
         },
 
         zoomContent: function(){
-            if(undefined==this.lastRegularPage || this.lastRegularPage<0) return
-            var page = story.pages[this.lastRegularPage]
+            var page =this.lastRegularPage
+            if(undefined==page) return
+
 
             if(undefined==this.marker){
                 this.marker = $('#marker')
@@ -336,7 +336,7 @@ function createViewer(story, files) {
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")
             if(this.currentMarginLeft){
-                story.pages[this.currentPage].updateModalPosition()
+                this.currentPage.updateModalPosition()
             }            
 
         },
@@ -397,8 +397,8 @@ function createViewer(story, files) {
 			if(this.backStack.length>0){
 				this.goTo(this.backStack[this.backStack.length-1]);
                 this.backStack.shift();
-            }else if (this.currentPageModal  && this.lastRegularPage>=0){
-                this.goTo(this.lastRegularPage);
+            }else if (this.currentPage.isModal  && this.lastRegularPage){
+                this.goTo(this.lastRegularPage.index);
 			}else{
 				window.history.back();
 			}
@@ -413,17 +413,16 @@ function createViewer(story, files) {
 
             if(this.symbolViewer) this.symbolViewer.hide()
             
-			var index = this.getPageIndex(page);
+            var index = this.getPageIndex(page);
+            var currentPage = this.currentPage
 
-			if(!this.currentPageModal && this.currentPage>=0){
-				this.backStack.push(this.currentPage);
+			if(currentPage && !currentPage.isModal){
+				this.backStack.push(currentPage.index);
 			}
 
-            var oldcurrentPageModal  = this.currentPageModal
-			this.currentPageModal = false;
-			this.prevPageModalIndex = -1;
+            var oldcurrentPageModal  = currentPage && currentPage.isModal
 			
-			if(index <0 ||  index == this.currentPage || index >= story.pages.length) return;
+			if(index <0 ||  (currentPage && index == currentPage.index) || index >= story.pages.length) return;
 
             
 			var newPage = story.pages[index];
@@ -431,16 +430,12 @@ function createViewer(story, files) {
                 // hide parent page links hightlighting
                 this._updateLinksState(false, $('#content'))
 
-				// no any page to modal, need to find something
-				if(this.currentPage==-1){
-					parentIndex = this.getModalFirstParentPageIndex(index);					
+				// no any page visible now, need to find something
+				if(undefined==currentPage){
+					var parentIndex = this.getModalFirstParentPageIndex(index);					
 					this.goTo(parentIndex,false);
-                    this.prevPageModalIndex = parentIndex;
                     this.zoomContent()
-				}else{
-					this.prevPageModalIndex = this.currentPage;
 				}
-                this.currentPageModal = true;	            
                 
                 // redraw modal links hightlighting
                 this._updateLinksState()
@@ -450,30 +445,28 @@ function createViewer(story, files) {
                     this._updateLinksState(false, $('#content-modal'))
                     this._updateLinksState(undefined,$('#content'))
                 }
-
-				this.currentPageModal = false;
 			}
-            this.prevPageIndex = this.currentPage		
+            this.prevPage = currentPage		
             var prevRegularPage = this.lastRegularPage
 
             newPage.show()                   
 
-            this.refresh_adjust_content_layer(index);	              
-            this.refresh_hide_last_image(index)                       
-			this.refresh_switch_modal_layer(index);	
-			this.refresh_update_navbar(index);			
-			if(refreshURL)this.refresh_url(index)			
+            this.refresh_adjust_content_layer(newPage);	              
+            this.refresh_hide_last_image(newPage)                       
+			this.refresh_switch_modal_layer(newPage);	
+			this.refresh_update_navbar(newPage);			
+			if(refreshURL)this.refresh_url(newPage)			
 
-			this.currentPage = index;
-			if(story.pages[index].type!="modal"){
-				this.lastRegularPage = index
+
+            this.currentPage = newPage;
+			if(!newPage.isModal){
+				this.lastRegularPage = newPage
             }
             
             // zoom content if the new page dimensions differ from the previous
-            if(story.pages[index].type!="modal"){
-                if(prevRegularPage>=0){
-                    var lastPage = story.pages[prevRegularPage]
-                    if(newPage.width!=lastPage.width || newPage.height!=lastPage.height)
+            if(!newPage.isModal){
+                if(prevRegularPage){
+                    if(newPage.width!=prevRegularPage.width || newPage.height!=prevRegularPage.height)
                         this.zoomContent()
                 }
             }
@@ -495,7 +488,7 @@ function createViewer(story, files) {
 			}
 			// place new active transition over the top of stack
 			this.transQueue.push({
-				page: story.pages[this.currentPage],
+				page: this.currentPage,
 				active: true
 			})
 			// set timer in milisecs
@@ -507,8 +500,7 @@ function createViewer(story, files) {
                 trans.active = false	
             }			
 		},
-		refresh_update_navbar: function(pageIndex) {
-			var page = story.pages[pageIndex];
+		refresh_update_navbar: function(page) {
 			var VERSION_INJECT="";
             
             var prevPage = this.getPreviousUserPage(page)
@@ -532,71 +524,53 @@ function createViewer(story, files) {
 
 			$('#nav-right-hints').toggleClass('disabled', page.annotations==undefined);
 
-			this.refresh_update_links_toggler(pageIndex);			
+			this.refresh_update_links_toggler(page);			
 		},
-		refresh_update_links_toggler: function(pageIndex) {
-			var page = story.pages[pageIndex];
+		refresh_update_links_toggler: function(page) {
 			$('#nav-right-links').toggleClass('active', this.highlightLinks);
 			$('#nav-right-links').toggleClass('disabled', page.links.length == 0);
 		},
-		refresh_hide_last_image: function(pageIndex){
-		
-			var page = story.pages[pageIndex];
+		refresh_hide_last_image: function(page){
 			var content = $('#content');
 			var contentModal = $('#content-modal');		
-			var isModal = page.type==="modal";
+			var isModal = page.isModal
 
 			// hide last regular page to show a new regular after modal
-			if(!isModal && this.lastRegularPage>=0 && this.lastRegularPage!=pageIndex){
-				var lastPageImg = $('#img_'+this.lastRegularPage);
+			if(!isModal && this.lastRegularPage && this.lastRegularPage.index != page.index){
+				var lastPageImg = $('#img_'+this.lastRegularPage.index);
 				if(lastPageImg.length){
-					story.pages[this.lastRegularPage].hide()
-					//pagerHideImg(lastPageImg)
-					//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
+					this.lastRegularPage.hide()					
 				}
 			}
 
 			// hide last modal 
-			var prevPageWasModal = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="modal";
+			var prevPageWasModal = this.prevPage && this.prevPage.isModal
 			if(prevPageWasModal){
-				var prevImg = $('#img_'+this.prevPageIndex);
+				var prevImg = $('#img_'+this.prevPage.index);
 				if(prevImg.length){
-					story.pages[this.prevPageIndex].hide()
+					this.prevPage.hide()
 					//pagerHideImg(prevImg)
 				}
 			}
 			
 		},
-		refresh_adjust_content_layer: function(pageIndex){
-            
-			var page = story.pages[pageIndex];
-
-			if(page.type=="modal") return;
+		refresh_adjust_content_layer: function(page){
+            if(page.isModal) return;
 
 			var contentShadow = $('#content-shadow');
 			var contentModal = $('#content-modal');
 			var content = $('#content');
 
-			var prevPageWasModal = this.prevPageIndex>=0 && story.pages[this.prevPageIndex].type==="modal";
+            var prevPageWasModal = this.prevPage && this.prevPage.isModal
 			if(prevPageWasModal){
 				contentShadow.addClass('hidden');
 				contentModal.addClass('hidden');
-			}
-
-			//content.width(page.width);		
-			//content.height(page.height);
-			//contentShadow.width(page.width);		
-			//contentShadow.height(page.height);
-			//contentModal.width(page.width);		
-            //contentModal.height(page.height)            
+			}         
 
 		},
 
-		refresh_switch_modal_layer: function(pageIndex){
-			var page = story.pages[pageIndex];
-			var lastMainPage = story.pages[this.lastRegularPage];
-			
-			if(page.type!="modal") return;
+		refresh_switch_modal_layer: function(page){			
+			if(!page.isModal) return;
 
 			var showShadow = page.showShadow==1;	
 			var contentModal = $('#content-modal');		
@@ -612,17 +586,16 @@ function createViewer(story, files) {
 			contentModal.removeClass('hidden');			
 		},
     
-        refresh_url: function(pageIndex,extURL=null) {
+        refresh_url: function(page,extURL=null) {
             this.handleURLRefresh = false
 
-			var page = story.pages[pageIndex];
-			this.urlLastIndex = pageIndex
+			this.urlLastIndex = page.index
             $(document).attr('title', story.title + ': ' + page.title)
 
             if(null==extURL) extURL = ''
 
             location.hash = '#' 
-                + encodeURIComponent(this.getPageHash(pageIndex))
+                + encodeURIComponent(this.getPageHash(page.index))
                 + extURL
 
 		},
@@ -685,33 +658,29 @@ function createViewer(story, files) {
         },
  
 		clear_context_hide_all_images: function(){
-			var page = story.pages[this.currentPage];
+			var page = this.currentPage;
 			var content = $('#content');
 			var contentModal = $('#content-modal');		
 			var contentShadow = $('#content-shadow');
-			var isModal = page.type==="modal";
+			var isModal = page && page.type==="modal";
 
 			contentShadow.addClass('hidden');
 			contentModal.addClass('hidden');
 						
 			// hide last regular page
-			if(this.lastRegularPage>=0){
-				var lastPageImg = $('#img_'+this.lastRegularPage);
+			if(this.lastRegularPage){
+				var lastPageImg = $('#img_'+this.lastRegularPage.index);
 				if(lastPageImg.length){
-					story.pages[this.lastRegularPage].hide()
-					//pagerHideImg(lastPageImg)
+					this.lastRegularPage.hide()
 				}
-				//pageSwitchFixedPanels(story.pages[this.lastRegularPage],show=false);
 			}
 
 			// hide current modal 
 			if(isModal){
-				var modalImg = $('#img_'+this.currentPage);
+				var modalImg = $('#img_'+this.currentPage.index);
 				if(modalImg.length){
-					story.pages[this.currentPage].hide()
-					//pagerHideImg(modalImg);
+					this.currentPage.hide()
 				}
-				//pageSwitchFixedPanels(story.pages[this.currentPage],show=false);
 			}
 			
 		},
@@ -719,17 +688,16 @@ function createViewer(story, files) {
 		clear_context: function(){
 			this.clear_context_hide_all_images()
 
-			this.prevPageIndex = -1
-			this.lastRegularPage = -1
-			this.currentPage = -1
-			this.currentPageModal = false
-			this.prevPageModalIndex = -1	
+            this.prevPage = undefined
+            this.currentPage = undefined
+            this.lastRegularPage = undefined
+            
 			this.backStack = []
 		},
 
 		refresh: function(){
 			reloadAllPageImages()
-			story.pages[this.currentPage].show()
+			this.currentPage.show()
 		},
 		onKeyEscape: function(){
 			// If gallery is enabled then close it
@@ -738,24 +706,24 @@ function createViewer(story, files) {
 				return true
             }
             // If the current page has some overlay open then close it
-            const page = story.pages[this.currentPage]            
+            const page = this.currentPage            
             if(page.hideCurrentOverlay()){
                 return true
             }
 			// If the current page is modal then close it and go to the last non-modal page
-			if(this.currentPageModal){
+			if(this.currentPage.isModal){
                 viewer.goBack()               
 			    return true
             }
             return false
 		},
 		next: function() {
-            var page = this.getNextUserPage( story.pages[this.currentPage] )
+            var page = this.getNextUserPage( this.currentPage )
             if(!page) return
 			this.goToPage(page.index);	
 		},
 		previous : function() {
-            var page = this.getPreviousUserPage( story.pages[this.currentPage] )
+            var page = this.getPreviousUserPage( this.currentPage )
             if(!page) return
 			this.goToPage(page.index);	
         },
@@ -764,12 +732,12 @@ function createViewer(story, files) {
             return first?first:null
 		},
 		getNextUserPage : function(page) {
-            var nextUserIndex = page.userIndex + 1
+            var nextUserIndex = page ? page.userIndex + 1 : 0
             if(nextUserIndex>=this.userStoryPages.length) return null
             return this.userStoryPages[ nextUserIndex ] 
 		},
 		getPreviousUserPage : function(page) {
-            var prevUserIndex = page.userIndex - 1
+            var prevUserIndex = page ? page.userIndex - 1 : -1
             if(prevUserIndex<0) return null
             return this.userStoryPages[ prevUserIndex ] 
 		},
@@ -784,7 +752,7 @@ function createViewer(story, files) {
             div = $('#content')
 
             if(this.showLayout ){
-                story.pages[this.currentPage].showLayout()
+                this.currentPage.showLayout()
                 div.addClass("contentLayoutVisible")
             }else
                 div.removeClass("contentLayoutVisible")        
@@ -794,7 +762,7 @@ function createViewer(story, files) {
 
         _updateLinksState : function(showLinks = undefined, div = undefined){
             if(undefined == div){
-                if(this.currentPageModal){
+                if(this.currentPage.isModal){
                     div = $('#content-modal')
                 }else{
                     div = $('#content')
@@ -808,7 +776,7 @@ function createViewer(story, files) {
         },
                 
 		showHints : function(){
-			var text = story.pages[this.currentPage].annotations;
+			var text = this.currentPage.annotations;
 			if(text==undefined) return;
 			alert(text);
 		},

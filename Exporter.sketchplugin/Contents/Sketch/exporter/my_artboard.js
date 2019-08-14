@@ -189,6 +189,7 @@ class MyArtboard extends MyLayer {
 
         if (this.isModal) {
             js += "'type': 'modal',\n";
+            js += "'isModal': true,\n";
             js += "'showShadow': " + (this.showShadow ? 1 : 0) + ",\n";
         } else if (this.externalArtboardURL!=undefined && this.externalArtboardURL!=''){
             js += "'type': 'external',\n";

@@ -38,7 +38,7 @@ class SymbolViewer{
         for(const panel of this.page.fixedPanels){
             panel.linksDiv.children(".modalSymbolLink,.symbolLink").remove()
         }
-        delete this.createdPages[viewer.currentPage]
+        delete this.createdPages[viewer.currentPage.index]
 
         // redraw inspector
         this._showEmptyContent()
@@ -53,11 +53,12 @@ class SymbolViewer{
     }
 
     hide(){
-        if(viewer.currentPageModal){
+        var isModal = viewer.currentPage && viewer.currentPage.isModal
+        if(isModal){
             $(".modalSymbolLink").remove()
-            delete this.createdPages[viewer.currentPage]
+            delete this.createdPages[viewer.currentPage.index]
         }
-        const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
+        const contentDiv = isModal?  $('#content-modal'): $('#content')
         contentDiv.removeClass("contentSymbolsVisible")        
 
         this.visible = false
@@ -79,7 +80,8 @@ class SymbolViewer{
             
         this._buildSymbolLinks()
         
-        const contentDiv = viewer.currentPageModal?  $('#content-modal'): $('#content')
+        var isModal = viewer.currentPage && viewer.currentPage.isModal
+        const contentDiv = isModal?  $('#content-modal'): $('#content')
         contentDiv.addClass("contentSymbolsVisible")         
 
         // show sidebar
@@ -102,20 +104,20 @@ class SymbolViewer{
     _buildSymbolLinks(){
         this._showPage(viewer.currentPage)
         if(this.page.currentOverlayPage){
-            this._showPage(this.page.currentOverlayPage.index)
+            this._showPage(this.page.currentOverlayPage)
         }
     }
 
 
-    _showPage(pageIndex){
+    _showPage(page){
+        var pageIndex = page.index
         this.pageIndex = pageIndex
-        this.page = story.pages[pageIndex];        
+        this.page = page
         if(!(pageIndex in this.createdPages)){
             const newPageInfo = {
                 layerArray:[]
             }
             // cache only standalone pages
-            // if(!viewer.currentPageModal){                  
              this.createdPages[pageIndex] = newPageInfo
             
             this.pageInfo = newPageInfo
@@ -166,7 +168,7 @@ class SymbolViewer{
         this.pageInfo.layerArray.push(l)
 
         var a = $("<a>",{
-            class:      viewer.currentPageModal?"modalSymbolLink":"symbolLink",
+            class:      viewer.currentPage.isModal?"modalSymbolLink":"symbolLink",
             pi:         this.pageIndex,
             li:         layerIndex,
         })        
