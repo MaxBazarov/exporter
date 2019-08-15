@@ -400,9 +400,9 @@ class ViewerPage {
                 linkWidth: link.rect.width,
                 linkHeight: link.rect.height,
                 linkPosY:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
+                linkParentFixed: link.isParentFixed?'1':'0',
                 target: link.target
             })
-
 
             var eventType = 0 // click
 
