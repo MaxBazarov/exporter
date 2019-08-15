@@ -85,6 +85,9 @@ function createViewer(story, files) {
 		prevPage: undefined,
         currentPage: undefined,
         lastRegularPage: undefined,
+
+        currentMarginLeft: undefined,
+        currentMarginTop: undefined,
         
         backStack: [],
         urlLastIndex: -1,
@@ -105,7 +108,11 @@ function createViewer(story, files) {
             }
 
             this.addHotkeys();
-            this.initializeHighDensitySupport();                       
+            this.initializeHighDensitySupport();           
+            
+            window.addEventListener('mousemove', function (e) {
+                viewer.onMouseMove(e.x,e.y)
+            });
         },
         initParseGetParams : function() {
             var s = document.location.search
@@ -217,6 +224,13 @@ function createViewer(story, files) {
             
             return true
         },        
+
+        onMouseMove: function(x,y){
+            var page = viewer.currentPage;
+            if(!page || !page.currentOverlayPage) return true   
+            
+            page.currentOverlayPage.onMouseMove(x,y)
+        },
 
         onContentClick: function(){
             if(this.onKeyEscape()) return
@@ -330,15 +344,14 @@ function createViewer(story, files) {
 
             this.currentZoom  = newZoom
                    
-            // Calculate left position
+            // Calculate margins
             this.currentMarginLeft =  Math.round(availableWidth / 2 )  -  Math.round(page.width / 2 * this.currentZoom)
+            this.currentMarginTop = 0
 
             // Set content to new left positions
             content.css("margin-left",this.currentMarginLeft+"px")
-            if(this.currentMarginLeft){
-                this.currentPage.updateModalPosition()
-            }            
-
+            content.css("margin-top",this.currentMarginTop+"px")
+            this.currentPage.updatePosition()
         },
 
 		getPageHashes: function() {

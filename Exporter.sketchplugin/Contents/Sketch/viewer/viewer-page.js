@@ -55,21 +55,28 @@ class ViewerPage {
     show(){
         if(!this.imageObj) this.loadImages(true)						
         
-        if( "modal" === this.type ) this.updateModalPosition()
-
+        this.updatePosition()
+        
         this.imageDiv.removeClass("hidden")
     }
 
-    updateModalPosition(){
+    updatePosition(){
         var regPage = viewer.lastRegularPage
-        this.currentLeft =  viewer.currentMarginLeft + Math.round(regPage.width / 2) -  Math.round(this.width / 2)
-        this.currentTop =  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2 * viewer.currentZoom)
-        if(this.currentTop<0) this.currentTop = 0
-        if(this.currentLeft<0) this.currentLeft = 0
-        
-        var contentModal = $('#content-modal');
-        contentModal.css("margin-left",this.currentLeft+"px")
-        contentModal.css("margin-top",this.currentTop+"px")
+        this.currentLeft =  viewer.currentMarginLeft
+        this.currentTop = viewer.currentMarginTop
+    
+        if( this.isModal ){
+            this.currentLeft += Math.round(regPage.width / 2) -  Math.round(this.width / 2)
+            this.currentTop +=  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2 * viewer.currentZoom)
+            if(this.currentTop<0) this.currentTop = 0
+            if(this.currentLeft<0) this.currentLeft = 0
+            
+            var contentModal = $('#content-modal');
+            contentModal.css("margin-left",this.currentLeft+"px")
+            contentModal.css("margin-top",this.currentTop+"px")
+        }else{
+
+        }
     }
 
     showOverlayByLinkIndex(linkIndex){
@@ -81,7 +88,37 @@ class ViewerPage {
             return false
         }
 
-        link.a.click()    
+        if(!(link["action"]==="back")) link.a.click()    
+    }
+
+    onMouseMove(x,y){
+
+        if(1!=this.overlayByEvent) return //handle only mouse hover
+
+        var localX =  Math.round( x / viewer.currentZoom) -  this.currentLeft
+        var localY =  Math.round( y / viewer.currentZoom) -  this.currentTop
+        //alert(" localX:"+localX+" localY:"+localY+" linkX:"+this.currentLink.x+" linkY:"+this.currentLink.y);
+        
+
+        if( // check if we inside in overlay
+                localX >= this.currentLink.posX            
+            &&  localY >= this.currentLink.posY       
+            &&  localX < (this.currentLink.posX + this.width)
+            &&  localY < (this.currentLink.posY + this.height)
+        ){
+            return
+        }
+        
+        if( // check if we out of current hotspot
+                localX < this.currentLink.x            
+            ||  localY < this.currentLink.y       
+            ||  localX >= (this.currentLink.x + this.currentLink.width)
+            ||  localY >= (this.currentLink.y + this.currentLink.height)
+        ){
+            this.hide()
+            return 
+        }
+        return
     }
 
     showAsOverlayIn(newParentPage,link,posX,posY,linkParentFixed,linkPageType){
@@ -93,8 +130,7 @@ class ViewerPage {
         // check if we need to hide any other already visible overlay
         var positionCloned = false
         const currentOverlay = newParentPage.currentOverlayPage
-        if( currentOverlay!=undefined 
-            && currentOverlay!=this)
+        if( currentOverlay!=undefined && currentOverlay!=this)
         {
 
             if('overlay'==linkPageType){
@@ -113,7 +149,7 @@ class ViewerPage {
         // Show overlay on the new position
         const div = this.imageDiv
 
-        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden')){
+        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden') ){
 
             if(linkParentFixed && this.overlayAlsoFixed){
                 div.removeClass('divPanel')
@@ -159,13 +195,14 @@ class ViewerPage {
                 }            
                 if(10==this.overlayAlign){ // for overlay on hotspot top left position
                     this.imageDiv.attr("link_page",this.index)
-                    this.imageDiv.mouseleave(func)
+                    //this.imageDiv.mouseleave(func)
                 }else{
-                    link.this.mouseleave(func)
+                    //link.this.mouseleave(func)
                 }
             }
 
-
+        }else if(1==this.overlayByEvent && posX==this.currentX && posY==this.currentY){//handle only mouse hover
+            // cursor returned back from overlay to hotspot -> nothing to do
         }else{
             if(this == newParentPage.currentOverlayPage){
                 newParentPage.currentOverlayPage = undefined
@@ -363,7 +400,6 @@ class ViewerPage {
                 linkWidth: link.rect.width,
                 linkHeight: link.rect.height,
                 linkPosY:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
-                linkParentFixed: link.isParentFixed?'1':'0',
                 target: link.target
             })
 
@@ -397,15 +433,20 @@ class ViewerPage {
                     var currentPage = viewer.currentPage
                     var newPageIndex = viewer.getPageIndex(link_page)
                     var newPage = story.pages[newPageIndex]
+                    const linkIndex = $( this ).attr("linkIndex") 
+        
+                    const link = currentPage._getLinkByIndex(linkIndex)
 
                     if('overlay'==newPage.type){
                         var orgLink = {
                             this:  $( this ),
+                            x:  link.rect.x,
+                            y:  link.rect.y,
                             posX : parseInt($( this ).attr("linkPosX")),
                             posY : parseInt($( this ).attr("linkPosY")),
                             width: parseInt($( this ).attr("linkWidth")),
                             height:  parseInt($( this ).attr("linkHeight")),
-                            index:   $( this ).attr("linkIndex")     
+                            index:  linkIndex 
                         }
                         var linkPosX = orgLink.posX
                         var linkPosY = orgLink.posY
@@ -494,8 +535,16 @@ class ViewerPage {
                 if(10==newPage.overlayAlign){ // for overlay on hotspot top left position
                     
                 }else{
-                    //a.mouseleave(func)
-                    a.click(function(){return false})
+                    // need to pass click event to overlayed layers
+                    a.click(function(e){
+                        var nextObjects = document.elementsFromPoint(e.originalEvent.x,e.originalEvent.y);
+                        for(var i = 0; i < nextObjects.length; i++) {
+                            var obj = nextObjects[i].parentElement
+                            if(obj.nodeName!='A' || obj==this) continue
+                            $(obj).trigger('click', e);
+                            return
+                        }
+                    })
                 }
             }else{ // for On click event
                 a.click(func)
