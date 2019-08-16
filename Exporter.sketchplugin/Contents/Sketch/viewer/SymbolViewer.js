@@ -103,8 +103,8 @@ class SymbolViewer{
 
     _buildSymbolLinks(){
         this._showPage(viewer.currentPage)
-        if(this.page.currentOverlayPage){
-            this._showPage(this.page.currentOverlayPage)
+        for(let [index,overlay] of Object.entries(viewer.currentPag.currentOverlays)){
+            this._showPage(overlay)
         }
     }
 

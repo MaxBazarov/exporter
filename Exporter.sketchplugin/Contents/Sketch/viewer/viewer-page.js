@@ -11,7 +11,7 @@ function inViewport($el) {
 class ViewerPage {
 
     constructor(){
-        this.currentOverlayPage = undefined
+        this.currentOverlays = {}
         this.parentPage = undefined
     
         this.image = undefined
@@ -35,20 +35,20 @@ class ViewerPage {
     hide(preloadhide=false){             
         this.imageDiv.addClass("hidden")
         
-        if(undefined != this.parentPage){ // current page is overlay
+        if(undefined != this.parentPage){ // current page is overlay            
             const parent = this.parentPage
-            viewer.refresh_url(parent)
-            parent.currentOverlayPage = undefined
+            viewer.refresh_url(parent)    
+            delete parent.currentOverlays[this.index]
             this.parentPage = undefined
-        }else if( undefined != this.currentOverlayPage ){ // current page is parent of some overlay
-            this.currentOverlayPage.hide()
+        }else{
+            this.hideCurrentOverlays()
         }
     }
 
-    hideCurrentOverlay(){
-        if(undefined==this.currentOverlayPage) return false
-        this.currentOverlayPage.hide()
-        return true
+    hideCurrentOverlays(){
+        for(let [index,overlay] of Object.entries(this.currentOverlays)){
+            overlay.hide()
+        }   
     }
     
 
@@ -93,35 +93,41 @@ class ViewerPage {
 
     onMouseMove(x,y){
 
-        if(1!=this.overlayByEvent) return //handle only mouse hover
+        // handle mouse hover if this page is overlay
+        while(1==this.overlayByEvent){
+            var localX =  Math.round( x / viewer.currentZoom) -  this.currentLeft
+            var localY =  Math.round( y / viewer.currentZoom) -  this.currentTop
+            //alert(" localX:"+localX+" localY:"+localY+" linkX:"+this.currentLink.x+" linkY:"+this.currentLink.y);
+            
 
-        var localX =  Math.round( x / viewer.currentZoom) -  this.currentLeft
-        var localY =  Math.round( y / viewer.currentZoom) -  this.currentTop
-        //alert(" localX:"+localX+" localY:"+localY+" linkX:"+this.currentLink.x+" linkY:"+this.currentLink.y);
-        
+            if( // check if we inside in overlay
+                    localX >= this.currentLink.posX            
+                &&  localY >= this.currentLink.posY       
+                &&  localX < (this.currentLink.posX + this.width)
+                &&  localY < (this.currentLink.posY + this.height)
+            ){
+                break
+            }
+            
+            if( // check if we out of current hotspot
+                    localX < this.currentLink.x            
+                ||  localY < this.currentLink.y       
+                ||  localX >= (this.currentLink.x + this.currentLink.width)
+                ||  localY >= (this.currentLink.y + this.currentLink.height)
+            ){
+                this.hide()
+                return 
+            }
+            break
+        }
 
-        if( // check if we inside in overlay
-                localX >= this.currentLink.posX            
-            &&  localY >= this.currentLink.posY       
-            &&  localX < (this.currentLink.posX + this.width)
-            &&  localY < (this.currentLink.posY + this.height)
-        ){
-            return
-        }
-        
-        if( // check if we out of current hotspot
-                localX < this.currentLink.x            
-            ||  localY < this.currentLink.y       
-            ||  localX >= (this.currentLink.x + this.currentLink.width)
-            ||  localY >= (this.currentLink.y + this.currentLink.height)
-        ){
-            this.hide()
-            return 
-        }
-        return
+        // allow childs to handle mouse move
+        for(let [index,overlay] of Object.entries(this.currentOverlays)){
+            overlay.onMouseMove(x,y)
+        }        
     }
 
-    showAsOverlayIn(newParentPage,link,posX,posY,linkParentFixed,linkPageType){
+    showAsOverlayIn(newParentPage,link,posX,posY,linkParentFixed){
 
         if( !this.imageDiv ){
             this.loadImages(true)
@@ -129,27 +135,31 @@ class ViewerPage {
 
         // check if we need to hide any other already visible overlay
         var positionCloned = false
-        const currentOverlay = newParentPage.currentOverlayPage
-        if( currentOverlay!=undefined && currentOverlay!=this)
+        const currentOverlays = newParentPage.currentOverlays
+        
+        if( !currentOverlays[this.index] )
         {
-
-            if('overlay'==linkPageType){
+            if('overlay'!==link.orgPage.type){
+                for(let [index,overlay] of Object.entries(currentOverlays)){
+                    overlay.hide()
+                }
+            }
+            /*if('overlay'==linkPageType){
                 posX = currentOverlay.currentX
                 posY = currentOverlay.currentY
                 positionCloned = true
+            }else{
+                newParentPage.currentOverlayPage.hide()                     
             }
-
-            newParentPage.currentOverlayPage.hide()                     
+            */
             //newParentPage.currentOverlayPage = undefined
-        }else if(newParentPage.isModal){            
-            //posX += newParentPage.currentLeft
-            //posY += newParentPage.currentTop
         }
 
         // Show overlay on the new position
         const div = this.imageDiv
 
-        if(div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden') ){
+        // 
+        if(true || div.parent().attr('id')!=newParentPage.imageDiv.attr('id') || div.hasClass('hidden') ){
 
             if(linkParentFixed && this.overlayAlsoFixed){
                 div.removeClass('divPanel')
@@ -174,39 +184,18 @@ class ViewerPage {
             div.css('margin-left',posX+"px")
             
             this.show()
-            newParentPage.currentOverlayPage = this
+            newParentPage.currentOverlays[this.index] = this // add this as new overlay to parent overlays
             this.parentPage = newParentPage
             
-
             this.currentLink = link
 
             var extURL = '/o/'+link.index
             viewer.refresh_url(newParentPage,extURL)            
 
-            if(1==this.overlayByEvent){ //mouse hover
-                var func = function(event){      
-                    if(viewer.linksDisabled) return false
-
-                    var page = viewer.currentPage
-                    var link_page = parseInt( $( this ).attr("link_page") )
-                    if(undefined!=page && undefined!=page.currentOverlayPage  && link_page==page.currentOverlayPage.index){                        
-                        page.hideCurrentOverlay()
-                    }
-                }            
-                if(10==this.overlayAlign){ // for overlay on hotspot top left position
-                    this.imageDiv.attr("link_page",this.index)
-                    //this.imageDiv.mouseleave(func)
-                }else{
-                    //link.this.mouseleave(func)
-                }
-            }
 
         }else if(1==this.overlayByEvent && posX==this.currentX && posY==this.currentY){//handle only mouse hover
             // cursor returned back from overlay to hotspot -> nothing to do
-        }else{
-            if(this == newParentPage.currentOverlayPage){
-                newParentPage.currentOverlayPage = undefined
-            }
+        }else{           
             this.hide()
             viewer.refresh_url(newParentPage)
         }       
@@ -388,20 +377,11 @@ class ViewerPage {
         var linksDiv = panel.linksDiv
         
         for(var link of panel.links) {
-            var a = $("<a>",{
-                href:link.url,
-                pageIndex: this.index,
-                pageType: this.type,
-                linkIndex: link.index,
-                link_url: link.url,    
-                link_page: link.page ,    
-                link_action: link.action ,    
-                linkPosX:  link.rect.x + (link.isParentFixed?panel.x:0),
-                linkWidth: link.rect.width,
-                linkHeight: link.rect.height,
-                linkPosY:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
-                linkParentFixed: link.isParentFixed?'1':'0',
-                target: link.target
+            var a = $("<a>",{                
+                lpi: this.index,
+                li: link.index,
+                lpx:  link.rect.x + (link.isParentFixed?panel.x:0),
+                lpy:  link.rect.y+link.rect.height + (link.isParentFixed?panel.y:0),
             })
 
             var eventType = 0 // click
@@ -418,39 +398,42 @@ class ViewerPage {
 
                 if(viewer.linksDisabled) return false
 
-                var link_url = $( this ).attr("link_url")
-                var link_page_src =  $( this ).attr("link_page")
-                var link_page = parseInt( $( this ).attr("link_page") )
-                var link_action = $( this ).attr("link_action")
-                var linkParentFixed = $( this ).attr("linkParentFixed")=='1'
-                var linkPageType = $(this).attr("pageType")
+                const currentPage = viewer.currentPage
+                const orgPage = story.pages[ $(this).attr("lpi") ]
 
-                var page =  story.pages[ $(this).attr("pageIndex") ]
+                const linkIndex = $( this ).attr("li") 
+                const link = orgPage._getLinkByIndex(linkIndex)
+
+                var link_page = link.page
+                var linkParentFixed = link.isParentFixed           
                        
 
-                if(link_page_src != null) {			
-                    // title = story.pages[link.page].title;
-                    var currentPage = viewer.currentPage
-                    var newPageIndex = viewer.getPageIndex(link_page)
-                    var newPage = story.pages[newPageIndex]
-                    const linkIndex = $( this ).attr("linkIndex") 
-        
-                    const link = currentPage._getLinkByIndex(linkIndex)
+                if(link.page != null) {			
+                    // title = story.pages[link.page].title;                   
+                    var newPage = story.pages[parseInt(link.page)]
+                    if(!newPage) return
 
                     if('overlay'==newPage.type){
                         var orgLink = {
+                            orgPage : orgPage,
+                            index:    linkIndex ,
                             this:  $( this ),
                             x:  link.rect.x,
                             y:  link.rect.y,
-                            posX : parseInt($( this ).attr("linkPosX")),
-                            posY : parseInt($( this ).attr("linkPosY")),
-                            width: parseInt($( this ).attr("linkWidth")),
-                            height:  parseInt($( this ).attr("linkHeight")),
-                            index:  linkIndex 
+                            posX : parseInt($( this ).attr("lpx")),
+                            posY : parseInt($( this ).attr("lpy")),
+                            width: link.rect.width,
+                            height: link.rect.height
                         }
                         var linkPosX = orgLink.posX
                         var linkPosY = orgLink.posY
                         var offsetX = newPage.overlayAlign <= 2 ? 5 : 0
+
+                        // clicked from some other overlay
+                        if('overlay'==orgPage.type){
+                            linkPosX += orgPage.currentLink.posX
+                            linkPosY += orgPage.currentLink.posY
+                        }
 
                         if(0==newPage.overlayAlign){ // align on hotspot left                                                                            
                         }else if(1==newPage.overlayAlign){ // align on hotspot center                                                
@@ -461,23 +444,23 @@ class ViewerPage {
                             linkPosX = 0
                             linkPosY = 0
                         }else if(4==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_CENTER
-                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosX = parseInt(orgPage.width / 2) - parseInt(newPage.width / 2)
                             linkPosY = 0
                         }else if(5==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
-                            linkPosX = currentPage.width - newPage.width
+                            linkPosX = orgPage.width - newPage.width
                             linkPosY = 0
                         }else if(6==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_CENTER
-                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
-                            linkPosY = parseInt(currentPage.height / 2) - parseInt(newPage.height / 2)
+                            linkPosX = parseInt(orgPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosY = parseInt(orgPage.height / 2) - parseInt(newPage.height / 2)
                         }else if(7==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_LEFT
                             linkPosX = 0
-                            linkPosY = currentPage.height - newPage.height
+                            linkPosY = orgPage.height - newPage.height
                         }else if(8==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_CENTER
-                            linkPosX = parseInt(currentPage.width / 2) - parseInt(newPage.width / 2)
-                            linkPosY = currentPage.height - newPage.height
+                            linkPosX = parseInt(orgPage.width / 2) - parseInt(newPage.width / 2)
+                            linkPosY = orgPage.height - newPage.height
                         }else if(9==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
-                            linkPosX = currentPage.width - newPage.width
-                            linkPosY = currentPage.height - newPage.height
+                            linkPosX = orgPage.width - newPage.width
+                            linkPosY = orgPage.height - newPage.height
                         }else if(10==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT                        
                             linkPosY -= orgLink.height
                         }else if(11==newPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
@@ -491,8 +474,8 @@ class ViewerPage {
                         // check page right side
                         if(10!=newPage.overlayAlign){// NOTARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
                             const fullWidth = newPage.width + offsetX // + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
-                            if( (linkPosX+fullWidth)>currentPage.width )
-                                linkPosX = currentPage.width - fullWidth
+                            if( (linkPosX+fullWidth)>orgPage.width )
+                                linkPosX = orgPage.width - fullWidth
 
                             /*if(linkPosX < (offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0))){  
                                 linkPosX = offsetX + (('overlayShadowX' in newPage)?newPage.overlayShadowX:0)
@@ -502,29 +485,29 @@ class ViewerPage {
                         if(linkPosX<0) linkPosX = 0
                         if(linkPosY<0) linkPosY = 0
                                 
-                        newPage.showAsOverlayIn(currentPage,orgLink,linkPosX,linkPosY,linkParentFixed,linkPageType)
+                        newPage.showAsOverlayIn(orgPage,orgLink,linkPosX,linkPosY,linkParentFixed)
                         return false
                     }else{
                         viewer.goTo(parseInt(link_page))
                         return false
                     }
-                } else if(link_action != null && link_action== 'back') {
+                } else if(link.action != null && link.action== 'back') {
                     //title = "Go Back";
                     viewer.goBack()
                     return false
-                } else if(link_url != null){
+                } else if(link.url != null){
                     //title = link.url;
                     //page.hide()
-                    var target = $( this ).attr("target")
-                    window.open(link_url,target!=undefined?target:"_self")                    
+                    var target = link.target
+                    window.open(link.url,target!=undefined?target:"_self")                    
                     return false
                     //document.location = link_url
                     //target = link.target!=null?link.target:null;		
                 }
 
                 // close last current overlay if it still has parent
-                if('overlay'==linkPageType && undefined!=page.parentPage){
-                    page.hide()
+                if('overlay'==orgPage.type && undefined!=orgPage.parentPage){
+                    orgPage.hide()
                 }
 
                 return false
@@ -537,6 +520,7 @@ class ViewerPage {
                 }else{
                     // need to pass click event to overlayed layers
                     a.click(function(e){
+                        if(undefined==e.originalEvent) return
                         var nextObjects = document.elementsFromPoint(e.originalEvent.x,e.originalEvent.y);
                         for(var i = 0; i < nextObjects.length; i++) {
                             var obj = nextObjects[i].parentElement

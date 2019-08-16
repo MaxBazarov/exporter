@@ -199,37 +199,8 @@ function createViewer(story, files) {
             setTimeout(doBlinkHotspots,500)
         },
 
-        // experimental
-        onHotspotMouseMove: function(event){            
-            console.log("onHotspotMouseMove")
-            return true
-        }, 
-        
-        // experimental
-        onOverlayMouseMove: function(event){            
-            console.log("onOverlayMouseMove")
-            return true
-        },        
-
-        // experimental
-        // user moved moused out of hotspost or overlay -> need to close overlay
-        onImageDivMouseMove: function(event){            
-            var page = viewer.currentPage;
-            if(!page) return true   
-            if(undefined==page.currentOverlayPage) return true
-
-
-            console.log("onImageDivMouseMove")
-            //page.currentOverlayPage.hide()
-            
-            return true
-        },        
-
         onMouseMove: function(x,y){
-            var page = viewer.currentPage;
-            if(!page || !page.currentOverlayPage) return true   
-            
-            page.currentOverlayPage.onMouseMove(x,y)
+            if(this.currentPage) this.currentPage.onMouseMove(x,y)
         },
 
         onContentClick: function(){
@@ -715,7 +686,7 @@ function createViewer(story, files) {
             }
             // If the current page has some overlay open then close it
             const page = this.currentPage            
-            if(page.hideCurrentOverlay()){
+            if(page.hideCurrentOverlays()){
                 return true
             }
 			// If the current page is modal then close it and go to the last non-modal page
