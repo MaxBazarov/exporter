@@ -630,7 +630,6 @@ function createViewer(story, files) {
             
             if(hashInfo.overlayLinkIndex!=null){
                 page.showOverlayByLinkIndex(hashInfo.overlayLinkIndex)
-                //hashInfo.overlay.page.showAsOverlayIn(page,hashInfo.overlay.posX,hashInfo.overlay.posY)
             }
 
             if(!initial) this.urlLastIndex = pageIndex

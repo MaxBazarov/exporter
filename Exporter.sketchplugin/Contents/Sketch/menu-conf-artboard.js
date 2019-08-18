@@ -100,9 +100,12 @@ var onRun = function (context) {
     dialog.addHint("overlayByEventHint","Setup how links to this overlay will be executed") 
 
     const positions = [
-        "Hotspot left side","Hotspot center","Hotspot right side ",
-        "Top left","Top center","Top right","Center","Bottom left","Bottom center","Bottom right",
-        "Hotspot top left side","Hotspot top center","Hotspot top right side ",
+        "Under hotspot from left corner to right","Under hostpot on center","Under hotspot from right corner to left",
+        "Page top left corner","Page top center","Page top right corner",
+        "Page center",
+        "Page bottom left","Page bottom center","Page bottom right",
+        "Hotspot top left corner","Hotspot top center","Hotspot top right corner",
+        "To the right of the top right corner of hotspot"
     ]
     const overlayAlignControl = dialog.addComboBox("overlayAlign","Overlay Position", overlayAlign,positions,250)
     const overlayOverFixedControl = dialog.addCheckbox("overlayOverFixed", "Show overlay over fixed panels", overlayOverFixed)
