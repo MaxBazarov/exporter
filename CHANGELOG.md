@@ -1,5 +1,9 @@
 # Change Log
 
+##  Version 8.0.0 (12 Aug 2019)
+- globally refactored to stabilize mouse hover event support
+- show all layer shard style in Element Inspector (not only for text layers)
+
 ##  Version 7.2.4 (12 Aug 2019)
 - fixed exporting of library symbols information
 
