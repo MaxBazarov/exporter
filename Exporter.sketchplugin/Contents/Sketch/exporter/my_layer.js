@@ -54,15 +54,17 @@ class MyLayer {
             }
         }else{
             this.smName = undefined
-        }
-        if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true
-        if(nlayer.isKindOfClass(MSTextLayer)){
-            // prepare data for Element Inspector
-            const sharedStyle = nlayer.sharedStyle()
-            if(sharedStyle)
-                this.styleName = sharedStyle.name()+""
+
+            // prepare data for Element Inspector            
+            var sharedStyle = this.slayer.sharedStyle
+            if(sharedStyle){
+                this.styleName = sharedStyle.name
+            }
+            if(nlayer.isKindOfClass(MSTextLayer)){
                 this.text = this.slayer.text+""
+            }
         }
+        if(nlayer.isKindOfClass(MSArtboardGroup))  this.isArtboard = true        
 
         var comment = exporter.Settings.layerSettingForKey(this.slayer, SettingKeys.LAYER_COMMENT)
         if(undefined!=comment && ''!=comment){

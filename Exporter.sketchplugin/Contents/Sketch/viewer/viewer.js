@@ -50,8 +50,8 @@ async function preloadAllPageImages(){
 	var pages = story.pages;
 	for(var page of story.pages){
 		if(page.imageObj==undefined){
-			page.loadImages()
-			page.hide(true)
+            page.loadImages()
+            page.imageDiv.addClass("hidden")
 		}
 	}	
 }

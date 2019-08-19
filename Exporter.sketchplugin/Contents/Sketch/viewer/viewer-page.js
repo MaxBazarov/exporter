@@ -25,6 +25,7 @@ class ViewerPage {
         this.currentY = undefined
 
         this.overlayByEvent = undefined
+        this.tmpSrcOverlayByEvent = undefined
     }
     
 	getHash(){
@@ -32,21 +33,36 @@ class ViewerPage {
         return image.substring(0, image.length - 4); // strip .png suffix
     }
 
-    hide(preloadhide=false){             
+    hide(hideChilds=false){             
         this.imageDiv.addClass("hidden")
         
-        if(undefined != this.parentPage){ // current page is overlay            
+        if(undefined != this.parentPage){ // current page is overlay      
+            
+            if(hideChilds) this.hideChildOverlays()            
+
             const parent = this.parentPage
-            viewer.refresh_url(parent)    
+            viewer.refresh_url(parent)
             delete parent.currentOverlays[this.index]
             this.parentPage = undefined
         }else{
             this.hideCurrentOverlays()
         }
+
+        if(undefined != this.tmpSrcOverlayByEvent){
+            this.overlayByEvent  = this.tmpSrcOverlayByEvent
+            this.tmpSrcOverlayByEvent = undefined
+        }
     }
 
     hideCurrentOverlays(){
         for(let [index,overlay] of Object.entries(this.currentOverlays)){
+            overlay.hide()
+        }   
+    }
+
+    hideChildOverlays(){
+        for(let [index,overlay] of Object.entries(this.parentPage.currentOverlays)){
+            if(overlay.currentLink.orgPage!=this) continue
             overlay.hide()
         }   
     }
@@ -60,12 +76,13 @@ class ViewerPage {
         this.imageDiv.removeClass("hidden")
     }
 
-    updatePosition(){
-        var regPage = viewer.lastRegularPage
+    updatePosition(){    
         this.currentLeft =  viewer.currentMarginLeft
         this.currentTop = viewer.currentMarginTop
-    
+
         if( this.isModal ){
+            var regPage = viewer.lastRegularPage          
+
             this.currentLeft += Math.round(regPage.width / 2) -  Math.round(this.width / 2)
             this.currentTop +=  Math.round(inViewport(regPage.imageDiv) /2 ) -  Math.round(this.height / 2 * viewer.currentZoom)
             if(this.currentTop<0) this.currentTop = 0
@@ -74,8 +91,9 @@ class ViewerPage {
             var contentModal = $('#content-modal');
             contentModal.css("margin-left",this.currentLeft+"px")
             contentModal.css("margin-top",this.currentTop+"px")
-        }else{
-
+        }else if( "overlay"==this.type ){
+            this.currentLeft = viewer.currentPage.currentLeft
+            this.currentTop = viewer.currentPage.currentTop
         }
     }
 
@@ -88,13 +106,42 @@ class ViewerPage {
             return false
         }
 
-        if(!(link["action"]==="back")) link.a.click()    
+        // can handle only page-to-page transition
+        if((link["page"]==undefined)) return false
+         
+        var destPage = story.pages[ link.page ] 
+        // for mouseover overlay we need to show it on click, but only one time)
+        if("overlay"==destPage.type && 1==destPage.overlayByEvent){            
+            destPage.tmpSrcOverlayByEvent =  destPage.overlayByEvent
+            destPage.overlayByEvent = 0 
+            viewer.customEvent = {
+                x:link.rect.x,
+                y:link.rect.y,
+                pageIndex:this.index,
+                linkIndex:link.index
+            }
+            handleLinkEvent({})
+            viewer.customEvent = undefined
+        }else{
+            link.a.click()    
+        }
     }
 
+    // return true (overlay is hidden) or false (overlay is visible)
     onMouseMove(x,y){
+        for(let [index,overlay] of Object.entries(this.currentOverlays)){
+            if(overlay.currentLink.orgPage!=this) continue
+            overlay.onMouseMoveOverlay(x,y)       
+        }
+    }
+
+    // return true (overlay is hidden) or false (overlay is visible)
+    onMouseMoveOverlay(x,y){
+        if(this.imageDiv.hasClass("hidden") || this.overlayByEvent!=1) return false
 
         // handle mouse hover if this page is overlay
-        while("overlay"==this.type && 1==this.overlayByEvent){
+        var hideSelf = false
+        while(1==this.overlayByEvent){
             var localX =  Math.round( x / viewer.currentZoom) -  this.currentLeft
             var localY =  Math.round( y / viewer.currentZoom) -  this.currentTop
             //alert(" localX:"+localX+" localY:"+localY+" linkX:"+this.currentLink.x+" linkY:"+this.currentLink.y);
@@ -115,17 +162,31 @@ class ViewerPage {
                 ||  localX >= (this.currentLink.x + this.currentLink.width)
                 ||  localY >= (this.currentLink.y + this.currentLink.height)
             ){
-                this.hide()
-                return 
+                hideSelf = true
+                break
             }
             break
         }
-
+        
         // allow childs to handle mouse move
-        for(let [index,overlay] of Object.entries(this.currentOverlays)){
-            overlay.onMouseMove(x,y)
-        }        
+        var visibleTotal = 0
+        var total = 0
+
+        for(let [index,overlay] of Object.entries(this.parentPage.currentOverlays)){
+            if(overlay.currentLink.orgPage!=this) continue
+            total++
+            if(overlay.onMouseMoveOverlay(x,y)) visibleTotal++            
+        }
+
+        if(hideSelf)
+            if(!total || (total && !visibleTotal)){
+                this.hide(false)
+                return false
+            }
+
+        return true
     }
+
 
     showAsOverlayInCurrentPage(orgPage,link,posX,posY,linkParentFixed){
         const newParentPage = viewer.currentPage    
@@ -399,131 +460,9 @@ class ViewerPage {
                 }
             }
 
-            var func = function(event){
-
-                if(viewer.linksDisabled) return false
-
-                const currentPage = viewer.currentPage
-                const orgPage = story.pages[ $(this).attr("lpi") ]
-
-                const linkIndex = $( this ).attr("li") 
-                const link = orgPage._getLinkByIndex(linkIndex)
-
-                var destPageIndex = parseInt(link.page)
-                var linkParentFixed = "overlay"!=orgPage.type?link.isParentFixed:orgPage.inFixedPanel
-                       
-                if(destPageIndex != null) {			
-                    // title = story.pages[link.page].title;                   
-                    var destPage = story.pages[destPageIndex]
-                    if(!destPage) return
-
-                    if('overlay'==destPage.type){
-                        var orgLink = {
-                            orgPage : orgPage,
-                            index:    linkIndex ,
-                            this:  $( this ),
-                            x : parseInt($( this ).attr("lpx")),
-                            y : parseInt($( this ).attr("lpy")),
-                            width: link.rect.width,
-                            height: link.rect.height
-                        }
-
-                        // clicked from some other overlay
-                        if('overlay'==orgPage.type){
-                            orgLink.x += orgPage.currentX
-                            orgLink.y += orgPage.currentY
-                        }
-
-                        var pageX = orgLink.x
-                        var pageY = orgLink.y
-
-                        var offsetX = destPage.overlayAlign <= 2 ? 5 : 0
-                        
-
-                        if(0==destPage.overlayAlign){ // align on hotspot left  
-                            pageY += link.rect.height
-                        }else if(1==destPage.overlayAlign){ // align on hotspot center                                                
-                            pageX += parseInt(orgLink.width/2) - parseInt(destPage.width/2)
-                            pageY += link.rect.height
-                        }else if(2==destPage.overlayAlign){// align on hotpost right
-                            pageX += orgLink.width  - destPage.width
-                            pageY += link.rect.height
-                        }else if(3==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_LEFT
-                            pageX = 0
-                            pageY = 0
-                        }else if(4==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_CENTER
-                            pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
-                            pageX = 0
-                        }else if(5==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
-                            pageX = orgPage.width - destPage.width
-                            pageX = 0
-                        }else if(6==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_CENTER
-                            pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
-                            pageY = parseInt(orgPage.height / 2) - parseInt(destPage.height / 2)
-                        }else if(7==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_LEFT
-                            pageX = 0
-                            pageY = orgPage.height - destPage.height
-                        }else if(8==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_CENTER
-                            pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
-                            pageY = orgPage.height - destPage.height
-                        }else if(9==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
-                            pageX = orgPage.width - destPage.width
-                            pageY = orgPage.height - destPage.height
-                        }else if(10==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT                                                    
-                        }else if(11==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
-                            pageX += parseInt(orgLink.width/2) - parseInt(destPage.width/2)
-                            pageY -= destPage.height                            
-                        }else if(12==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT
-                            pageX += orgLink.width  - destPage.width
-                            pageY = pageY - destPage.height                            
-                        }else if(13==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT_ALIGN_RIGHT
-                            pageX +=orgLink.width
-                        }
-
-                        // check page right side
-                        if(10!=destPage.overlayAlign){// NOT ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
-                            const fullWidth = destPage.width + offsetX // + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0)
-                            if( (pageX+fullWidth)>currentPage.width )
-                                pageX = currentPage.width - fullWidth
-
-                            /*if(linkPosX < (offsetX + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0))){  
-                                linkPosX = offsetX + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0)
-                            }*/
-                        }
-
-                        if(pageX<0) pageX = 0
-                        if(pageY<0) pageY = 0
-                                
-                        destPage.showAsOverlayInCurrentPage(orgPage,orgLink,pageX,pageY,linkParentFixed)
-                        return false
-                    }else{
-                        viewer.goTo(parseInt(destPageIndex))
-                        return false
-                    }
-                } else if(link.action != null && link.action== 'back') {
-                    //title = "Go Back";
-                    viewer.goBack()
-                    return false
-                } else if(link.url != null){
-                    //title = link.url;
-                    //page.hide()
-                    var target = link.target
-                    window.open(link.url,target!=undefined?target:"_self")                    
-                    return false
-                    //document.location = link_url
-                    //target = link.target!=null?link.target:null;		
-                }
-
-                // close last current overlay if it still has parent
-                if('overlay'==orgPage.type && undefined!=orgPage.parentPage){
-                    orgPage.hide()
-                }
-
-                return false
-            }
             
             if(1==eventType){ // for Mouse over event
-                a.mouseenter(func)
+                a.mouseenter(handleLinkEvent)
                 if(10==destPage.overlayAlign){ // for overlay on hotspot top left position
                     
                 }else{
@@ -540,7 +479,7 @@ class ViewerPage {
                     })
                 }
             }else{ // for On click event
-                a.click(func)
+                a.click(handleLinkEvent)
             }
             
             a.appendTo(linksDiv)
@@ -557,4 +496,133 @@ class ViewerPage {
             
         } 
     }
+}
+
+//
+// customData:
+//  x,y,pageIndex
+function handleLinkEvent(event){
+    var customData = viewer["customEvent"]
+
+    if(viewer.linksDisabled) return false
+
+    const currentPage = viewer.currentPage
+    const orgPage = customData?story.pages[customData.pageIndex]:story.pages[ $(this).attr("lpi") ]
+
+    const linkIndex = customData?customData.linkIndex:$( this ).attr("li") 
+    const link = orgPage._getLinkByIndex(linkIndex)
+           
+    if(link.page != undefined) {			
+        var destPageIndex = parseInt(link.page)
+        var linkParentFixed = "overlay"!=orgPage.type?link.isParentFixed:orgPage.inFixedPanel
+        
+
+        // title = story.pages[link.page].title;                   
+        var destPage = story.pages[destPageIndex]
+        if(!destPage) return
+
+        if('overlay'==destPage.type){
+            var orgLink = {
+                orgPage : orgPage,
+                index:    linkIndex ,
+                this:  $( this ),
+                x : customData?customData.x:parseInt($( this ).attr("lpx")),
+                y : customData?customData.y:parseInt($( this ).attr("lpy")),
+                width: link.rect.width,
+                height: link.rect.height
+            }
+
+            // clicked from some other overlay
+            if('overlay'==orgPage.type){
+                orgLink.x += orgPage.currentX
+                orgLink.y += orgPage.currentY
+            }
+
+            var pageX = orgLink.x
+            var pageY = orgLink.y
+
+            var offsetX = destPage.overlayAlign <= 2 ? 5 : 0
+            
+
+            if(0==destPage.overlayAlign){ // align on hotspot left  
+                pageY += link.rect.height
+            }else if(1==destPage.overlayAlign){ // align on hotspot center                                                
+                pageX += parseInt(orgLink.width/2) - parseInt(destPage.width/2)
+                pageY += link.rect.height
+            }else if(2==destPage.overlayAlign){// align on hotpost right
+                pageX += orgLink.width  - destPage.width
+                pageY += link.rect.height
+            }else if(3==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_LEFT
+                pageX = 0
+                pageY = 0
+            }else if(4==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_CENTER
+                pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
+                pageX = 0
+            }else if(5==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
+                pageX = orgPage.width - destPage.width
+                pageX = 0
+            }else if(6==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_CENTER
+                pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
+                pageY = parseInt(orgPage.height / 2) - parseInt(destPage.height / 2)
+            }else if(7==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_LEFT
+                pageX = 0
+                pageY = orgPage.height - destPage.height
+            }else if(8==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_BOTTOM_CENTER
+                pageX = parseInt(orgPage.width / 2) - parseInt(destPage.width / 2)
+                pageY = orgPage.height - destPage.height
+            }else if(9==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_TOP_RIGHT
+                pageX = orgPage.width - destPage.width
+                pageY = orgPage.height - destPage.height
+            }else if(10==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT                                                    
+            }else if(11==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_CENTER
+                pageX += parseInt(orgLink.width/2) - parseInt(destPage.width/2)
+                pageY -= destPage.height                            
+            }else if(12==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT
+                pageX += orgLink.width  - destPage.width
+                pageY = pageY - destPage.height                            
+            }else if(13==destPage.overlayAlign){// ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_RIGHT_ALIGN_RIGHT
+                pageX +=orgLink.width
+            }
+
+            // check page right side
+            if(10!=destPage.overlayAlign){// NOT ARTBOARD_OVERLAY_ALIGN_HOTSPOT_TOP_LEFT
+                const fullWidth = destPage.width + offsetX // + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0)
+                if( (pageX+fullWidth)>currentPage.width )
+                    pageX = currentPage.width - fullWidth
+
+                /*if(linkPosX < (offsetX + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0))){  
+                    linkPosX = offsetX + (('overlayShadowX' in destPage)?destPage.overlayShadowX:0)
+                }*/
+            }
+
+            if(pageX<0) pageX = 0
+            if(pageY<0) pageY = 0
+                    
+            destPage.showAsOverlayInCurrentPage(orgPage,orgLink,pageX,pageY,linkParentFixed)
+            return false
+        }else{
+            viewer.goTo(parseInt(destPageIndex))
+            return false
+        }
+    } else if(link.action != null && link.action== 'back') {
+        //title = "Go Back";
+        viewer.currentPage.hideCurrentOverlays()
+        viewer.goBack()
+        return false
+    } else if(link.url != null){
+        //title = link.url;
+        viewer.currentPage.hideCurrentOverlays()
+        var target = link.target
+        window.open(link.url,target!=undefined?target:"_self")                    
+        return false
+        //document.location = link_url
+        //target = link.target!=null?link.target:null;		
+    }
+
+    // close last current overlay if it still has parent
+    if('overlay'==orgPage.type && undefined!=orgPage.parentPage){
+        orgPage.hide()
+    }
+
+    return false
 }
