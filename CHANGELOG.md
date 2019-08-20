@@ -1,5 +1,8 @@
 # Change Log
 
+### Future Development
+New version are avaible on https://github.com/ingrammicro/puzzle-publisher
+
 ##  Version 8.0.0 (12 Aug 2019)
 - globally refactored to stabilize mouse hover event support
 - show all layer shard style in Element Inspector (not only for text layers)
