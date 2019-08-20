@@ -57,7 +57,15 @@ class Publisher {
         if(!this.context.fromCmd){
             // success
             if(runResult.result){
-                // open browser
+                log(" SAVING DOCUMENT...")
+                const Dom = require('sketch/dom')
+                const jDoc = Dom.fromNative(this.doc)
+                jDoc.save(err => {
+                    if (err) {
+                        log(" Failed to save a document. Error: "+err)
+                    }       
+                })
+                // open browser                
                 if(this.siteRoot!=''){
                     const openURL = this.siteRoot + destFolder + (version=="-1"?"":("/"+version)) +"/index.html"
                     const openResult = Utils.runCommand('/usr/bin/open', [openURL])
